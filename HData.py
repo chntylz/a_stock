@@ -1,3 +1,6 @@
+#!/usr/bin/env python  
+# -*- coding: utf-8 -*-
+
 import  psycopg2
 import tushare as ts
 import pandas as pd
@@ -15,7 +18,7 @@ class HData(object):
 
 
     def db_connect(self):
-        self.conn = psycopg2.connect(database="wzj_quant", user=self.user, password=self.password, host="127.0.0.1",
+        self.conn = psycopg2.connect(database="usr", user=self.user, password=self.password, host="127.0.0.1",
                                 port="5432")
         self.cur = self.conn.cursor()
 
@@ -24,7 +27,7 @@ class HData(object):
         self.conn.close()
 
     def db_hdata_date_create(self):
-        conn = psycopg2.connect(database="wzj_quant", user=self.user, password=self.password, host="127.0.0.1",
+        conn = psycopg2.connect(database="usr", user=self.user, password=self.password, host="127.0.0.1",
                                 port="5432")
         cur = conn.cursor()
         # 创建stocks表
@@ -57,26 +60,30 @@ class HData(object):
     def insert_perstock_hdatadate(self,stock_code,data):#插入一支股票的所有历史数据到数据库#如果有code和index相同的不重复插入
         t1=clock()
 
-        for i in range(0,len(data)):
-            str_temp=""
+        #print(stock_code+" insert_perstock_hdatadate begin")
+	if data is None:
+		print("None")
+	else:
+		for i in range(0,len(data)):
+		    str_temp=""
 
-            str_temp+="\'"+stock_code+"\'"+","
-            str_temp+="\'"+data.index[i]+"\'"
+		    str_temp+="\'"+stock_code+"\'"+","
+		    str_temp+="\'"+data.index[i]+"\'"
 
 
 
-            for j in range(0,data.shape[1]):
-                str_temp+=","+"\'"+str(data.iloc[i,j])+"\'"
-            sql_temp="values"+"("+str_temp+")"
-            self.cur.execute("insert into hdata_date "+sql_temp+";")
-        self.conn.commit()
+		    for j in range(0,data.shape[1]):
+			str_temp+=","+"\'"+str(data.iloc[i,j])+"\'"
+		    sql_temp="values"+"("+str_temp+")"
+		    self.cur.execute("insert into hdata_date "+sql_temp+";")
+        	    self.conn.commit()
 
         print(clock()-t1)
 
         print(stock_code+" insert_perstock_hdatadate finish")
 
     def get_all_hdata_of_stock(self,stock_code):#将数据库中的数据读取并转为dataframe格式返回
-        conn = psycopg2.connect(database="wzj_quant", user=self.user, password=self.password, host="127.0.0.1",
+        conn = psycopg2.connect(database="usr", user=self.user, password=self.password, host="127.0.0.1",
                                 port="5432")
         cur = conn.cursor()
 

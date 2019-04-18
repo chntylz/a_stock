@@ -1,3 +1,6 @@
+#!/usr/bin/env python  
+# -*- coding: utf-8 -*-
+
 import tushare as ts
 import psycopg2
 class Stocks(object):#这个类表示"股票们"的整体(不是单元)
@@ -5,7 +8,7 @@ class Stocks(object):#这个类表示"股票们"的整体(不是单元)
         self.todayall=ts.get_today_all()
 
     def get_codestock_local(self):#从本地获取所有股票代号和名称
-        conn = psycopg2.connect(database="wzj_quant", user=self.user, password=self.password, host="127.0.0.1",
+        conn = psycopg2.connect(database="usr", user=self.user, password=self.password, host="127.0.0.1",
                                 port="5432")
         cur = conn.cursor()
         # 创建stocks表
@@ -33,7 +36,7 @@ class Stocks(object):#这个类表示"股票们"的整体(不是单元)
 
     def db_stocks_update(self):# 根据gettodayall的情况插入原表中没的。。gettodayall中有的源表没的保留不删除#返回新增行数
         ans=0
-        conn = psycopg2.connect(database="wzj_quant", user=self.user, password=self.password, host="127.0.0.1", port="5432")
+        conn = psycopg2.connect(database="usr", user=self.user, password=self.password, host="127.0.0.1", port="5432")
         cur = conn.cursor()
         self.get_today_all()
 
@@ -53,7 +56,7 @@ class Stocks(object):#这个类表示"股票们"的整体(不是单元)
         return ans
 
     def db_stocks_create(self):
-        conn = psycopg2.connect(database="wzj_quant", user=self.user, password=self.password, host="127.0.0.1", port="5432")
+        conn = psycopg2.connect(database="usr", user=self.user, password=self.password, host="127.0.0.1", port="5432")
         cur = conn.cursor()
         # 创建stocks表
         cur.execute('''
