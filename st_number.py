@@ -30,8 +30,9 @@ for i in range(0,st_number):
     st_list.append(nowcode);
     #print(hdata.get_all_hdata_of_stock(nowcode))
 
-    print(nowcode, i, codestock_local[i][1])
-    print(codestock_local[i][1])
+#print(nowcode, i, codestock_local[i][1])
+    
+#print(codestock_local[i][1])
 
 #print st_list
 
