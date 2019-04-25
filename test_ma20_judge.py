@@ -1,6 +1,13 @@
 #!/usr/bin/python
 # coding: UTF-8
 '''This script parse stock info'''
+
+'''
+现在试一下简单的分析,即设定一个策略：以20日线为标准,当前股价低于20日线的时候就卖出,高于20日线的时候就买入。
+
+然后计算一下这个策略的效果。
+'''
+
 import tushare as ts
 def parse(code_list):
     '''process stock'''
@@ -29,6 +36,7 @@ def parse(code_list):
                 is_buy = 0
                 sell_val.append(close_val)
                 sell_date.append(close.keys()[idx])
+   
     print 'stock number: %s' %STOCK
     print 'buy count : %d' %len(buy_val)
     print 'sell count : %d' %len(sell_val)
