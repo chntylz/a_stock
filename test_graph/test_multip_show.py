@@ -29,8 +29,8 @@ basic=pro.stock_basic(list_status='L')
 #basic.head(5)
 
 #获取平安银行日行情数据
-pa=pro.daily(ts_code='000001.SZ', start_date='20180101',
-               end_date='20190106')
+pa=pro.daily(ts_code='000001.SZ', start_date='20190101',
+               end_date='20190508')
 #pa.head()
 
 #K线图可视化
@@ -46,10 +46,10 @@ kline.add("", v0, v1,is_datazoom_show=True,
          mark_point=["max", "min"],
          mark_point_symbolsize=60,
          mark_line_valuedim=['highest', 'lowest'] )
-kline.render("上证指数图.html")
+kline.render("平安银行.html")
 kline
 
-my_path='/home/aaron/aaron/test_graph/stock_data/'
+my_path='/home/aaron/aaron/a_stock/test_graph/stock_data/'
 
 #定义获取多只股票函数：
 def get_stocks_data(stocklist,start,end):
@@ -141,4 +141,4 @@ for pos in np.arange(len(plot_pos)):
 plt.show()  
 
 
-plt.savefig("/home/aaron/aaron/test_graph/test_multip.jpg") 
+plt.savefig("//home/aaron/aaron/a_stock/test_graph/test_multip.jpg") 
