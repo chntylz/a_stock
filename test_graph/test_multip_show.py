@@ -102,7 +102,7 @@ def get_index_data(indexs):
     '''indexs是字典格式'''
     index_data={}
     for name,code in indexs.items():
-        df=pro.index_daily(ts_code=code)
+        df=pro.index_daily(ts_code=code, start_date='20190101', end_date='20190508')
         df.index=pd.to_datetime(df.trade_date)   
         index_data[name]=df.sort_index()
     return index_data
