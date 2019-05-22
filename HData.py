@@ -61,26 +61,27 @@ class HData(object):
         t1=clock()
 
         #print(stock_code+" insert_perstock_hdatadate begin")
-	if data is None:
-		print("None")
-	else:
-		for i in range(0,len(data)):
-		    str_temp=""
+        if data is None:
+            print("None")
+        else:
+            for i in range(0,len(data)):
+                str_temp=""
 
-		    str_temp+="\'"+stock_code+"\'"+","
-		    str_temp+="\'"+data.index[i]+"\'"
+                str_temp+="\'"+stock_code+"\'"+","
+                str_temp+="\'"+data.index[i]+"\'"
 
 
 
-		    for j in range(0,data.shape[1]):
-			str_temp+=","+"\'"+str(data.iloc[i,j])+"\'"
-		    sql_temp="values"+"("+str_temp+")"
-		    self.cur.execute("insert into hdata_date "+sql_temp+";")
-        	    self.conn.commit()
+                for j in range(0,data.shape[1]):
+                    str_temp+=","+"\'"+str(data.iloc[i,j])+"\'"
 
-        print(clock()-t1)
+                sql_temp="values"+"("+str_temp+")"
+                self.cur.execute("insert into hdata_date "+sql_temp+";")
+            self.conn.commit()
 
-        print(stock_code+" insert_perstock_hdatadate finish")
+            print(clock()-t1)
+
+            print(stock_code+" insert_perstock_hdatadate finish")
 
     def get_all_hdata_of_stock(self,stock_code):#将数据库中的数据读取并转为dataframe格式返回
         conn = psycopg2.connect(database="usr", user=self.user, password=self.password, host="127.0.0.1",
