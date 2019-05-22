@@ -43,6 +43,11 @@ df_2330['MACD'],df_2330['MACDsignal'],df_2330['MACDhist'] = talib.MACD(np.array(
 dif, dea, macd_hist = talib.MACD(np.array(df_2330['Close']), fastperiod=12, slowperiod=26, signalperiod=9)
 
 
+#ma5 cross
+for i in range(1, sma_21.size):
+        if sma_5[i-1] < sma_13[i-1] and sma_5[i] > sma_13[i] and df_2330['Close'][i] >  sma_5[i]:
+                print("在第%d天:%s：ma5 cross ma13 :%d" % (i, df_2330.index[i],df_2330['Close'][i]))
+
 
 # 程序交易 （K线图数据，分钟/）
 # 使用程序的判断依据来模拟MACD指标交易情况，买入、卖出
