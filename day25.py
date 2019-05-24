@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+
 # basic
 import numpy as np
 import pandas as pd
@@ -22,7 +26,8 @@ import warnings
 warnings.simplefilter(action = "ignore", category = RuntimeWarning)
 
 start = datetime.datetime(2018,10,1)
-df_2330 = pdr.DataReader('2330.TW', 'yahoo', start=start)
+#df_2330 = pdr.DataReader('2330.TW', 'yahoo', start=start)
+df_2330 = pdr.DataReader('BABA', 'yahoo', start=start)
 #print(df_2330)
 df_2330.index = df_2330.index.format(formatter=lambda x: x.strftime('%Y-%m-%d'))
 #print(df_2330.index[2])
@@ -45,8 +50,9 @@ dif, dea, macd_hist = talib.MACD(np.array(df_2330['Close']), fastperiod=12, slow
 
 #ma5 cross
 for i in range(1, sma_21.size):
-        if sma_5[i-1] < sma_13[i-1] and sma_5[i] > sma_13[i] and df_2330['Close'][i] >  sma_5[i]:
-                print("在第%d天:%s：ma5 cross ma13 :%d" % (i, df_2330.index[i],df_2330['Close'][i]))
+    
+    if (sma_5[i-1] < sma_13[i-1] and sma_5[i] > sma_13[i] and df_2330['Close'][i] >  sma_5[i]):
+        print(u"在第%d天:%s：ma5 cross ma13 :%d" % (i, df_2330.index[i],df_2330['Close'][i]))
 
 
 # 程序交易 （K线图数据，分钟/）
@@ -71,7 +77,7 @@ for i in range(1, dif.size):
 
 
 plt.style.use('bmh')
-fig = plt.figure(figsize=(24, 20))
+fig = plt.figure(figsize=(24, 20),dpi=240)
 
 ax0  = fig.add_axes([0, 0.8, 1, 0.4])
 ax0.grid()
