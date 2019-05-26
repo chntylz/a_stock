@@ -17,6 +17,8 @@ import seaborn as sns
 
 #time
 import datetime as datetime
+import time
+import os
 
 #talib
 import talib
@@ -24,6 +26,9 @@ import talib
 #delete runtimer warning
 import warnings
 warnings.simplefilter(action = "ignore", category = RuntimeWarning)
+
+
+today_date = time.strftime("%Y-%m-%d", time.localtime())
 
 start = datetime.datetime(2018,10,1)
 #df_2330 = pdr.DataReader('2330.TW', 'yahoo', start=start)
@@ -79,9 +84,9 @@ for i in range(1, dif.size):
 plt.style.use('bmh')
 fig = plt.figure(figsize=(24, 20),dpi=240)
 
-ax0  = fig.add_axes([0, 0.8, 1, 0.4])
+ax0  = fig.add_axes([0, 0.7, 1, 0.3])
 ax0.grid()
-ax  = fig.add_axes([0, 0.4, 1, 0.4])
+ax  = fig.add_axes([0, 0.4, 1, 0.3])
 ax2 = fig.add_axes([0, 0.3, 1, 0.1])
 ax3 = fig.add_axes([0, 0.2, 1, 0.1])
 ax4 = fig.add_axes([0, 0,   1, 0.2])
@@ -137,5 +142,10 @@ ax4.set_xticklabels(df_2330.index[::10])
 ax.legend();
 ax2.legend();
 ax3.legend();
+figure_name = today_date +  '_day25_01.png'
+fig.savefig(figure_name)
 
-fig.savefig('day25_01.png')
+exec_command = "mkdir -p " + today_date
+os.system(exec_command)
+exec_command = "mv " + figure_name + " " + today_date
+os.system(exec_command)

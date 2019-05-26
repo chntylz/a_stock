@@ -26,6 +26,8 @@ import seaborn as sns
 
 #time
 import datetime as datetime
+import time
+import os
 
 #talib
 import talib
@@ -34,6 +36,8 @@ import talib
 import warnings
 warnings.simplefilter(action = "ignore", category = RuntimeWarning)
 
+
+today_date = time.strftime("%Y-%m-%d", time.localtime())
 start = datetime.datetime(2018,10,1)
 
 
@@ -51,9 +55,9 @@ codestock_local=stocks.get_codestock_local()
 #print(codestock_local)
 
 hdata.db_connect()#由于每次连接数据库都要耗时0.0几秒，故获取历史数据时统一连接
-#for i in range(0,len(codestock_local)):
-if (True):
-    i = 0
+for i in range(0,len(codestock_local)):
+#if (True):
+    #i = 0
     nowcode=codestock_local[i][0]
     nowname=codestock_local[i][1]
     print("code:%s, name:%s" % (nowcode, nowname ))
@@ -110,7 +114,7 @@ if (True):
 
 
     plt.style.use('bmh')
-    fig = plt.figure(figsize=(24, 30),dpi=240)
+    fig = plt.figure(figsize=(24, 30),dpi=160)
     plt.title(nowcode + ': ' + nowname) 
     
     ax0  = fig.add_axes([0, 0.7, 1, 0.3])
@@ -171,13 +175,17 @@ if (True):
     ax.legend();
     ax2.legend();
     ax3.legend();
+    figure_name = today_date + '-' +  nowcode + '-' + nowname + '.png'
+    fig.savefig(figure_name)
 
-    fig.savefig(nowcode + '-' + nowname + '.png')
-
-
+    exec_command = "mkdir -p " + today_date
+    os.system(exec_command)
+    exec_command = "mv " + figure_name + " " + today_date
+    os.system(exec_command)
     
-    
-    
+    plt.cla()
+    plt.clf()
+    plt.close('all')
 
 
     #print(hdata.get_all_hdata_of_stock(nowcode))
