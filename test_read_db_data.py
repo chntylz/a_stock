@@ -84,7 +84,7 @@ for i in range(0,len(codestock_local)):
     # 计算MACD指标
     dif, dea, macd_hist = talib.MACD(np.array(detail_info['close']), fastperiod=12, slowperiod=26, signalperiod=9)
 
-
+    '''
     #ma5 cross
     for i in range(1, sma_21.size):
         
@@ -110,7 +110,7 @@ for i in range(0,len(codestock_local)):
         if dif[i-1] - dea[i-1] > 0 and dif[i] - dea[i] < 0:
             print("在第%d天:%s：卖出了某某股票多少量的股票:%d" %  (i, detail_info.index[i],detail_info['close'][i]))
 
-
+    '''
 
 
     plt.style.use('bmh')
@@ -183,8 +183,6 @@ for i in range(0,len(codestock_local)):
     exec_command = "mv " + figure_name + " " + today_date
     os.system(exec_command)
     
-    plt.cla()
-    plt.clf()
     plt.close('all')
 
 
