@@ -79,9 +79,9 @@ class HData(object):
                 self.cur.execute("insert into hdata_date "+sql_temp+";")
             self.conn.commit()
 
-            print(clock()-t1)
+#print(clock()-t1)
 
-            print(stock_code+" insert_perstock_hdatadate finish")
+#print(stock_code+" insert_perstock_hdatadate finish")
 
     def get_all_hdata_of_stock(self,stock_code):#将数据库中的数据读取并转为dataframe格式返回
         conn = psycopg2.connect(database="usr", user=self.user, password=self.password, host="127.0.0.1",
@@ -97,6 +97,9 @@ class HData(object):
 
         dataframe_cols=[tuple[0] for tuple in cur.description]#列名和数据库列一致
         df = pd.DataFrame(rows, columns=dataframe_cols)
+        index =  df["record_date"]
+        df = pd.DataFrame(rows, index=index, columns=dataframe_cols)
+        
         return df
         pass
         

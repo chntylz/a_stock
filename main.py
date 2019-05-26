@@ -18,6 +18,7 @@ hdata=HData("usr","usr")
 nowdate=datetime.datetime.now().date()
 
 codestock_local=stocks.get_codestock_local()
+print(codestock_local)
 
 hdata.db_connect()#由于每次连接数据库都要耗时0.0几秒，故获取历史数据时统一连接
 for i in range(0,len(codestock_local)):
