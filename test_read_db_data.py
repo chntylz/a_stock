@@ -55,6 +55,27 @@ codestock_local=stocks.get_codestock_local()
 #print(codestock_local)
 
 hdata.db_connect()#由于每次连接数据库都要耗时0.0几秒，故获取历史数据时统一连接
+
+start_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+all_info = hdata.my2_get_all_hdata_of_stock()
+end_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+print("start_time: %s, end_time: %s" % (start_time, end_time))
+
+
+#define canvas out of loop
+plt.style.use('bmh')
+fig = plt.figure(figsize=(24, 30),dpi=160)
+
+'''
+ax0  = fig.add_axes([0, 0.7, 1, 0.3])
+ax0.grid()
+ax  = fig.add_axes([0, 0.4, 1, 0.3])
+ax2 = fig.add_axes([0, 0.3, 1, 0.1])
+ax3 = fig.add_axes([0, 0.2, 1, 0.1])
+ax4 = fig.add_axes([0, 0,   1, 0.2])
+'''
+
+
 for i in range(0,len(codestock_local)):
 #if (True):
     #i = 0
@@ -62,10 +83,11 @@ for i in range(0,len(codestock_local)):
     nowname=codestock_local[i][1]
     print("code:%s, name:%s" % (nowcode, nowname ))
 
-    detail_info = hdata.get_all_hdata_of_stock(nowcode)
+    #detail_info = hdata.get_all_hdata_of_stock(nowcode)
+    detail_info = all_info[all_info['stock_code'].isin([nowcode])]
     detail_info = detail_info.tail(100)
     #print(detail_info)
-    
+#continue
     detail_info.index = detail_info.index.format(formatter=lambda x: x.strftime('%Y-%m-%d'))
     #print(detail_info.index[2])
     sma_5 = talib.SMA(np.array(detail_info['close']), 5)
@@ -110,11 +132,11 @@ for i in range(0,len(codestock_local)):
         if dif[i-1] - dea[i-1] > 0 and dif[i] - dea[i] < 0:
             print("在第%d天:%s：卖出了某某股票多少量的股票:%d" %  (i, detail_info.index[i],detail_info['close'][i]))
 
-    '''
 
 
     plt.style.use('bmh')
     fig = plt.figure(figsize=(24, 30),dpi=160)
+    '''
     plt.title(nowcode + ': ' + nowname) 
     
     ax0  = fig.add_axes([0, 0.7, 1, 0.3])
@@ -183,11 +205,13 @@ for i in range(0,len(codestock_local)):
     exec_command = "mv " + figure_name + " " + today_date
     os.system(exec_command)
     
-    plt.close('all')
+    plt.clf()
+    plt.cla()
 
 
     #print(hdata.get_all_hdata_of_stock(nowcode))
 
     #print(i,nowcode,codestock_local[i][1])
+plt.close('all')
 
 hdata.db_disconnect()
