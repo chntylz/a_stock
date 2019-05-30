@@ -57,7 +57,7 @@ codestock_local=stocks.get_codestock_local()
 hdata.db_connect()#由于每次连接数据库都要耗时0.0几秒，故获取历史数据时统一连接
 
 start_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-all_info = hdata.my2_get_all_hdata_of_stock()
+#all_info = hdata.my2_get_all_hdata_of_stock()
 end_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 print("start_time: %s, end_time: %s" % (start_time, end_time))
 
@@ -88,11 +88,11 @@ for i in range(0,len(codestock_local)):
         print("ST: code:%s, name:%s" % (nowcode, nowname ))
         continue
 
-    #detail_info = hdata.get_all_hdata_of_stock(nowcode)
-    detail_info = all_info[all_info['stock_code'].isin([nowcode])]
+    detail_info = hdata.get_limit_hdata_of_stock(nowcode,100)
+    #detail_info = all_info[all_info['stock_code'].isin([nowcode])]
     detail_info = detail_info.tail(100)
     #print(detail_info)
-    continue
+#continue
     detail_info.index = detail_info.index.format(formatter=lambda x: x.strftime('%Y-%m-%d'))
     #print(detail_info.index[2])
     sma_5 = talib.SMA(np.array(detail_info['close']), 5)
@@ -220,3 +220,5 @@ for i in range(0,len(codestock_local)):
 plt.close('all')
 
 hdata.db_disconnect()
+last_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+print("start_time: %s, last_time: %s" % (start_time, last_time))
