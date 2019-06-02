@@ -32,6 +32,11 @@ import os
 #talib
 import talib
 
+
+from funcat import *
+
+from Algorithm import *
+
 #delete runtimer warning
 import warnings
 warnings.simplefilter(action = "ignore", category = RuntimeWarning)
@@ -62,6 +67,9 @@ end_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 print("start_time: %s, end_time: %s" % (start_time, end_time))
 
 
+#debug switch
+debug = False;
+
 #define canvas out of loop
 plt.style.use('bmh')
 fig = plt.figure(figsize=(24, 30),dpi=160)
@@ -77,27 +85,44 @@ ax4 = fig.add_axes([0, 0,   1, 0.2])
 
 
 for i in range(0,len(codestock_local)):
+#for i in range(0,2):
 #if (True):
     #i = 0
     nowcode=codestock_local[i][0]
     nowname=codestock_local[i][1]
-    # print("code:%s, name:%s" % (nowcode, nowname ))
+    if debug:
+        print("code:%s, name:%s" % (nowcode, nowname ))
 
     #skip ST
     if ('ST' in nowname ):
-        print("ST: code:%s, name:%s" % (nowcode, nowname ))
+        if debug:
+            print("ST: code:%s, name:%s" % (nowcode, nowname ))
         continue
 
     detail_info = hdata.get_limit_hdata_of_stock(nowcode,100)
-    #detail_info = all_info[all_info['stock_code'].isin([nowcode])]
+    #detail_info = hdata.get_limit_hdata_of_stock('000029',100) # test 'Exception: inputs are all NaN'
+    #detail_info = all_info[all_info['stock_code'].isin([nowcode])]  //get date if nowcode == all_info['stock_code']
     detail_info = detail_info.tail(100)
-    #print(detail_info)
-#continue
+    if debug:
+        print(detail_info)
+    
+    #fix NaN bug
+    if(len(detail_info) == 0):
+    	print('NaN: code:%s, name:%s' % (nowcode, nowname ))
+    	continue
+    
+    #continue
     detail_info.index = detail_info.index.format(formatter=lambda x: x.strftime('%Y-%m-%d'))
     #print(detail_info.index[2])
-    sma_5 = talib.SMA(np.array(detail_info['close']), 5)
-    sma_13 = talib.SMA(np.array(detail_info['close']), 13)
-    sma_21 = talib.SMA(np.array(detail_info['close']), 21)
+    
+    detail_info['close'].fillna(value=0, inplace=True)   
+    
+    ma_5  = talib.MA(np.array(detail_info['close'], dtype=float), 5)
+    ma_13 = talib.MA(np.array(detail_info['close'], dtype=float), 13)
+    ma_21 = talib.MA(np.array(detail_info['close'], dtype=float), 21)
+    if debug:
+        print("ma_5.size:%d, ma_13.size:%d, ma_21.size:%d" % (ma_5.size, ma_13.size, ma_21.size))
+    
     detail_info['k'], detail_info['d'] = talib.STOCH(detail_info['high'], detail_info['low'], detail_info['close'])
     detail_info['k'].fillna(value=0, inplace=True)
     detail_info['d'].fillna(value=0, inplace=True)
@@ -109,15 +134,27 @@ for i in range(0,len(codestock_local)):
     # dif: 12， 与26日的差别
     # dea:dif的9日以移动平均线
     # 计算MACD指标
-    dif, dea, macd_hist = talib.MACD(np.array(detail_info['close']), fastperiod=12, slowperiod=26, signalperiod=9)
+    dif, dea, macd_hist = talib.MACD(np.array(detail_info['close'], dtype=float), fastperiod=12, slowperiod=26, signalperiod=9)
 
+	#cross
+    #cond_1 = ma_5[-1] > ma_13[-1]
+    #cond_2 = ma_5[-2] < ma_13[-2]
+    cond_1 = aaron_cross(ma_5, ma_13)
+    cond_2 = aaron_cross(ma_13, ma_21)
+    cond_3 = detail_info['close'][-1] > ma_5[-1]
+    
+    if cond_1 and cond_2 and cond_3:
+        print("cross: code:%s, name:%s" % (nowcode, nowname ))
+    else: 
+	    continue
+	
+	#################################################################
     '''
     #ma5 cross
-    for i in range(1, sma_21.size):
+    for i in range(1, ma_21.size):
         
-        if (sma_5[i-1] < sma_13[i-1] and sma_5[i] > sma_13[i] and detail_info['close'][i] >  sma_5[i]):
+        if (ma_5[i-1] < ma_13[i-1] and ma_5[i] > ma_13[i] and detail_info['close'][i] >  ma_5[i]):
             print(u"在第%d天:%s：ma5 cross ma13 :%d" % (i, detail_info.index[i],detail_info['close'][i]))
-
 
     # 程序交易 （K线图数据，分钟/）
     # 使用程序的判断依据来模拟MACD指标交易情况，买入、卖出
@@ -142,6 +179,8 @@ for i in range(0,len(codestock_local)):
     plt.style.use('bmh')
     fig = plt.figure(figsize=(24, 30),dpi=160)
     '''
+    ################################################################
+    
     plt.title(nowcode + ': ' + nowname) 
     
     ax0  = fig.add_axes([0, 0.7, 1, 0.3])
@@ -171,9 +210,9 @@ for i in range(0,len(codestock_local)):
     #plt.rcParams['font.sans-serif']=['Microsoft JhengHei'] 
 
     #k-line
-    ax.plot(sma_5, label='5日均線')
-    ax.plot(sma_13, label='13日均線')
-    ax.plot(sma_21, label='21日均線')
+    ax.plot(ma_5, label='5日均線')
+    ax.plot(ma_13, label='13日均線')
+    ax.plot(ma_21, label='21日均線')
 
     #kd
     ax2.plot(detail_info['k'], label='K值')
@@ -198,6 +237,8 @@ for i in range(0,len(codestock_local)):
     mpf.volume_overlay(ax4, detail_info['open'], detail_info['close'], detail_info['volume'], colorup='r', colordown='g', width=0.5, alpha=0.8)
     ax4.set_xticks(range(0, len(detail_info.index), 10))
     ax4.set_xticklabels(detail_info.index[::10])
+    ma_vol_50 = talib.MA(np.array(detail_info['volume'], dtype=float), 50)
+    ax4.plot(ma_vol_50, label='50日均線')
 
     ax.legend();
     ax2.legend();
@@ -207,7 +248,7 @@ for i in range(0,len(codestock_local)):
 
     exec_command = "mkdir -p " + today_date
     os.system(exec_command)
-    exec_command = "mv " + figure_name + " " + today_date
+    exec_command = "mv " + today_date + '-' +  nowcode + '*' + " " + today_date
     os.system(exec_command)
     
     plt.clf()
