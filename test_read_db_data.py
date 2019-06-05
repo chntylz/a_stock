@@ -41,7 +41,13 @@ from Algorithm import *
 import warnings
 warnings.simplefilter(action = "ignore", category = RuntimeWarning)
 
+#log
+from common import Log
+log = Log(__name__).getlog()
 
+
+
+################################################################
 today_date = time.strftime("%Y-%m-%d", time.localtime())
 start = datetime.datetime(2018,10,1)
 
@@ -90,25 +96,27 @@ for i in range(0,len(codestock_local)):
     #i = 0
     nowcode=codestock_local[i][0]
     nowname=codestock_local[i][1]
+    log.debug("code:%s, name:%s" % (nowcode, nowname ))
     if debug:
         print("code:%s, name:%s" % (nowcode, nowname ))
 
     #skip ST
     if ('ST' in nowname ):
+        log.debug("ST: code:%s, name:%s" % (nowcode, nowname ))
         if debug:
             print("ST: code:%s, name:%s" % (nowcode, nowname ))
         continue
 
     detail_info = hdata.get_limit_hdata_of_stock(nowcode,100)
     #detail_info = hdata.get_limit_hdata_of_stock('000029',100) # test 'Exception: inputs are all NaN'
-    #detail_info = all_info[all_info['stock_code'].isin([nowcode])]  //get date if nowcode == all_info['stock_code']
-    detail_info = detail_info.tail(100)
+    #detail_info = all_info[all_info['stock_code'].isin([nowcode])]  #get date if nowcode == all_info['stock_code']
+    #detail_info = detail_info.tail(100)
     if debug:
         print(detail_info)
     
     #fix NaN bug
     if(len(detail_info) == 0):
-    	print('NaN: code:%s, name:%s' % (nowcode, nowname ))
+    	#print('NaN: code:%s, name:%s' % (nowcode, nowname ))
     	continue
     
     #continue
@@ -126,6 +134,9 @@ for i in range(0,len(codestock_local)):
     detail_info['k'], detail_info['d'] = talib.STOCH(detail_info['high'], detail_info['low'], detail_info['close'])
     detail_info['k'].fillna(value=0, inplace=True)
     detail_info['d'].fillna(value=0, inplace=True)
+    
+    #ma_vol
+    ma_vol_50 = talib.MA(np.array(detail_info['volume'], dtype=float), 50)
 
      # 调用talib计算MACD指标
     detail_info['MACD'],detail_info['MACDsignal'],detail_info['MACDhist'] = talib.MACD(np.array(detail_info['close']),
@@ -142,8 +153,9 @@ for i in range(0,len(codestock_local)):
     cond_1 = aaron_cross(ma_5, ma_13)
     cond_2 = aaron_cross(ma_13, ma_21)
     cond_3 = detail_info['close'][-1] > ma_5[-1]
+    cond_4 = detail_info['volume'][-1] > ma_vol_50[-1]
     
-    if cond_1 and cond_2 and cond_3:
+    if cond_1 and cond_2 and cond_3 and cond_4:
         print("cross: code:%s, name:%s" % (nowcode, nowname ))
     else: 
 	    continue
@@ -237,7 +249,6 @@ for i in range(0,len(codestock_local)):
     mpf.volume_overlay(ax4, detail_info['open'], detail_info['close'], detail_info['volume'], colorup='r', colordown='g', width=0.5, alpha=0.8)
     ax4.set_xticks(range(0, len(detail_info.index), 10))
     ax4.set_xticklabels(detail_info.index[::10])
-    ma_vol_50 = talib.MA(np.array(detail_info['volume'], dtype=float), 50)
     ax4.plot(ma_vol_50, label='50日均線')
 
     ax.legend();
