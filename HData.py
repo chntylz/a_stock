@@ -79,17 +79,17 @@ class HData(object):
                 self.cur.execute("insert into hdata_date "+sql_temp+";")
             self.conn.commit()
 
-#print(clock()-t1)
+        #print(clock()-t1)
 
-#print(stock_code+" insert_perstock_hdatadate finish")
+        #print(stock_code+" insert_perstock_hdatadate finish")
 
     def get_all_hdata_of_stock(self,stock_code):#将数据库中的数据读取并转为dataframe格式返回
         conn = psycopg2.connect(database="usr", user=self.user, password=self.password, host="127.0.0.1",
                                 port="5432")
         cur = conn.cursor()
 
-#sql_temp="select * from (select * from hdata_date where stock_code='000922' order by record_date desc LIMIT 5) as tbl order by record_date asc;"
-#sql_temp="select * from (select * from hdata_date where stock_code="+"\'"+stock_code+"\' order by record_date desc LIMIT 100) as tbl order by record_date asc;"
+        #sql_temp="select * from (select * from hdata_date where stock_code='000922' order by record_date desc LIMIT 5) as tbl order by record_date asc;"
+        #sql_temp="select * from (select * from hdata_date where stock_code="+"\'"+stock_code+"\' order by record_date desc LIMIT 100) as tbl order by record_date asc;"
         sql_temp="select * from hdata_date where stock_code="+"\'"+stock_code+"\';"
         cur.execute(sql_temp)
         rows = cur.fetchall()
@@ -110,9 +110,9 @@ class HData(object):
                                 port="5432")
         cur = conn.cursor()
 
-#sql_temp="select * from (select * from hdata_date where stock_code='000922' order by record_date desc LIMIT 5) as tbl order by record_date asc;"
+        #sql_temp="select * from (select * from hdata_date where stock_code='000922' order by record_date desc LIMIT 5) as tbl order by record_date asc;"
         sql_temp="select * from (select * from hdata_date where stock_code="+"\'"+stock_code+"\' order by record_date desc LIMIT "+"\'"+str(limit_number)+"\' ) as tbl order by record_date asc;"
-#sql_temp="select * from hdata_date where stock_code="+"\'"+stock_code+"\';"
+        #sql_temp="select * from hdata_date where stock_code="+"\'"+stock_code+"\';"
         cur.execute(sql_temp)
         rows = cur.fetchall()
 

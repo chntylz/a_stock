@@ -101,10 +101,11 @@ for i in range(0,len(codestock_local)):
         print("code:%s, name:%s" % (nowcode, nowname ))
 
     #skip ST
-    if ('ST' in nowname ):
-        log.debug("ST: code:%s, name:%s" % (nowcode, nowname ))
+#if ('ST' in nowname or '300' in nowcode):
+    if ('ST' in nowname):
+        #log.debug("ST: code:%s, name:%s" % (nowcode, nowname ))
         if debug:
-            print("ST: code:%s, name:%s" % (nowcode, nowname ))
+            print("skip code: code:%s, name:%s" % (nowcode, nowname ))
         continue
 
     detail_info = hdata.get_limit_hdata_of_stock(nowcode,100)

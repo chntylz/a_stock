@@ -7,6 +7,12 @@ from Stocks import *
 from HData import *
 import  datetime
 
+
+from common import Log
+
+log = Log(__name__).getlog()
+log.info("I am main.py")
+
 stocks=Stocks("usr","usr")
 hdata=HData("usr","usr")
 
@@ -18,15 +24,16 @@ hdata=HData("usr","usr")
 nowdate=datetime.datetime.now().date()
 
 codestock_local=stocks.get_codestock_local()
-print(codestock_local)
+#print(codestock_local)
 
 hdata.db_connect()#由于每次连接数据库都要耗时0.0几秒，故获取历史数据时统一连接
 for i in range(0,len(codestock_local)):
     nowcode=codestock_local[i][0]
 
     #print(hdata.get_all_hdata_of_stock(nowcode))
-
+	
     #print(i,nowcode,codestock_local[i][1])
+    #log.warning("i=%d,%s,%s\n",  i,nowcode,codestock_local[i][1])
 
     maxdate=hdata.db_get_maxdate_of_stock(nowcode)
     #print(maxdate, nowdate)
