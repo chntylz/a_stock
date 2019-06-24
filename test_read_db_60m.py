@@ -30,7 +30,7 @@ import seaborn as sns
 import datetime as datetime
 import time
 import os
-
+import sys
 #talib
 import talib
 
@@ -55,7 +55,7 @@ start = datetime.datetime(2018,10,1)
 
 
 stocks=Stocks("usr","usr")
-hdata=HData("usr","usr")
+hdata=HData_60m("usr","usr")
 
 # stocks.db_stocks_create()#如果还没有表则需要创建
 #print(stocks.db_stocks_update())#根据todayall的情况更新stocks表
@@ -77,6 +77,7 @@ print("start_time: %s, end_time: %s" % (start_time, end_time))
 
 #debug switch
 debug = False;
+#debug = True;
 
 #define canvas out of loop
 plt.style.use('bmh')
@@ -103,7 +104,7 @@ for i in range(0,len(codestock_local)):
         print("code:%s, name:%s" % (nowcode, nowname ))
 
     #skip ST
-#if ('ST' in nowname or '300' in nowcode):
+    #if ('ST' in nowname or '300' in nowcode):
     if ('ST' in nowname):
         #log.debug("ST: code:%s, name:%s" % (nowcode, nowname ))
         if debug:
@@ -137,6 +138,7 @@ for i in range(0,len(codestock_local)):
     detail_info['k'], detail_info['d'] = talib.STOCH(detail_info['high'], detail_info['low'], detail_info['close'])
     detail_info['k'].fillna(value=0, inplace=True)
     detail_info['d'].fillna(value=0, inplace=True)
+
     
     #ma_vol
     ma_vol_50 = talib.MA(np.array(detail_info['volume'], dtype=float), 50)
@@ -145,18 +147,24 @@ for i in range(0,len(codestock_local)):
     detail_info['MACD'],detail_info['MACDsignal'],detail_info['MACDhist'] = talib.MACD(np.array(detail_info['close']),
                                         fastperiod=6, slowperiod=12, signalperiod=9)   
 
+    #print("line number: " + str(sys._getframe().f_lineno) )
     # dif: 12， 与26日的差别
     # dea:dif的9日以移动平均线
     # 计算MACD指标
     dif, dea, macd_hist = talib.MACD(np.array(detail_info['close'], dtype=float), fastperiod=12, slowperiod=26, signalperiod=9)
 
+    #print("line number: " + str(sys._getframe().f_lineno) )
 	#cross
     #cond_1 = ma_5[-1] > ma_13[-1]
     #cond_2 = ma_5[-2] < ma_13[-2]
-    cond_1 = aaron_cross(ma_5, ma_13)
+    cond_1 = aaron_cross(ma_5, ma_13) 
+    #cond_2 = aaron_cross(detail_info['close'], ma_5) 
     cond_2 = aaron_cross(ma_13, ma_21)
-    cond_3 = detail_info['close'][-1] > ma_5[-1]
-    cond_4 = detail_info['volume'][-1] > ma_vol_50[-1]
+
+    #print("line number: " + str(sys._getframe().f_lineno) )
+    #print("line number: " + str(sys._getframe().f_lineno) )
+    cond_3 = detail_info['close'].iloc[-1] > ma_5[-1]
+    cond_4 = detail_info['volume'].iloc[-1] > ma_vol_50[-1]
     
     if cond_1 and cond_2 and cond_3 and cond_4:
         print("cross: code:%s, name:%s" % (nowcode, nowname ))

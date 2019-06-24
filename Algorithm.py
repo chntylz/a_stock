@@ -15,7 +15,6 @@ def aaron_ref(s, n):
     
     return s[-(n+1)]
 
-
 def aaron_cross(s1, s2):
     
     if(len(s1) < 2 or len(s2) < 2):
@@ -32,6 +31,4 @@ def aaron_cross(s1, s2):
         cond_2 = False
     
     return cond_1 and cond_2
-    
-   
-	     
+
