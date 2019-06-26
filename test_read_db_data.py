@@ -47,6 +47,10 @@ warnings.simplefilter(action = "ignore", category = RuntimeWarning)
 from common import Log
 log = Log(__name__).getlog()
 
+#funcat
+from funcat import *
+from funcat.data.aaron_backend import AaronDataBackend
+set_data_backend(AaronDataBackend())
 
 
 ################################################################
@@ -55,7 +59,7 @@ start = datetime.datetime(2018,10,1)
 
 
 stocks=Stocks("usr","usr")
-hdata=HData("usr","usr")
+hdata=HData_day("usr","usr")
 
 # stocks.db_stocks_create()#如果还没有表则需要创建
 #print(stocks.db_stocks_update())#根据todayall的情况更新stocks表
@@ -102,6 +106,7 @@ for i in range(0,len(codestock_local)):
     if debug:
         print("code:%s, name:%s" % (nowcode, nowname ))
 
+
     #skip ST
 #if ('ST' in nowname or '300' in nowcode):
     if ('ST' in nowname):
@@ -122,6 +127,11 @@ for i in range(0,len(codestock_local)):
     	#print('NaN: code:%s, name:%s' % (nowcode, nowname ))
     	continue
     
+    #funcat call
+    T(str(nowdate))
+    S(nowcode)
+    print(str(nowdate), nowcode, nowname, O, H, L, C)
+
     #continue
     detail_info.index = detail_info.index.format(formatter=lambda x: x.strftime('%Y-%m-%d'))
     #print(detail_info.index[2])
