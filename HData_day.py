@@ -35,9 +35,11 @@ class HData_day(object):
                 drop table if exists hdata_d_table;
                 create table hdata_d_table(
                     record_date date,
+                    stock_code varchar,  
                     open float,close float,high float,low float,
                     volume float,
-                    stock_code varchar    
+                    amount float,
+                    p_change float
                     );
                 alter table hdata_d_table add primary key(stock_code,record_date);
                 ''')
@@ -67,7 +69,8 @@ class HData_day(object):
                 str_temp=""
 
                 #str_temp+="\'"+stock_code+"\'"+","
-                str_temp+="\'"+data.index[i]+"\'"
+                #str_temp+="\'"+data.index[i]+"\'"
+                str_temp+="\'"+data.index[i].strftime("%Y-%m-%d")+"\'"
 
 
 
