@@ -100,6 +100,7 @@ for i in range(0,len(codestock_local)):
 #for i in range(0,2):
 #if (True):
     #i = 0
+    draw_flag = False
     nowcode=codestock_local[i][0]
     nowname=codestock_local[i][1]
     log.debug("code:%s, name:%s" % (nowcode, nowname ))
@@ -108,7 +109,7 @@ for i in range(0,len(codestock_local)):
 
 
     #skip ST
-#if ('ST' in nowname or '300' in nowcode):
+    #if ('ST' in nowname or '300' in nowcode):
     if ('ST' in nowname):
         #log.debug("ST: code:%s, name:%s" % (nowcode, nowname ))
         if debug:
@@ -130,7 +131,7 @@ for i in range(0,len(codestock_local)):
     #funcat call
     T(str(nowdate))
     S(nowcode)
-    print(str(nowdate), nowcode, nowname, O, H, L, C)
+    # print(str(nowdate), nowcode, nowname, O, H, L, C)
 
     #continue
     detail_info.index = detail_info.index.format(formatter=lambda x: x.strftime('%Y-%m-%d'))
@@ -160,17 +161,40 @@ for i in range(0,len(codestock_local)):
     # 计算MACD指标
     dif, dea, macd_hist = talib.MACD(np.array(detail_info['close'], dtype=float), fastperiod=12, slowperiod=26, signalperiod=9)
 
+
+
+    ##############################################################################
+    today_p = ((C - REF(C, 1))/REF(C, 1)) 
+    yes_p  = ((REF(C, 1) - REF(C, 2))/REF(C, 2)) 
+    cond_1 = today_p > 0.03 and yes_p > 0.03
+    cond_2 = C > MA(C, 21)
+    cond_3 = MA(C, 21) > REF(MA(C, 21), 1)
+    cond_4 = today_p > 0.095 and yes_p > 0.095
+    if cond_1 and cond_2 and cond_3 and (cond_4 != True):
+        draw_flag = True
+        print("two day p > 0.03 : code:%s, name:%s" % (nowcode, nowname ))
+
 	#cross
+    '''
     #cond_1 = ma_5[-1] > ma_13[-1]
     #cond_2 = ma_5[-2] < ma_13[-2]
     cond_1 = aaron_cross(ma_5, ma_13)
     cond_2 = aaron_cross(ma_13, ma_21)
     cond_3 = detail_info['close'][-1] > ma_5[-1]
     cond_4 = detail_info['volume'][-1] > ma_vol_50[-1]
+    '''
+
+    cond_1 = CROSS(MA(C,5), MA(C, 13))
+    cond_2 = CROSS(MA(C,13), MA(C, 21))
+    cond_3 = C > MA(C, 5)
+    cond_4 = V > MA(V, 50)
+    cond_5 = ((C - REF(C, 1))/REF(C, 1)) > 0.03
     
-    if cond_1 and cond_2 and cond_3 and cond_4:
+    if cond_1 and cond_2 and cond_3 and cond_4 and cond_5:
+        draw_flag = True
         print("cross: code:%s, name:%s" % (nowcode, nowname ))
-    else: 
+
+    if draw_flag == False:
 	    continue
 	
 	#################################################################
