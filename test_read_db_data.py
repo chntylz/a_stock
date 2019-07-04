@@ -74,7 +74,7 @@ sdata.db_hdata_date_create()
 ######################################################################
 
 nowdate=datetime.datetime.now().date()
-nowdate=nowdate-datetime.timedelta(1)
+#nowdate=nowdate-datetime.timedelta(1)
 
 codestock_local=stocks.get_codestock_local()
 #print(codestock_local)
@@ -189,25 +189,18 @@ for i in range(0,len(codestock_local)):
         #insert into database
         dataframe_cols=['record_date','stock_code', 'stock_name', 'open', 'close', 'high', 'low', 'volume', 'p_change']
         # row=['2019-07-02',  '300750', 70.28,  71.04,  72.38,  69.96,  162519.0, 1.02]
-        row=[nowdate, nowcode, nowname, O, C, H, L, V, today_p]
+        row=[nowdate, nowcode, nowname, O, C, H, L, V, today_p * 100]
         # print("row=%s" % (row))
         df=pd.DataFrame([row], columns=dataframe_cols)
         df=df.set_index('record_date')
         sdata.insert_perstock_hdatadate(nowcode, df)
         print("two day p > 0.03 : code:%s, name:%s" % (nowcode, nowname ))
+    #############################################################################
 
 
-
+    ##############################################################################
+    '''
 	#cross
-    '''
-    #cond_1 = ma_5[-1] > ma_13[-1]
-    #cond_2 = ma_5[-2] < ma_13[-2]
-    cond_1 = aaron_cross(ma_5, ma_13)
-    cond_2 = aaron_cross(ma_13, ma_21)
-    cond_3 = detail_info['close'][-1] > ma_5[-1]
-    cond_4 = detail_info['volume'][-1] > ma_vol_50[-1]
-    '''
-
     cond_1 = CROSS(MA(C,5), MA(C, 13))
     cond_2 = CROSS(MA(C,13), MA(C, 21))
     cond_3 = C > MA(C, 5)
@@ -217,18 +210,14 @@ for i in range(0,len(codestock_local)):
     if cond_1 and cond_2 and cond_3 and cond_4 and cond_5:
         draw_flag = True
         print("cross: code:%s, name:%s" % (nowcode, nowname ))
+    '''
+    ##############################################################################
 
-    if draw_flag == False:
-	    continue
-	
+
+
+    
 	#################################################################
     '''
-    #ma5 cross
-    for i in range(1, ma_21.size):
-        
-        if (ma_5[i-1] < ma_13[i-1] and ma_5[i] > ma_13[i] and detail_info['close'][i] >  ma_5[i]):
-            print(u"在第%d天:%s：ma5 cross ma13 :%d" % (i, detail_info.index[i],detail_info['close'][i]))
-
     # 程序交易 （K线图数据，分钟/）
     # 使用程序的判断依据来模拟MACD指标交易情况，买入、卖出
     # 以200天为例，从第一天到第200天每天进行判断
@@ -253,7 +242,15 @@ for i in range(0,len(codestock_local)):
     fig = plt.figure(figsize=(24, 30),dpi=160)
     '''
     ################################################################
-    
+
+
+    ################################################################
+    #check need to generate png 
+    if draw_flag == False:
+	    continue
+	
+    ################################################################
+
     plt.title(nowcode + ': ' + nowname) 
     
     ax0  = fig.add_axes([0, 0.7, 1, 0.3])
