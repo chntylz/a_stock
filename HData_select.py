@@ -40,6 +40,7 @@ class HData_select(object):
                 create table hdata_s_table(
                     record_date date,
                     stock_code varchar,  
+                    stock_name varchar,  
                     open float,close float,high float,low float,
                     volume float,
                     p_change float

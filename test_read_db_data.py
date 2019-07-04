@@ -187,9 +187,9 @@ for i in range(0,len(codestock_local)):
     if cond_1 and cond_2 and cond_3 and (cond_4 != True):
         draw_flag = True
         #insert into database
-        dataframe_cols=['record_date','stock_code', 'open', 'close', 'high', 'low', 'volume', 'p_change']
+        dataframe_cols=['record_date','stock_code', 'stock_name', 'open', 'close', 'high', 'low', 'volume', 'p_change']
         # row=['2019-07-02',  '300750', 70.28,  71.04,  72.38,  69.96,  162519.0, 1.02]
-        row=[nowdate, nowcode, O, C, H, L, V, today_p]
+        row=[nowdate, nowcode, nowname, O, C, H, L, V, today_p]
         # print("row=%s" % (row))
         df=pd.DataFrame([row], columns=dataframe_cols)
         df=df.set_index('record_date')
