@@ -5,11 +5,14 @@ import  psycopg2
 import tushare as ts
 import pandas as pd
 from time import clock
+import sys
+import os
 
-class HData_day(object):
+
+class HData_select(object):
     def __init__(self,user,password):
         # self.aaa = aaa
-        self.hdata_d_table=[]
+        self.hdata_s_table=[]
         self.user=user
         self.password=password
 
@@ -29,27 +32,28 @@ class HData_day(object):
     def db_hdata_date_create(self):
         conn = psycopg2.connect(database="usr", user=self.user, password=self.password, host="127.0.0.1",
                                 port="5432")
+        # print("line number: " + str(sys._getframe().f_lineno) )
         cur = conn.cursor()
         # 创建stocks表
         cur.execute('''
-                drop table if exists hdata_d_table;
-                create table hdata_d_table(
+                drop table if exists hdata_s_table;
+                create table hdata_s_table(
                     record_date date,
                     stock_code varchar,  
                     open float,close float,high float,low float,
                     volume float,
-                    amount float,
                     p_change float
                     );
-                alter table hdata_d_table add primary key(stock_code,record_date);
+                alter table hdata_s_table add primary key(stock_code,record_date);
                 ''')
+        # print("line number: " + str(sys._getframe().f_lineno) )
         conn.commit()
         conn.close()
-        print("db_hdata_d_table_create finish")
+        print("db_hdata_s_table_create finish")
         pass
 
     def db_get_maxdate_of_stock(self,stock_code):#获取某支股票的最晚日期
-        self.cur.execute("select max(record_date) from hdata_d_table where stock_code="+"\'"+stock_code+"\'"+";")
+        self.cur.execute("select max(record_date) from hdata_s_table where stock_code="+"\'"+stock_code+"\'"+";")
         ans=self.cur.fetchall()
         if(len(ans)==0):
             return None
@@ -78,8 +82,8 @@ class HData_day(object):
                     str_temp+=","+"\'"+str(data.iloc[i,j])+"\'"
 
                 sql_temp="values"+"("+str_temp+")"
-                #print(sql_temp)
-                self.cur.execute("insert into hdata_d_table "+sql_temp+";")
+                # print(sql_temp)
+                self.cur.execute("insert into hdata_s_table "+sql_temp+";")
             self.conn.commit()
 
         #print(clock()-t1)
@@ -92,9 +96,9 @@ class HData_day(object):
                                 port="5432")
         cur = conn.cursor()
 
-        #sql_temp="select * from (select * from hdata_d_table where stock_code='000922' order by record_date desc LIMIT 5) as tbl order by record_date asc;"
-        #sql_temp="select * from (select * from hdata_d_table where stock_code="+"\'"+stock_code+"\' order by record_date desc LIMIT 100) as tbl order by record_date asc;"
-        sql_temp="select * from hdata_d_table where stock_code="+"\'"+stock_code+"\';"
+        #sql_temp="select * from (select * from hdata_s_table where stock_code='000922' order by record_date desc LIMIT 5) as tbl order by record_date asc;"
+        #sql_temp="select * from (select * from hdata_s_table where stock_code="+"\'"+stock_code+"\' order by record_date desc LIMIT 100) as tbl order by record_date asc;"
+        sql_temp="select * from hdata_s_table where stock_code="+"\'"+stock_code+"\';"
         cur.execute(sql_temp)
         rows = cur.fetchall()
 
@@ -114,9 +118,9 @@ class HData_day(object):
                                 port="5432")
         cur = conn.cursor()
 
-        #sql_temp="select * from (select * from hdata_d_table where stock_code='000922' order by record_date desc LIMIT 5) as tbl order by record_date asc;"
-        sql_temp="select * from (select * from hdata_d_table where stock_code="+"\'"+stock_code+"\' order by record_date desc LIMIT "+"\'"+str(limit_number)+"\' ) as tbl order by record_date asc;"
-        #sql_temp="select * from hdata_d_table where stock_code="+"\'"+stock_code+"\';"
+        #sql_temp="select * from (select * from hdata_s_table where stock_code='000922' order by record_date desc LIMIT 5) as tbl order by record_date asc;"
+        sql_temp="select * from (select * from hdata_s_table where stock_code="+"\'"+stock_code+"\' order by record_date desc LIMIT "+"\'"+str(limit_number)+"\' ) as tbl order by record_date asc;"
+        #sql_temp="select * from hdata_s_table where stock_code="+"\'"+stock_code+"\';"
         cur.execute(sql_temp)
         rows = cur.fetchall()
 
@@ -136,8 +140,8 @@ class HData_day(object):
         conn = psycopg2.connect(database="usr", user=self.user, password=self.password, host="127.0.0.1",
                                 port="5432")
         cur = conn.cursor()
-        #select * from (select * from hdata_d_table where stock_code='000922' order by record_date desc LIMIT 5) as tbl order by record_date asc;
-        sql_temp="select * from hdata_d_table;"
+        #select * from (select * from hdata_s_table where stock_code='000922' order by record_date desc LIMIT 5) as tbl order by record_date asc;
+        sql_temp="select * from hdata_s_table;"
         cur.execute(sql_temp)
         rows = cur.fetchall()
 

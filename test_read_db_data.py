@@ -8,6 +8,7 @@ import tushare as ts
 from Stocks import *
 from HData import *
 from HData_day import *
+from HData_select import *
 from HData_60m import *
 import  datetime
 
@@ -30,6 +31,7 @@ import seaborn as sns
 import datetime as datetime
 import time
 import os
+import sys
 
 #talib
 import talib
@@ -57,21 +59,28 @@ set_data_backend(AaronDataBackend())
 today_date = time.strftime("%Y-%m-%d", time.localtime())
 start = datetime.datetime(2018,10,1)
 
-
 stocks=Stocks("usr","usr")
 hdata=HData_day("usr","usr")
+sdata=HData_select("usr","usr")
 
 # stocks.db_stocks_create()#如果还没有表则需要创建
 #print(stocks.db_stocks_update())#根据todayall的情况更新stocks表
 
 #hdata.db_hdata_date_create()
 
+#print("line number: " + str(sys._getframe().f_lineno) )
+sdata.db_hdata_date_create()
+#print("line number: " + str(sys._getframe().f_lineno) )
+######################################################################
+
 nowdate=datetime.datetime.now().date()
+nowdate=nowdate-datetime.timedelta(1)
 
 codestock_local=stocks.get_codestock_local()
 #print(codestock_local)
 
 hdata.db_connect()#由于每次连接数据库都要耗时0.0几秒，故获取历史数据时统一连接
+sdata.db_connect()#由于每次连接数据库都要耗时0.0几秒，故获取历史数据时统一连接
 
 start_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 #all_info = hdata.my2_get_all_hdata_of_stock()
@@ -164,15 +173,30 @@ for i in range(0,len(codestock_local)):
 
 
     ##############################################################################
+    #yitoujing
     today_p = ((C - REF(C, 1))/REF(C, 1)) 
-    yes_p  = ((REF(C, 1) - REF(C, 2))/REF(C, 2)) 
+    today_p = round (today_p.value, 4)
+
+    yes_p = ((REF(C, 1) - REF(C, 2))/REF(C, 2)) 
+    #yes_p = round (yes_p.value, 4)
+
     cond_1 = today_p > 0.03 and yes_p > 0.03
     cond_2 = C > MA(C, 21)
     cond_3 = MA(C, 21) > REF(MA(C, 21), 1)
     cond_4 = today_p > 0.095 and yes_p > 0.095
     if cond_1 and cond_2 and cond_3 and (cond_4 != True):
         draw_flag = True
+        #insert into database
+        dataframe_cols=['record_date','stock_code', 'open', 'close', 'high', 'low', 'volume', 'p_change']
+        # row=['2019-07-02',  '300750', 70.28,  71.04,  72.38,  69.96,  162519.0, 1.02]
+        row=[nowdate, nowcode, O, C, H, L, V, today_p]
+        # print("row=%s" % (row))
+        df=pd.DataFrame([row], columns=dataframe_cols)
+        df=df.set_index('record_date')
+        sdata.insert_perstock_hdatadate(nowcode, df)
         print("two day p > 0.03 : code:%s, name:%s" % (nowcode, nowname ))
+
+
 
 	#cross
     '''
@@ -309,5 +333,6 @@ for i in range(0,len(codestock_local)):
 plt.close('all')
 
 hdata.db_disconnect()
+sdata.db_disconnect()
 last_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 print("start_time: %s, last_time: %s" % (start_time, last_time))
