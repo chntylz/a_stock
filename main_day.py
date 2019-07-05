@@ -62,6 +62,10 @@ for i in range(0,lenth):
             print("hist_data is None: %d, %s, %s" % (i,nowcode,codestock_local[i][1]))
             continue
 
+        #fix bug: skip suspend stock, because get_bar can get data when the stock is supsend(volume < 0)
+        if hist_data.head(1)['volume'] < 0.0001 :
+            continue
+
         hist_data=hist_data.fillna(0)
         #hist_data = hist_data.set_index('date')
         #print(hist_data.head(10))

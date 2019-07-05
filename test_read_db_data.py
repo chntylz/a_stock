@@ -69,7 +69,7 @@ sdata=HData_select("usr","usr")
 #hdata.db_hdata_date_create()
 
 #print("line number: " + str(sys._getframe().f_lineno) )
-sdata.db_hdata_date_create()
+#sdata.db_hdata_date_create()
 #print("line number: " + str(sys._getframe().f_lineno) )
 ######################################################################
 
@@ -133,14 +133,14 @@ for i in range(0,len(codestock_local)):
         print(detail_info)
     
     #fix NaN bug
-    if(len(detail_info) == 0):
-    	#print('NaN: code:%s, name:%s' % (nowcode, nowname ))
+    if len(detail_info) == 0 or (detail_info is None):
+    	print('NaN: code:%s, name:%s' % (nowcode, nowname ))
     	continue
     
     #funcat call
     T(str(nowdate))
     S(nowcode)
-    # print(str(nowdate), nowcode, nowname, O, H, L, C)
+    print(str(nowdate), nowcode, nowname, O, H, L, C)
 
     #continue
     detail_info.index = detail_info.index.format(formatter=lambda x: x.strftime('%Y-%m-%d'))
@@ -312,12 +312,13 @@ for i in range(0,len(codestock_local)):
     ax.legend();
     ax2.legend();
     ax3.legend();
-    figure_name = today_date + '-' +  nowcode + '-' + nowname + '.png'
+    save_name = nowdate.strftime("%Y-%m-%d")
+    figure_name = save_name + '-' +  nowcode + '-' + nowname + '.png'
     fig.savefig(figure_name)
 
-    exec_command = "mkdir -p " + today_date
+    exec_command = "mkdir -p " + save_name
     os.system(exec_command)
-    exec_command = "mv " + today_date + '-' +  nowcode + '*' + " " + today_date
+    exec_command = "mv " + save_name + '-' +  nowcode + '*' + " " + save_name
     os.system(exec_command)
     
     plt.clf()
