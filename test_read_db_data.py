@@ -104,8 +104,8 @@ ax3 = fig.add_axes([0, 0.2, 1, 0.1])
 ax4 = fig.add_axes([0, 0,   1, 0.2])
 '''
 
-
-for i in range(0,len(codestock_local)):
+stock_len=len(codestock_local)
+for i in range(0,stock_len):
 #for i in range(0,2):
 #if (True):
     #i = 0
