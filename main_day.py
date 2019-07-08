@@ -13,7 +13,7 @@ from common import Log
 
 import sys
 import os
-
+    
 log = Log(__name__).getlog()
 log.info("I am main_day.py")
 
@@ -40,7 +40,7 @@ for i in range(0,lenth):
     #nowcode='600485'
 
     #print(hdata_day.get_all_hdata_of_stock(nowcode))
-    # print(i,nowcode,codestock_local[i][1])
+    # print("%d,%s,%s"% (i, nowcode,codestock_local[i][1]))
     #log.warning("i=%d,%s,%s\n",  i,nowcode,codestock_local[i][1])
 
     
@@ -62,6 +62,10 @@ for i in range(0,lenth):
 
         if hist_data is None:
             print("hist_data is None: %d, %s, %s" % (i,nowcode,codestock_local[i][1]))
+            continue
+
+        if(len(hist_data) == 0):
+            print("hist_data length is 0: i=%d, nowcode:%s, nowname:%s " %(i,nowcode,codestock_local[i][1]))
             continue
 
         #fix bug: skip suspend stock, because get_bar can get data when the stock is supsend(volume < 0)
