@@ -157,5 +157,25 @@ class HData_select(object):
         return df
         pass
         
+    def get_all_hdata_of_date(self, var_date):#将数据库中的数据读取并转为dataframe格式返回
+        conn = psycopg2.connect(database="usr", user=self.user, password=self.password, host="127.0.0.1",
+                                port="5432")
+        cur = conn.cursor()
+        #select * from (select * from hdata_s_table where stock_code='000922' order by record_date desc LIMIT 5) as tbl order by record_date asc;
+        sql_temp="select * from hdata_s_table where record_date="+"\'"+var_date+"\' order by p_change;"
+        cur.execute(sql_temp)
+        rows = cur.fetchall()
+
+        conn.commit()
+        conn.close()
+
+        dataframe_cols=[tuple[0] for tuple in cur.description]#列名和数据库列一致
+        df = pd.DataFrame(rows, columns=dataframe_cols)
+        index =  df["record_date"]
+        df = pd.DataFrame(rows, index=index, columns=dataframe_cols)
+        
+        return df
+        pass
+        
 
 
