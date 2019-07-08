@@ -133,14 +133,15 @@ for i in range(0,stock_len):
         print(detail_info)
     
     #fix NaN bug
-    if len(detail_info) == 0 or (detail_info is None):
+    # if len(detail_info) == 0 or (detail_info is None):
+    if len(detail_info) < 2  or (detail_info is None):
     	print('NaN: code:%s, name:%s' % (nowcode, nowname ))
     	continue
     
     #funcat call
     T(str(nowdate))
     S(nowcode)
-    print(str(nowdate), nowcode, nowname, O, H, L, C)
+    # print(str(nowdate), nowcode, nowname, O, H, L, C)
 
     #continue
     detail_info.index = detail_info.index.format(formatter=lambda x: x.strftime('%Y-%m-%d'))
