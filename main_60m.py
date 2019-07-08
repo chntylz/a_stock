@@ -20,9 +20,10 @@ hdata_60m=HData_60m("usr","usr")
 # stocks.db_stocks_create()#如果还没有表则需要创建
 #print(stocks.db_stocks_update())#根据todayall的情况更新stocks表
 
-hdata_60m.db_hdata_date_create()
+#hdata_60m.db_hdata_date_create()
 
-nowdate=datetime.datetime.now().date()
+#nowdate=datetime.datetime.now().date()
+nowdate=datetime.datetime.now()
 
 codestock_local=stocks.get_codestock_local()
 #print(codestock_local)
@@ -40,7 +41,7 @@ for i in range(0,lenth):
     #log.warning("i=%d,%s,%s\n",  i,nowcode,codestock_local[i][1])
 
     maxdate=hdata_60m.db_get_maxdate_of_stock(nowcode)
-    #print('maxdate:%s, nowdate:%s' % (maxdate, nowdate))
+    print('maxdate:%s, nowdate:%s' % (maxdate, nowdate))
     if(maxdate):
         if(maxdate>=nowdate):#maxdate小的时候说明还有最新的数据没放进去
             continue
