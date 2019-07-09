@@ -17,13 +17,63 @@ def showImageInHTML(imageTypes,savedir):
     images=[item for item in images if os.path.getsize(item)>5*1024]
     #print("%s"%(images))
     images=['pic'+item[item.rfind('/'):] for item in images]
-    print("%s"%(images))
+    # print("%s"%(images))
     newfile='%s/%s'%(savedir,'images.html')
     with open(newfile,'w') as f:
-        f.write('<div>')
+
+        f.write('<!DOCTYPE html>\n')
+        f.write('<html>\n')
+        f.write('<head>\n')
+        f.write('<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n')
+        f.write('<title>stock</title>\n')
+        f.write('<style>\n')
+        f.write('.ShaShiDi{\n')
+        f.write('width:500px;\n')
+        f.write('height:400px;\n')
+        f.write('display:flex;\n')
+        f.write('        align-items:center;\n')
+        f.write('        justify-content:center;\n')
+        f.write('}\n')
+        f.write('\n')
+        f.write('.ShaShiDi img{\n')
+        f.write('width:100%;\n')
+        f.write('height:auto;\n')
+        f.write('}\n')
+        f.write('</style>\n')
+        f.write('</head>\n')
+        f.write('<body>\n')
+        f.write('    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n')
+        f.write('\n')
+        f.write('\n')
+        f.write('\n')
+        f.write('\n')
+        f.write('\n')
+
+
         for image in images:
+            '''
+            f.write('<div class="ShaShiDi">\n')        
             f.write("<img src='%s'>\n"%image)
-        f.write('</div>')
+            f.write('</div>\n')
+            '''
+            tmp_image=image[image.rfind('/')+1:]
+            tmp_image=tmp_image[tmp_image.rfind('.')-100:-4]
+            
+            f.write('<p>\n')
+            f.write('<a href="%s"> %s </a>\n' % (image, tmp_image))
+            f.write('</p>\n')
+            
+            
+        f.write('\n')
+        f.write('\n')
+        f.write('\n')
+        f.write('\n')
+        f.write('\n')
+        f.write('\n')
+        f.write('</body>\n')
+        f.write('</html>\n')
+        f.write('\n')
+        
     print ('success,images are wrapped up in %s' % (newfile))
 
 def getAllFiles(directory):
@@ -48,9 +98,9 @@ def cur_file_dir():
 def get_today_item(today):
     
     df=sdata.my2_get_all_hdata_of_stock()
-    print("today:%s: %s" % (today, df.head(100)))
+    # print("today:%s: %s" % (today, df.head(100)))
     df = df[df.record_date==today]
-    print("%s" % (df.head(10)))
+    # print("%s" % (df.head(10)))
 
     
     
