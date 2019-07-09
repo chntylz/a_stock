@@ -135,8 +135,8 @@ for i in range(0,stock_len):
     #fix NaN bug
     # if len(detail_info) == 0 or (detail_info is None):
     if len(detail_info) < 2  or (detail_info is None):
-    	print('NaN: code:%s, name:%s' % (nowcode, nowname ))
-    	continue
+        print('NaN: code:%s, name:%s' % (nowcode, nowname ))
+        continue
     
     #funcat call
     T(str(nowdate))
@@ -194,6 +194,7 @@ for i in range(0,stock_len):
         # print("row=%s" % (row))
         df=pd.DataFrame([row], columns=dataframe_cols)
         df=df.set_index('record_date')
+        #insert to DB
         sdata.insert_perstock_hdatadate(nowcode, df)
         print("two day p > 0.03 : code:%s, name:%s" % (nowcode, nowname ))
     #############################################################################
@@ -201,7 +202,7 @@ for i in range(0,stock_len):
 
     ##############################################################################
     '''
-	#cross
+    #cross
     cond_1 = CROSS(MA(C,5), MA(C, 13))
     cond_2 = CROSS(MA(C,13), MA(C, 21))
     cond_3 = C > MA(C, 5)
@@ -217,7 +218,7 @@ for i in range(0,stock_len):
 
 
     
-	#################################################################
+    #################################################################
     '''
     # 程序交易 （K线图数据，分钟/）
     # 使用程序的判断依据来模拟MACD指标交易情况，买入、卖出
@@ -248,8 +249,8 @@ for i in range(0,stock_len):
     ################################################################
     #check need to generate png 
     if draw_flag == False:
-	    continue
-	
+        continue
+    
     ################################################################
 
     plt.title(nowcode + ': ' + nowname) 
@@ -269,9 +270,9 @@ for i in range(0,stock_len):
                                   detail_info['low'], width=0.6, colorup='r', colordown='g', alpha=0.75)
     #boll
     upperband, middleband, lowerband = talib.BBANDS(np.array(detail_info['close']),timeperiod=20, nbdevdn=2, nbdevup=2)
-    ax0.plot( upperband, label="上轨线")
-    ax0.plot( middleband, label="中轨线")
-    ax0.plot( lowerband, label="下轨线")
+    ax0.plot( upperband, label="upper")
+    ax0.plot( middleband, label="middle")
+    ax0.plot( lowerband, label="bottom")
 
     #candles
     ax.set_xticks(range(0, len(detail_info.index), 10))
@@ -281,24 +282,24 @@ for i in range(0,stock_len):
     #plt.rcParams['font.sans-serif']=['Microsoft JhengHei'] 
 
     #k-line
-    ax.plot(ma_5, label='5日均線')
-    ax.plot(ma_13, label='13日均線')
-    ax.plot(ma_21, label='21日均線')
+    ax.plot(ma_5, label='MA5')
+    ax.plot(ma_13, label='MA13')
+    ax.plot(ma_21, label='MA21')
 
     #kd
-    ax2.plot(detail_info['k'], label='K值')
-    ax2.plot(detail_info['d'], label='D值')
+    ax2.plot(detail_info['k'], label='K-Value')
+    ax2.plot(detail_info['d'], label='D-Value')
     ax2.set_xticks(range(0, len(detail_info.index), 10))
     ax2.set_xticklabels(detail_info.index[::10])
 
     #macd
-    ax3.plot(dif, color="y", label="差离值 dif")
-    ax3.plot(dea, color="b", label="讯号线 dea")
+    ax3.plot(dif, color="y", label="dif")
+    ax3.plot(dea, color="b", label="dea")
     red_hist = np.where(macd_hist > 0 , macd_hist, 0)
     green_hist = np.where(macd_hist < 0 , macd_hist, 0)
 
-    ax3.bar(detail_info.index, red_hist, label="红色MACD值", color='r')
-    ax3.bar(detail_info.index, green_hist, label="绿色MACD值", color='g')
+    ax3.bar(detail_info.index, red_hist, label="Red-MACD", color='r')
+    ax3.bar(detail_info.index, green_hist, label="Green-MACD", color='g')
 
     ax3.set_xticks(range(0, len(detail_info.index), 10))
     ax3.set_xticklabels(detail_info.index[::10])
@@ -308,19 +309,25 @@ for i in range(0,stock_len):
     mpf.volume_overlay(ax4, detail_info['open'], detail_info['close'], detail_info['volume'], colorup='r', colordown='g', width=0.5, alpha=0.8)
     ax4.set_xticks(range(0, len(detail_info.index), 10))
     ax4.set_xticklabels(detail_info.index[::10])
-    ax4.plot(ma_vol_50, label='50日均線')
+    ax4.plot(ma_vol_50, label='MA50')
 
     ax.legend();
     ax2.legend();
     ax3.legend();
     save_name = nowdate.strftime("%Y-%m-%d")
-    figure_name = save_name + '-' +  nowcode + '-' + nowname + '.png'
+    figure_name = save_name + '-' +  nowcode + '-' + nowname + \
+                    '-' + str(int(round(O.value *100, 4))) + \
+                    '-' + str(int(round(C.value *100, 4))) + \
+                    '-' + str(int(round(H.value *100, 4))) + \
+                    '-' + str(int(round(L.value *100, 4))) + \
+                    '-' + str(int(today_p * 10000)) + '.png'
     fig.savefig(figure_name)
 
     exec_command = "mkdir -p " + save_name
     os.system(exec_command)
-    exec_command = "mv " + save_name + '-' +  nowcode + '*' + " " + save_name
-    os.system(exec_command)
+    exec_command_2 = "mv " + save_name + '-' +  nowcode + '*' + " " + save_name + "/"
+    #print("%s"%(exec_command_2))
+    os.system(exec_command_2)
     
     plt.clf()
     plt.cla()
