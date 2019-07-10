@@ -80,8 +80,8 @@ def showImageInHTML(imageTypes,savedir):
         f.write('\n')
     
 	
-    shell_cmd='cp -rf ' + newfile + ' /var/www/html/'
-    os.system(shell_cmd)
+    # shell_cmd='cp -rf ' + newfile + ' /var/www/html/'
+    # os.system(shell_cmd)
 
     shell_cmd2='cp -rf ' + src_dir + ' /var/www/html/'
     os.system(shell_cmd2)
