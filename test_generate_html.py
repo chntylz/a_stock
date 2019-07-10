@@ -45,6 +45,11 @@ def showImageInHTML(imageTypes,savedir):
         f.write('height:auto;\n')
         f.write('}\n')
         f.write('</style>\n')
+        f.write('\n')
+        f.write('\n')
+        f.write('<style type="text/css">a {text-decoration: none}</style>\n')
+        f.write('\n')
+
         f.write('</head>\n')
         f.write('<body>\n')
         f.write('    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n')
