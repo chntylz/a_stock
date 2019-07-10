@@ -9,23 +9,27 @@ import  datetime
 
 sdata=HData_select("usr","usr")
 
+nowdate=datetime.datetime.now().date()
+#nowdate=nowdate-datetime.timedelta(1)
+src_dir=nowdate.strftime("%Y-%m-%d")
+
 def showImageInHTML(imageTypes,savedir):
-    files=getAllFiles(savedir+'/pic')
+    files=getAllFiles(savedir+'/' + src_dir)
     #print("file:%s" % (files))
     images=[f for f in files if f[f.rfind('.')+1:] in imageTypes]
     #print("%s"%(images))
     images=[item for item in images if os.path.getsize(item)>5*1024]
     #print("%s"%(images))
-    images=['pic'+item[item.rfind('/'):] for item in images]
+    images=[src_dir+item[item.rfind('/'):] for item in images]
     # print("%s"%(images))
-    newfile='%s/%s'%(savedir,'images.html')
+    newfile='%s/%s'%(savedir, src_dir + '/' + src_dir + '.html')
     with open(newfile,'w') as f:
 
         f.write('<!DOCTYPE html>\n')
         f.write('<html>\n')
         f.write('<head>\n')
         f.write('<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n')
-        f.write('<title>stock</title>\n')
+        f.write('<title> %s </title>\n'%(src_dir))
         f.write('<style>\n')
         f.write('.ShaShiDi{\n')
         f.write('width:500px;\n')
@@ -73,7 +77,13 @@ def showImageInHTML(imageTypes,savedir):
         f.write('</body>\n')
         f.write('</html>\n')
         f.write('\n')
-        
+    
+	
+    shell_cmd='cp -rf ' + newfile + ' /var/www/html/'
+    os.system(shell_cmd)
+
+    shell_cmd2='cp -rf ' + src_dir + ' /var/www/html/'
+    os.system(shell_cmd2)
     print ('success,images are wrapped up in %s' % (newfile))
 
 def getAllFiles(directory):

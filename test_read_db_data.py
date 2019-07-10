@@ -253,7 +253,7 @@ for i in range(0,stock_len):
     
     ################################################################
 
-    plt.title(nowcode + ': ' + nowname) 
+    plt.title(nowcode + ': ' + nowname)
     
     ax0  = fig.add_axes([0, 0.7, 1, 0.3])
     ax0.grid()
@@ -270,9 +270,9 @@ for i in range(0,stock_len):
                                   detail_info['low'], width=0.6, colorup='r', colordown='g', alpha=0.75)
     #boll
     upperband, middleband, lowerband = talib.BBANDS(np.array(detail_info['close']),timeperiod=20, nbdevdn=2, nbdevup=2)
-    ax0.plot( upperband, label="upper")
-    ax0.plot( middleband, label="middle")
-    ax0.plot( lowerband, label="bottom")
+    ax0.plot(upperband, label="upper")
+    ax0.plot(middleband, label="middle")
+    ax0.plot(lowerband, label="bottom")
 
     #candles
     ax.set_xticks(range(0, len(detail_info.index), 10))
