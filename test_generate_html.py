@@ -67,10 +67,26 @@ def showImageInHTML(imageTypes,savedir):
             f.write('</div>\n')
             '''
             tmp_image=image[image.rfind('/')+1:]
+            print('%s' % (tmp_image))
             tmp_image=tmp_image[tmp_image.rfind('.')-100:-4]
+            print('%s' % (tmp_image))
             
+            stock_code=image[11:17]
+            print('%s' % (stock_code))
+            
+            print('%s' % (stock_code[0:2]))
+            if stock_code[0:2] == '60':
+                stock_code='SH'+stock_code
+            else:
+                stock_code='SZ'+stock_code
+
+            print('%s' % (stock_code))
+            xueqiu_url='https://xueqiu.com/S/' + stock_code
+
             f.write('<p>\n')
-            f.write('<a href="%s"> %s </a>\n' % (image, tmp_image))
+            f.write('<a href="%s"> %s </a>' % (image, tmp_image))
+            f.write('---->')
+            f.write('<a href="%s">(%s) </a>\n' % (xueqiu_url , 'xueqiu:' + stock_code))
             f.write('</p>\n')
             
             
@@ -85,7 +101,7 @@ def showImageInHTML(imageTypes,savedir):
         f.write('\n')
     
 	
-    # shell_cmd='cp -rf ' + newfile + ' /var/www/html/'
+    # shell_cmd='cp -f ' + newfile + ' /var/www/html/'
     # os.system(shell_cmd)
 
     shell_cmd2='cp -rf ' + src_dir + ' /var/www/html/'
