@@ -57,10 +57,17 @@ def showImageInHTML(imageTypes,savedir):
             tmp_image=image[image.rfind('/')+1:]
             tmp_image=tmp_image[tmp_image.rfind('.')-100:-5]
             
+            '''
             if tmp_image not in ['index', 'zheli']:
                 print("%s" %(tmp_image))
                 image = tmp_image + image
-            
+            '''
+            if tmp_image in ['index', 'zheli']:
+                continue
+
+            print("%s" %(tmp_image))
+            image = tmp_image + image
+
             f.write('<p>\n')
             f.write('<a href="%s"> %s </a>\n' % (image, tmp_image))
             f.write('</p>\n')
