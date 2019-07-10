@@ -1,36 +1,29 @@
 #!/usr/bin/env python
 #coding:utf-8
 import os,sys
+import datetime
 
-import psycopg2 #使用的是PostgreSQL数据库
-import tushare as ts
-from HData_select import *
-import  datetime
-
-sdata=HData_select("usr","usr")
 
 nowdate=datetime.datetime.now().date()
-#nowdate=nowdate-datetime.timedelta(1)
+nowdate=nowdate-datetime.timedelta(1)
 src_dir=nowdate.strftime("%Y-%m-%d")
+target_html='index.html'
 
 def showImageInHTML(imageTypes,savedir):
-    files=getAllFiles(savedir+'/' + src_dir)
-    #print("file:%s" % (files))
+    files=getAllFiles(savedir)
+    print("p0 :%s" % (files))
     images=[f for f in files if f[f.rfind('.')+1:] in imageTypes]
-    #print("%s"%(images))
-    images=[item for item in images if os.path.getsize(item)>5*1024]
-    #print("%s"%(images))
-    #images=[src_dir+item[item.rfind('/'):] for item in images]
-    images=[item[item.rfind('/')+1:] for item in images]
-    print("%s"%(images))
-    newfile='%s/%s'%(savedir, src_dir + '/' + src_dir + '.html')
+    print("p1 :%s"%(images))
+    images=[item[item.rfind('/'):] for item in images]
+    print("p3 :%s"%(images))
+    newfile='%s/%s'%(savedir, target_html)
     with open(newfile,'w') as f:
 
         f.write('<!DOCTYPE html>\n')
         f.write('<html>\n')
         f.write('<head>\n')
         f.write('<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n')
-        f.write('<title> %s </title>\n'%(src_dir))
+        f.write('<title> %s </title>\n'%(target_html))
         f.write('<style>\n')
         f.write('.ShaShiDi{\n')
         f.write('width:500px;\n')
@@ -62,7 +55,11 @@ def showImageInHTML(imageTypes,savedir):
             f.write('</div>\n')
             '''
             tmp_image=image[image.rfind('/')+1:]
-            tmp_image=tmp_image[tmp_image.rfind('.')-100:-4]
+            tmp_image=tmp_image[tmp_image.rfind('.')-100:-5]
+            
+            if tmp_image not in ['index', 'zheli']:
+                print("%s" %(tmp_image))
+                image = tmp_image + image
             
             f.write('<p>\n')
             f.write('<a href="%s"> %s </a>\n' % (image, tmp_image))
@@ -79,12 +76,12 @@ def showImageInHTML(imageTypes,savedir):
         f.write('</html>\n')
         f.write('\n')
     
-	
-    shell_cmd='cp -rf ' + newfile + ' /var/www/html/'
-    os.system(shell_cmd)
+    
+    #shell_cmd='cp -rf ' + newfile + ' /var/www/html/'
+    #os.system(shell_cmd)
 
-    shell_cmd2='cp -rf ' + src_dir + ' /var/www/html/'
-    os.system(shell_cmd2)
+    #shell_cmd2='cp -rf ' + src_dir + ' /var/www/html/'
+    #os.system(shell_cmd2)
     print ('success,images are wrapped up in %s' % (newfile))
 
 def getAllFiles(directory):
@@ -106,25 +103,7 @@ def cur_file_dir():
     elif os.path.isfile(path):
         return os.path.dirname(path)
 
-def get_today_item(today):
-    
-    df=sdata.my2_get_all_hdata_of_stock()
-    # print("today:%s: %s" % (today, df.head(100)))
-    df = df[df.record_date==today]
-    # print("%s" % (df.head(10)))
-
-    
-    
-    return df
-
         
 if __name__ == '__main__':
-    nowdate=datetime.datetime.now().date()
-    nowdate=nowdate-datetime.timedelta(1)
-    
-    today = nowdate.strftime("%Y-%m-%d")
-    df=get_today_item(today)
-
-
     savedir=cur_file_dir()#获取当前.py脚本文件的文件路径
-    showImageInHTML(('jpg','png','gif'), savedir)#浏览所有jpg,png,gif文件
+    showImageInHTML(('html'), savedir)#浏览所有jpg,png,gif文件
