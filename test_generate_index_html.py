@@ -5,7 +5,7 @@ import datetime
 
 
 nowdate=datetime.datetime.now().date()
-nowdate=nowdate-datetime.timedelta(1)
+#nowdate=nowdate-datetime.timedelta(1)
 src_dir=nowdate.strftime("%Y-%m-%d")
 target_html='index.html'
 
