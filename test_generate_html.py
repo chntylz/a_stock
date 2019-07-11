@@ -10,7 +10,7 @@ import  datetime
 sdata=HData_select("usr","usr")
 
 nowdate=datetime.datetime.now().date()
-nowdate=nowdate-datetime.timedelta(1)
+#nowdate=nowdate-datetime.timedelta(1)
 src_dir=nowdate.strftime("%Y-%m-%d")
 
 def showImageInHTML(imageTypes,savedir):
