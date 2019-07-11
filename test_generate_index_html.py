@@ -14,7 +14,9 @@ def showImageInHTML(imageTypes,savedir):
     print("p0 :%s" % (files))
     images=[f for f in files if f[f.rfind('.')+1:] in imageTypes]
     print("p1 :%s"%(images))
-    images=[item[item.rfind('/'):] for item in images]
+
+    #  '/var/www/html/2019-07-10/2019-07-10.html' -> '2019-07-10.html'
+    images=[item[item.rfind('/')+1:] for item in images]
     print("p3 :%s"%(images))
     newfile='%s/%s'%(savedir, target_html)
     with open(newfile,'w') as f:
@@ -60,8 +62,9 @@ def showImageInHTML(imageTypes,savedir):
             f.write("<img src='%s'>\n"%image)
             f.write('</div>\n')
             '''
-            tmp_image=image[image.rfind('/')+1:]
-            tmp_image=tmp_image[tmp_image.rfind('.')-100:-5]
+
+            # '2019-07-10.html' -> '2019-07-10' 
+            tmp_image=image[0:image.rfind('.')]
             
             '''
             if tmp_image not in ['index', 'zheli']:
@@ -72,7 +75,8 @@ def showImageInHTML(imageTypes,savedir):
                 continue
 
             print("%s" % (tmp_image))
-            image = tmp_image + image
+            # href address 
+            image = tmp_image + '/' + image
 
             f.write('<p>\n')
             f.write('<a href="%s"> %s </a>\n' % (image, tmp_image))
