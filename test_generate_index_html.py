@@ -24,35 +24,70 @@ def showImageInHTML(imageTypes,savedir):
         f.write('<head>\n')
         f.write('<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n')
         f.write('<title> %s </title>\n'%(target_html))
-        f.write('<style>\n')
-        f.write('.ShaShiDi{\n')
-        f.write('width:500px;\n')
-        f.write('height:400px;\n')
-        f.write('display:flex;\n')
-        f.write('        align-items:center;\n')
-        f.write('        justify-content:center;\n')
-        f.write('}\n')
         f.write('\n')
-        f.write('.ShaShiDi img{\n')
-        f.write('width:100%;\n')
-        f.write('height:auto;\n')
+        f.write('\n')
+        f.write('<style type="text/css">a {text-decoration: none}\n')
+        f.write('\n')
+        f.write('\n')
+
+        f.write('/* gridtable */\n')
+        f.write('table.gridtable {\n')
+        #f.write('    font-family: verdana,arial,sans-serif;\n')
+        f.write('    font-size:28px;\n')
+        # f.write('    color:#333333;\n')
+        f.write('    color:#F00;\n')
+        f.write('    border-width: 1px;\n')
+        f.write('    border-color: #666666;\n')
+        f.write('    border-collapse: collapse;\n')
         f.write('}\n')
+        f.write('table.gridtable th {\n')
+        f.write('    border-width: 1px;\n')
+        f.write('    padding: 8px;\n')
+        f.write('    border-style: solid;\n')
+        f.write('    border-color: #666666;\n')
+        f.write('    background-color: #dedede;\n')
+        f.write('}\n')
+        f.write('table.gridtable td {\n')
+        f.write('    border-width: 1px;\n')
+        f.write('    padding: 8px;\n')
+        f.write('    border-style: solid;\n')
+        f.write('    border-color: #666666;\n')
+        f.write('    background-color: #ffffff;\n')
+        f.write('}\n')
+        f.write('/* /gridtable */\n')
+            
+        f.write('\n')
+        f.write('\n')
         f.write('</style>\n')
-        f.write('\n')
-        f.write('\n')
-        f.write('<style type="text/css">a {text-decoration: none}</style>\n')
-        f.write('\n')
+    
+    
+
 
 
         f.write('</head>\n')
+        f.write('\n')
+        f.write('\n')
         f.write('<body>\n')
-        f.write('    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n')
-        f.write('\n')
-        f.write('\n')
-        f.write('\n')
-        f.write('\n')
-        f.write('\n')
 
+
+        f.write('<table class="gridtable">\n')
+        
+        f.write('    <tr>\n')
+        f.write('        <th>别人贪婪时我恐惧</th>\n')
+        f.write('        <th>别人恐惧时我贪婪</th>\n')
+        f.write('        <th>股市有风险</th>\n')
+        f.write('        <th>入市需谨慎</th>\n')
+        f.write('    </tr>\n')
+        
+
+
+        i=0
+        column=5
+        length=len(images)
+        mod_number=length % column
+        for add in range(0, column - mod_number):
+            # images.append('')
+            images.insert(mod_number, '')
 
         for image in images:
             # '2019-07-10.html' -> '2019-07-10' 
@@ -60,23 +95,41 @@ def showImageInHTML(imageTypes,savedir):
             print("%s" % (tmp_image))
             image = tmp_image + '/' + image
 
+
+            if i % column == 0:
+                f.write('    <tr>\n')
+
+            f.write('        <td>\n')
+            f.write('            <a href="%s"> %s </a>\n' % (image, tmp_image))
+            f.write('        </td>\n')
+            
+            i=i+1
+
+            if i % column  == 0:
+                f.write('    </tr>\n')
+
+            f.write('\n')
+
+            '''
             f.write('<p>\n')
             f.write('<a href="%s"> %s </a>\n' % (image, tmp_image))
             f.write('</p>\n')
+            '''            
+
+
+
+
             
-            
-        f.write('\n')
-        f.write('\n')
-        f.write('\n')
-        f.write('\n')
-        f.write('\n')
-        f.write('\n')
+        f.write('</table>\n')
         f.write('</body>\n')
+        f.write('\n')
+        f.write('\n')
         f.write('</html>\n')
         f.write('\n')
     
     
     print ('success,images are wrapped up in %s' % (newfile))
+
 
 def getAllFiles(directory):
     files=[]
