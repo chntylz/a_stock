@@ -11,11 +11,9 @@ target_html='index.html'
 
 def showImageInHTML(imageTypes,savedir):
     files=getAllFiles(savedir)
-    print("p0 :%s" % (files))
+    # print("p0 :%s" % (files))
     images=[f for f in files if f[f.rfind('.')+1:] in imageTypes]
     print("p1 :%s"%(images))
-
-    #  '/var/www/html/2019-07-10/2019-07-10.html' -> '2019-07-10.html'
     images=[item[item.rfind('/')+1:] for item in images]
     print("p3 :%s"%(images))
     newfile='%s/%s'%(savedir, target_html)
@@ -57,25 +55,9 @@ def showImageInHTML(imageTypes,savedir):
 
 
         for image in images:
-            '''
-            f.write('<div class="ShaShiDi">\n')        
-            f.write("<img src='%s'>\n"%image)
-            f.write('</div>\n')
-            '''
-
             # '2019-07-10.html' -> '2019-07-10' 
             tmp_image=image[0:image.rfind('.')]
-            
-            '''
-            if tmp_image not in ['index', 'zheli']:
-                print("%s" %(tmp_image))
-                image = tmp_image + image
-            '''
-            if tmp_image in ['index', 'zheli']:
-                continue
-
             print("%s" % (tmp_image))
-            # href address 
             image = tmp_image + '/' + image
 
             f.write('<p>\n')
@@ -94,11 +76,6 @@ def showImageInHTML(imageTypes,savedir):
         f.write('\n')
     
     
-    #shell_cmd='cp -rf ' + newfile + ' /var/www/html/'
-    #os.system(shell_cmd)
-
-    #shell_cmd2='cp -rf ' + src_dir + ' /var/www/html/'
-    #os.system(shell_cmd2)
     print ('success,images are wrapped up in %s' % (newfile))
 
 def getAllFiles(directory):
@@ -106,8 +83,11 @@ def getAllFiles(directory):
     for dirpath, dirnames,filenames in os.walk(directory):
         if filenames!=[]:
             for file in filenames:
+                if 'index' in file or 'zheli' in file:
+                    continue
                 files.append(dirpath+'/'+file)
-    files.sort(key=len)
+    # files.sort(key=len)
+    files=sorted(files, reverse=True)
     return files
 
 #获取脚本文件的当前路径
