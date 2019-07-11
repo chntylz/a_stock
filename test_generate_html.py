@@ -10,7 +10,7 @@ import  datetime
 sdata=HData_select("usr","usr")
 
 nowdate=datetime.datetime.now().date()
-#nowdate=nowdate-datetime.timedelta(1)
+nowdate=nowdate-datetime.timedelta(1)
 src_dir=nowdate.strftime("%Y-%m-%d")
 
 def showImageInHTML(imageTypes,savedir):
@@ -31,20 +31,6 @@ def showImageInHTML(imageTypes,savedir):
         f.write('<head>\n')
         f.write('<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n')
         f.write('<title> %s </title>\n'%(src_dir))
-        f.write('<style>\n')
-        f.write('.ShaShiDi{\n')
-        f.write('width:500px;\n')
-        f.write('height:400px;\n')
-        f.write('display:flex;\n')
-        f.write('        align-items:center;\n')
-        f.write('        justify-content:center;\n')
-        f.write('}\n')
-        f.write('\n')
-        f.write('.ShaShiDi img{\n')
-        f.write('width:100%;\n')
-        f.write('height:auto;\n')
-        f.write('}\n')
-        f.write('</style>\n')
         f.write('\n')
         f.write('\n')
         f.write('<style type="text/css">a {text-decoration: none}</style>\n')
@@ -52,7 +38,6 @@ def showImageInHTML(imageTypes,savedir):
 
         f.write('</head>\n')
         f.write('<body>\n')
-        f.write('    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n')
         f.write('\n')
         f.write('\n')
         f.write('\n')
@@ -61,11 +46,6 @@ def showImageInHTML(imageTypes,savedir):
 
 
         for image in images:
-            '''
-            f.write('<div class="ShaShiDi">\n')        
-            f.write("<img src='%s'>\n"%image)
-            f.write('</div>\n')
-            '''
 
             #'2019-07-09-600095-哈高科-873-960-960-873-997.png' 
             tmp_image=image[0:image.rfind('.')]
