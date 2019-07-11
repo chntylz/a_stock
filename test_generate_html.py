@@ -84,9 +84,9 @@ def showImageInHTML(imageTypes,savedir):
             xueqiu_url='https://xueqiu.com/S/' + stock_code
 
             f.write('<p>\n')
-            f.write('<a href="%s"> %s </a>' % (image, tmp_image))
+            f.write('<a href="%s" target="_blank"> %s </a>' % (image, tmp_image))
             f.write('---->')
-            f.write('<a href="%s">(%s) </a>\n' % (xueqiu_url , 'xueqiu:' + stock_code))
+            f.write('<a href="%s" target="_blank">(%s) </a>\n' % (xueqiu_url , 'xueqiu:' + stock_code))
             f.write('</p>\n')
             
             

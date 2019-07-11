@@ -101,7 +101,7 @@ def showImageInHTML(imageTypes,savedir):
                 f.write('    <tr>\n')
 
             f.write('        <td>\n')
-            f.write('            <a href="%s"> %s </a>\n' % (image, tmp_image))
+            f.write('            <a href="%s"  target="_blank"> %s </a>\n' % (image, tmp_image))
             f.write('        </td>\n')
             
             i=i+1
@@ -110,16 +110,6 @@ def showImageInHTML(imageTypes,savedir):
                 f.write('    </tr>\n')
 
             f.write('\n')
-
-            '''
-            f.write('<p>\n')
-            f.write('<a href="%s"> %s </a>\n' % (image, tmp_image))
-            f.write('</p>\n')
-            '''            
-
-
-
-
             
         f.write('</table>\n')
         f.write('</body>\n')
