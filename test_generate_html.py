@@ -66,9 +66,9 @@ def showImageInHTML(imageTypes,savedir):
             f.write("<img src='%s'>\n"%image)
             f.write('</div>\n')
             '''
-            tmp_image=image[image.rfind('/')+1:]
-            print('%s' % (tmp_image))
-            tmp_image=tmp_image[tmp_image.rfind('.')-100:-4]
+
+            #'2019-07-09-600095-哈高科-873-960-960-873-997.png' 
+            tmp_image=image[0:image.rfind('.')]
             print('%s' % (tmp_image))
             
             stock_code=image[11:17]
@@ -101,9 +101,6 @@ def showImageInHTML(imageTypes,savedir):
         f.write('\n')
     
 	
-    # shell_cmd='cp -f ' + newfile + ' /var/www/html/'
-    # os.system(shell_cmd)
-
     shell_cmd2='cp -rf ' + src_dir + ' /var/www/html/'
     os.system(shell_cmd2)
     print ('success,images are wrapped up in %s' % (newfile))
