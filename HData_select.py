@@ -163,6 +163,7 @@ class HData_select(object):
         cur = conn.cursor()
         # print (" my2_get_continuous_hdata_of_stock 01")
         #select * from (select * from hdata_s_table where stock_code='000922' order by record_date desc LIMIT 5) as tbl order by record_date asc;
+        #select * from (select stock_code, count(*) as cnt from hdata_s_table where record_date between  '2019-07-01'  and '2019-07-02' group by stock_code) b where cnt > 1;
         sql_temp="select * from (select stock_code, count(*) as cnt from hdata_s_table where record_date between " + "\'" + yesterday + "\'  and  " + "\'" + today + "\'  group by stock_code) b where cnt > 1;"
 
         cur.execute(sql_temp)
