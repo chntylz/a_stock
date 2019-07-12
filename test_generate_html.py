@@ -5,11 +5,14 @@ import os,sys
 import psycopg2 #使用的是PostgreSQL数据库
 import tushare as ts
 from HData_select import *
+from HData_day import *
 import  datetime
 
+hdata=HData_day("usr","usr")
 sdata=HData_select("usr","usr")
 
 nowdate=datetime.datetime.now().date()
+#test
 #nowdate=nowdate-datetime.timedelta(1)
 lastdate=nowdate-datetime.timedelta(1)
 
@@ -30,9 +33,15 @@ def showImageInHTML(imageTypes,savedir):
     newfile='%s/%s'%(savedir, curr_day + '/' + curr_day + '.html')
     
     #get continuous stock_code
+    last_day = get_valid_last_day(nowdate)
     conti_df = get_continuous_item(last_day, curr_day)
     conti_list = list(conti_df['stock_code'])
     print("last_day:%s, curr_day:%s conti_list:%s" % (last_day, curr_day, conti_list))
+    
+    if os.path.exists(savedir + '/' + curr_day ) == False:
+        print("%s not exist!!! return" % (savedir + '/' + curr_day ))
+        return
+    
     with open(newfile,'w') as f:
 
         f.write('<!DOCTYPE html>\n')
@@ -117,7 +126,6 @@ def cur_file_dir():
         return os.path.dirname(path)
 
 def get_today_item(today):
-    
     df=sdata.my2_get_all_hdata_of_stock()
     # print("today:%s: %s" % (today, df.head(100)))
     df = df[df.record_date==today]
@@ -131,7 +139,31 @@ def get_continuous_item(today, yesterday):
     print("%s" % (df.head(10)))
     return df
 
-        
+def get_valid_last_day(nowdate):
+    poll_flag = True
+    i = 1
+    item_number = 7
+    #test
+    #nowdate=nowdate-datetime.timedelta(1)
+    stopdate=nowdate-datetime.timedelta(item_number) #get 7 item from hdata_day(db)
+    stop_day=stopdate.strftime("%Y-%m-%d")
+    curr_day=nowdate.strftime("%Y-%m-%d")
+    start_day=curr_day
+    last_day=curr_day
+    df=hdata.my2_get_valid_last_day_hdata_of_stock(stop_day, curr_day, item_number)
+    while poll_flag:
+        lastdate=nowdate-datetime.timedelta(i)
+        i = i+1        
+        last_day=lastdate.strftime("%Y-%m-%d")
+        list_df = list(df['record_date'].apply(lambda x: str(x)))
+        print("list_df:%s"%(list_df))
+        if last_day in list_df:
+            poll_flag = False;
+            break
+    print("last_day:%s" % (last_day))
+    return last_day
+    
+    
 if __name__ == '__main__':
     '''
     nowdate=datetime.datetime.now().date()
@@ -142,6 +174,9 @@ if __name__ == '__main__':
     today_df=get_today_item(today)
     #continuous_df = get_continuous_item(yesterday, today)
     continuous_df = get_continuous_item('2019-07-08', '2019-07-09')
+    
+    last_day = get_valid_last_day(nowdate)
+    print('last_day:%s' %  (last_day))
     '''
 
     savedir=cur_file_dir()#获取当前.py脚本文件的文件路径
