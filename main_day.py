@@ -50,7 +50,7 @@ for i in range(0,lenth):
         if(maxdate>=nowdate):#maxdate小的时候说明还有最新的数据没放进去
             continue
         #hist_data=ts.get_k_data(nowcode, str(maxdate+datetime.timedelta(1)),str(nowdate), 'D', 'hfq', False, 3, 0.001)
-        hist_data=ts.bar(nowcode, conn=cons, freq='D', start_date=str(maxdate+datetime.timedelta(1)), end_date=str(nowdate))
+        hist_data=ts.bar(nowcode, conn=cons, freq='D', adj='qfq', start_date=str(maxdate+datetime.timedelta(1)), end_date=str(nowdate))
         '''
         if(len(hist_data) == 0):
             #print("data update is null: i=%d, nowcode:%s, nowname:%s " %(i,nowcode,codestock_local[i][1]))
@@ -82,7 +82,7 @@ for i in range(0,lenth):
         #hist_data = ts.get_k_data(nowcode, '2019-06-11', '2019-06-13', '30', 'qfq', False, 3, 0.001)
         #hist_data = ts.get_k_data(nowcode, '2018-06-01', str(nowdate), 'D', 'qfq', False, 3, 0.001)
         #hist_data = ts.get_k_data(nowcode, '2018-06-01', str(nowdate), 'D', 'qfq', False, 3, 0.001)
-        hist_data=ts.bar(nowcode, conn=cons, freq='D',  start_date='2018-06-01', end_date=str(nowdate))
+        hist_data=ts.bar(nowcode, conn=cons, freq='D', adj='qfq', start_date='2018-06-01', end_date=str(nowdate))
         '''
         if(len(hist_data) == 0):
             print("data create is null: i=%d, nowcode:%s, nowname:%s " %(i,nowcode,codestock_local[i][1]))
