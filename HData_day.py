@@ -109,13 +109,13 @@ class HData_day(object):
         return df
         pass
         
-    def get_limit_hdata_of_stock(self,stock_code,limit_number):#将数据库中的数据读取并转为dataframe格式返回
+    def get_limit_hdata_of_stock(self,stock_code,end_day, limit_number):#将数据库中的数据读取并转为dataframe格式返回
         conn = psycopg2.connect(database="usr", user=self.user, password=self.password, host="127.0.0.1",
                                 port="5432")
         cur = conn.cursor()
 
         #sql_temp="select * from (select * from hdata_d_table where stock_code='000922' order by record_date desc LIMIT 5) as tbl order by record_date asc;"
-        sql_temp="select * from (select * from hdata_d_table where stock_code="+"\'"+stock_code+"\' order by record_date desc LIMIT "+"\'"+str(limit_number)+"\' ) as tbl order by record_date asc;"
+        sql_temp="select * from (select * from hdata_d_table where stock_code="+"\'"+stock_code+"\'  and record_date <= "+"\'"+ end_day +"\'  order by record_date desc LIMIT "+"\'"+str(limit_number)+"\' ) as tbl order by record_date asc;"
         #sql_temp="select * from hdata_d_table where stock_code="+"\'"+stock_code+"\';"
         cur.execute(sql_temp)
         rows = cur.fetchall()
