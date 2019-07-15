@@ -158,13 +158,15 @@ for i in range(0,stock_len):
     detail_info['k'], detail_info['d'] = talib.STOCH(detail_info['high'], detail_info['low'], detail_info['close'])
     detail_info['k'].fillna(value=0, inplace=True)
     detail_info['d'].fillna(value=0, inplace=True)
-    
+    k_value = detail_info['k']
+    d_value = detail_info['d'] 
+
     #ma_vol
     ma_vol_50 = talib.MA(np.array(detail_info['volume'], dtype=float), 50)
 
-     # 调用talib计算MACD指标
-    detail_info['MACD'],detail_info['MACDsignal'],detail_info['MACDhist'] = talib.MACD(np.array(detail_info['close']),
-                                        fastperiod=6, slowperiod=12, signalperiod=9)   
+    # 调用talib计算MACD指标
+    # detail_info['MACD'],detail_info['MACDsignal'],detail_info['MACDhist'] = talib.MACD(np.array(detail_info['close']),
+    #                                    fastperiod=6, slowperiod=12, signalperiod=9)   
 
     # dif: 12， 与26日的差别
     # dea:dif的9日以移动平均线
