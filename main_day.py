@@ -22,7 +22,7 @@ hdata_day=HData_day("usr","usr")
 
 # stocks.db_stocks_create()#如果还没有表则需要创建
 #print(stocks.db_stocks_update())#根据todayall的情况更新stocks表
-hdata_day.db_hdata_date_create()
+#hdata_day.db_hdata_date_create()
 
 nowdate=datetime.datetime.now().date()
 
