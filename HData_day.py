@@ -87,6 +87,51 @@ class HData_day(object):
         #print(stock_code+" insert_perstock_hdatadate finish")
 
 
+    def insert_allstock_hdatadate(self,stock_code,data):#插入一支股票的所有历史数据到数据库#如果有code和index相同的不重复插入
+
+        #data format: record_date , stock_code , open , close , high , low  , volume ,  amount  , p_change 
+        t1=clock()
+
+        #print(stock_code+" insert_perstock_hdatadate begin")
+        if data is None:
+            print("None")
+        else:
+            length = len(data)
+            sql_cmd = ""
+            each_num = 1000
+            for i in range(0,length):
+                # print (i)
+
+                str_temp=""
+                #str_temp+="\'"+stock_code+"\'"+","
+                #str_temp+="\'"+data.index[i]+"\'"
+                str_temp+="\'"+data.index[i].strftime("%Y-%m-%d")+"\'"
+
+                for j in range(0,data.shape[1]):
+                    str_temp+=","+"\'"+str(data.iloc[i,j])+"\'"
+
+                sql_cmd= sql_cmd + "("+str_temp+")"
+                if i % each_num == 0 or i == (length -1):
+                    pass
+                else:
+                    sql_cmd = sql_cmd+","
+
+                if i % each_num == 0:
+                    #print(sql_cmd)
+                    self.cur.execute("insert into hdata_d_table (record_date , stock_code , open , close , high , low  , volume ,  amount  , p_change ) values "+sql_cmd+";")
+                    self.conn.commit()
+                    sql_cmd = ""
+
+
+            #print(sql_cmd)
+            self.cur.execute("insert into hdata_d_table (record_date , stock_code , open , close , high , low  , volume ,  amount  , p_change ) values "+sql_cmd+";")
+            self.conn.commit()
+
+        #print(clock()-t1)
+
+        #print(stock_code+" insert_perstock_hdatadate finish")
+
+
     def get_all_hdata_of_stock(self,stock_code):#将数据库中的数据读取并转为dataframe格式返回
         conn = psycopg2.connect(database="usr", user=self.user, password=self.password, host="127.0.0.1",
                                 port="5432")
