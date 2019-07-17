@@ -134,8 +134,8 @@ for i in range(0,stock_len):
     
     #fix NaN bug
     # if len(detail_info) == 0 or (detail_info is None):
-    if len(detail_info) < 2  or (detail_info is None):
-        print('NaN: code:%s, name:%s' % (nowcode, nowname ))
+    if len(detail_info) < 3  or (detail_info is None):
+        # print('NaN: code:%s, name:%s' % (nowcode, nowname ))
         continue
     
     #funcat call
