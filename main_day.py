@@ -21,7 +21,10 @@ stocks=Stocks("usr","usr")
 hdata_day=HData_day("usr","usr")
 
 # stocks.db_stocks_create()#如果还没有表则需要创建
-#print(stocks.db_stocks_update())#根据todayall的情况更新stocks表
+print(stocks.db_stocks_update())#根据todayall的情况更新stocks表
+today_all = stocks.todayall
+print(today_all)
+
 #hdata_day.db_hdata_date_create()
 
 nowdate=datetime.datetime.now().date()
@@ -87,7 +90,8 @@ for i in range(0,length):
             data_flag = False
 
         '''
-        today_data=ts.get_today_all()
+        #today_data=ts.get_today_all()
+        today_data=today_all
         today_data=today_data.drop_duplicates('code')
         today_data.head(1)
         del today_data['name']
@@ -99,7 +103,7 @@ for i in range(0,length):
         del today_data['turnoverratio']
         today_data.head(1)
         # curr_day=datetime.datetime.now().strftime("%Y-%m-%d")
-        curr_day=datetime.datetime.now()
+        curr_day=datetime.datetime.now().date()
         today_data['record_date']=curr_day
         cols=['record_date', 'code', 'open', 'trade', 'high', 'low', 'volume', 'amount', 'changepercent']
         today_data=today_data.ix[:,cols]
