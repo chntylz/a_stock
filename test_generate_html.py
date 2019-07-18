@@ -60,6 +60,34 @@ def showImageInHTML(imageTypes,savedir):
         f.write('\n')
         f.write('\n')
         f.write('\n')
+        f.write('<p> 日期 %s </p>\n' %(curr_day))
+
+        df = get_today_item(curr_day)
+
+        # 找出上涨的股票
+        df_up = df[df['p_change'] > 0.00]
+        # 走平股数
+        df_even = df[df['p_change'] == 0.00]
+        # 找出下跌的股票
+        df_down = df[df['p_change'] < 0.00]
+
+        # 找出涨停的股票
+        limit_up = df[df['p_change'] >= 9.70]
+        limit_down = df[df['p_change'] <= -9.70]
+
+        s_debug= ('<p> A股上涨个数： %d,  A股下跌个数： %d,  A股走平个数:  %d</p>' % (df_up.shape[0], df_down.shape[0], df_even.shape[0]))
+        print(s_debug)
+        f.write('%s\n'%(s_debug))
+
+        s_debug=('<p> 涨停数量：%d 个</p>' % (limit_up.shape[0]))
+        print(s_debug)
+        f.write('%s\n'%(s_debug))
+
+        s_debug=('<p> 跌停数量：%d 个</p>' % (limit_down.shape[0]))
+        print(s_debug)
+        f.write('%s\n'%(s_debug))
+
+        f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
         f.write('\n')
 
 
@@ -97,6 +125,7 @@ def showImageInHTML(imageTypes,savedir):
         f.write('\n')
         f.write('\n')
         f.write('\n')
+        f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
         f.write('</body>\n')
         f.write('</html>\n')
         f.write('\n')
@@ -126,11 +155,8 @@ def cur_file_dir():
         return os.path.dirname(path)
 
 def get_today_item(today):
-    df=sdata.my2_get_all_hdata_of_stock()
-    # print("today:%s: %s" % (today, df.head(100)))
-    df = df[df.record_date==today]
-    # print("%s" % (df.head(10)))
-    
+    df=hdata.get_day_hdata_of_stock(today)
+    # print(len(df))
     return df
 
 
