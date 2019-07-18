@@ -325,9 +325,10 @@ for i in range(0,stock_len):
                     '-' + str(int(today_p * 10000)) + '.png'
     fig.savefig(figure_name)
 
+    save_dir = save_name
     exec_command = "mkdir -p " + save_name
     os.system(exec_command)
-    exec_command_2 = "mv " + save_name + '-' +  nowcode + '*' + " " + save_name + "/"
+    exec_command_2 = "mv " + save_name + '-' +  nowcode + '*' + " " + save_dir + "/"
     #print("%s"%(exec_command_2))
     os.system(exec_command_2)
     
