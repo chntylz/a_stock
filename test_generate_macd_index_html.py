@@ -7,7 +7,7 @@ import datetime
 nowdate=datetime.datetime.now().date()
 #nowdate=nowdate-datetime.timedelta(1)
 src_dir=nowdate.strftime("%Y-%m-%d")
-target_html='index.html'
+target_html='macd-index.html'
 
 def showImageInHTML(imageTypes,savedir):
     files=getAllFiles(savedir)
@@ -71,8 +71,6 @@ def showImageInHTML(imageTypes,savedir):
 
 
         f.write('<h2  align="center" style="color:blue ; font-size:34px">别人贪婪时我恐惧 别人恐惧时我贪婪</h2>\n')
-
-
         f.write('<table class="gridtable">\n')
         
         #f.write('    <tr>\n')
@@ -112,16 +110,7 @@ def showImageInHTML(imageTypes,savedir):
                 f.write('    </tr>\n')
 
             f.write('\n')
-
-
-
-        f.write('<h2  align="left" style="color:blue ; font-size:34px">\n')
-        f.write('<td>\n')
-        f.write('     <a href="macd-index.html"  target="_blank">macd strategy </a>\n')
-        f.write('</td>\n')
-        f.write('</h2>\n')
-
-
+            
         f.write('</table>\n')
         f.write('</body>\n')
         f.write('\n')
@@ -138,9 +127,8 @@ def getAllFiles(directory):
     for dirpath, dirnames,filenames in os.walk(directory):
         if filenames!=[]:
             for file in filenames:
-                if 'index' in file or 'zheli' in file or 'macd' in file:
-                    continue
-                files.append(dirpath+'/'+file)
+                if 'macd' in file:
+                    files.append(dirpath+'/'+file)
     # files.sort(key=len)
     files=sorted(files, reverse=True)
     return files
