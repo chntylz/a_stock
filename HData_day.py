@@ -118,14 +118,15 @@ class HData_day(object):
 
                 if i % each_num == 0:
                     #print(sql_cmd)
-                    self.cur.execute("insert into hdata_d_table (record_date , stock_code , open , close , high , low  , volume ,  amount  , p_change ) values "+sql_cmd+";")
-                    self.conn.commit()
-                    sql_cmd = ""
-
+                    if(sql_cmd != ""):
+                        self.cur.execute("insert into hdata_d_table (record_date , stock_code , open , close , high , low  , volume ,  amount  , p_change ) values "+sql_cmd+";")
+                        self.conn.commit()
+                        sql_cmd = ""
 
             #print(sql_cmd)
-            self.cur.execute("insert into hdata_d_table (record_date , stock_code , open , close , high , low  , volume ,  amount  , p_change ) values "+sql_cmd+";")
-            self.conn.commit()
+            if(sql_cmd != ""):
+                self.cur.execute("insert into hdata_d_table (record_date , stock_code , open , close , high , low  , volume ,  amount  , p_change ) values "+sql_cmd+";")
+                self.conn.commit()
 
         #print(clock()-t1)
 

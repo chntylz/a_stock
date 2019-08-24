@@ -120,7 +120,9 @@ for i in range(0,length):
         #hist_data = ts.get_k_data(nowcode, '2019-06-11', '2019-06-13', '30', 'qfq', False, 3, 0.001)
         #hist_data = ts.get_k_data(nowcode, '2018-06-01', str(nowdate), 'D', 'qfq', False, 3, 0.001)
         #hist_data = ts.get_k_data(nowcode, '2018-06-01', str(nowdate), 'D', 'qfq', False, 3, 0.001)
+        
         hist_data=ts.bar(nowcode, conn=cons, freq='D', adj='qfq', start_date='2018-06-01', end_date=str(nowdate))
+        #hist_data=ts.bar(nowcode, conn=cons, freq='D', adj='qfq', start_date='2019-08-18', end_date=str(nowdate))
        
         if hist_data is None:
             # print("hist_data is None: %d, %s, %s" % (i,nowcode,codestock_local[i][1]))
