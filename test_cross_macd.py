@@ -65,9 +65,8 @@ if len(argv) > 2:
     print(USAGE)  # 如果传入的参数不足，输出正确用法
     exit(1) # 异常退出(下面的代码将不会被执行)
 
-script_name, one = argv  # 将传入的参数赋值进行使用
-
-print("%s, %d"%(script_name, int(one)))
+script_name, para1 = argv  # 将传入的参数赋值进行使用
+print("%s, %d"%(script_name, int(para1)))
 
 
 
@@ -90,7 +89,7 @@ sdata=HData_select("usr","usr")
 ######################################################################
 
 nowdate=datetime.datetime.now().date()
-nowdate=nowdate-datetime.timedelta(int(one))
+nowdate=nowdate-datetime.timedelta(int(para1))
 print("%s"%(nowdate.strftime("%Y-%m-%d")))
 
 codestock_local=stocks.get_codestock_local()

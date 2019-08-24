@@ -11,13 +11,30 @@ import  datetime
 hdata=HData_day("usr","usr")
 sdata=HData_select("usr","usr")
 
+from sys import argv
+# 如果执行的方式错误输出使用方法
+USAGE = '''
+用法错误，正确方式如下：
+python demo.py 1
+'''
+if len(argv) > 2:
+    print(USAGE)  # 如果传入的参数不足，输出正确用法
+    exit(1) # 异常退出(下面的代码将不会被执行)
+
+script_name, para1 = argv  # 将传入的参数赋值进行使用
+print("%s, %d"%(script_name, int(para1)))
+
+
+
 nowdate=datetime.datetime.now().date()
 #test
-#nowdate=nowdate-datetime.timedelta(1)
+nowdate=nowdate-datetime.timedelta(int(para1))
 lastdate=nowdate-datetime.timedelta(1)
 
 curr_day=nowdate.strftime("%Y-%m-%d")
 last_day=lastdate.strftime("%Y-%m-%d")
+print("curr_day:%s, last_day:%s"%(curr_day, last_day))
+
 curr_dir=curr_day+'-macd'
 
 def showImageInHTML(imageTypes,savedir):
