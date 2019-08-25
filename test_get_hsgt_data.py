@@ -74,6 +74,8 @@ def hsgt_get_day_item_from_json(file_path):
         
         #get percent
         shgt_percent=line['percent']
+        position=shgt_ename.rfind('%')
+        shgt_percent=shgt_percent[:position]
 
         print("line_num:%d, shgt_date:%s, shgt_code:%s, shgt_holding:%s, shgt_percent:%s, shgt_ename:%s"% \
              (line_num, shgt_date, shgt_code, shgt_holding, shgt_percent, shgt_ename))
