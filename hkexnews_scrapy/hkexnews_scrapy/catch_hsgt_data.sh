@@ -1,6 +1,6 @@
 #!/bin/sh
 
-max=375
+max=365
 for((i=0;i<$max;i++))
 do
     input=$[max-i]
@@ -24,7 +24,7 @@ do
             tar czf $target_file_gz $target_file 
             rm $target_file
         else
-            echo '$target_file is not exist'
+            echo $target_file 'is not exist'
         fi
 
         if [ ! -f $target_file_gz  ]; then
