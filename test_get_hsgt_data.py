@@ -17,10 +17,10 @@ import  datetime
 
 debug=False
 
-file_path='/home/ubuntu/tmp/a_stock/hkexnews_scrapy/hkexnews_scrapy/json/20190823.json.gz'
+#file_path='/home/ubuntu/tmp/a_stock/hkexnews_scrapy/hkexnews_scrapy/json/20190823.json.gz'
 
 hdata_hsgt=HData_hsgt("usr","usr")
-hdata_hsgt.db_hdata_date_create()
+#hdata_hsgt.db_hdata_date_create()
 hdata_hsgt.db_connect()
 
 def getAllFiles(directory):
@@ -128,18 +128,16 @@ def hsgt_get_all_data():
             print("%s size is:%f"%(tmp_file, file_size))
        
         if file_size < 1 :
-            print(tmp_file)
+            if debug:
+                print(tmp_file)
             continue
 
         
-        #hsgt_get_day_item_from_json(tmp_file)
+        #insert data into hdata_hsgt_table
+        hsgt_get_day_item_from_json(tmp_file)
 
     return
 
-
-
-
-hsgt_get_day_item_from_json(file_path)
 
 
 hsgt_get_all_data()
