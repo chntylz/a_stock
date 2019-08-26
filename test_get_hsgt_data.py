@@ -23,26 +23,6 @@ hdata_hsgt=HData_hsgt("usr","usr")
 #hdata_hsgt.db_hdata_date_create()
 hdata_hsgt.db_connect()
 
-def getAllFiles(directory):
-    files=[]
-    for dirpath, dirnames,filenames in os.walk(directory):
-        if filenames!=[]:
-            for file in filenames:
-                files.append(dirpath+'/'+file)
-    #files.sort(key=len)
-    files.sort()
-    return files
-
-#获取脚本文件的当前路径
-def cur_file_dir():
-    #获取脚本路径
-    path = sys.path[0]
-    #判断为脚本文件还是py2exe编译后的文件，如果是脚本文件，则返回的是脚本的目录，如果是py2exe编译后的文件，则返回的是编译后的文件路径
-    if os.path.isdir(path):
-        return path
-    elif os.path.isfile(path):
-        return os.path.dirname(path)
-
 
 
 
@@ -116,6 +96,13 @@ def hsgt_get_day_item_from_json(file_path):
 
 
 def hsgt_get_all_data():
+
+    latest_date = hdata_hsgt.db_get_latest_date_of_stock()
+    if debug:
+        print(type(latest_date))
+    latest_date = str(latest_date)
+    latest_date = latest_date.replace('-', '')
+
     curr_dir=cur_file_dir()#获取当前.py脚本文件的文件路径
     json_dir=curr_dir+'/hkexnews_scrapy/hkexnews_scrapy/json'
     all_files=getAllFiles(json_dir)
@@ -132,9 +119,15 @@ def hsgt_get_all_data():
                 print(tmp_file)
             continue
 
-        
-        #insert data into hdata_hsgt_table
-        hsgt_get_day_item_from_json(tmp_file)
+        position=tmp_file.rfind('.json.gz')
+        curr_date=tmp_file[position-8:position]
+        result=compare_time(curr_date, latest_date)
+        if debug:
+            print("curr_date %s < latest_date:%s = %d"%(curr_date, latest_date,  result))
+
+        if result is False: 
+            #insert data into hdata_hsgt_table
+            hsgt_get_day_item_from_json(tmp_file)
 
     return
 

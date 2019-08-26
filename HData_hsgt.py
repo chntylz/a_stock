@@ -45,6 +45,19 @@ class HData_hsgt(object):
         print("db_hdata_hsgt_table_create finish")
         pass
 
+
+
+    def db_get_latest_date_of_stock(self):#获取最晚日期
+        self.cur.execute("select record_date from hdata_hsgt_table group by record_date order by record_date desc limit 1;")
+        ans=self.cur.fetchall()
+        if(len(ans)==0):
+            return None
+        return ans[0][0]
+        self.conn.commit()
+        pass
+
+
+
     def db_get_maxdate_of_stock(self,stock_code):#获取某支股票的最晚日期
         self.cur.execute("select max(record_date) from hdata_hsgt_table where stock_code="+"\'"+stock_code+"\'"+";")
         ans=self.cur.fetchall()
