@@ -36,7 +36,6 @@ class HData_hsgt(object):
                     record_date date,
                     stock_code varchar,  
                     share_holding float,
-                    amount float,
                     percent float
                     );
                 alter table hdata_hsgt_table add primary key(stock_code,record_date);
@@ -55,10 +54,10 @@ class HData_hsgt(object):
         self.conn.commit()
         pass
 
-    def insert_perstock_hdatadate(self, stock_code, data):#插入一支股票的所有历史数据到数据库#如果有code和index相同的不重复插入
+    def insert_perstock_hdatadate(self,  data):#插入一支股票的所有历史数据到数据库#如果有code和index相同的不重复插入
         t1=clock()
 
-        #print(stock_code+" insert_perstock_hdatadate begin")
+        #print(" insert_perstock_hdatadate begin")
         if data is None:
             print("None")
         else:
@@ -66,8 +65,6 @@ class HData_hsgt(object):
                 # print (i)
                 str_temp=""
 
-                #str_temp+="\'"+stock_code+"\'"+","
-                #str_temp+="\'"+data.index[i]+"\'"
                 str_temp+="\'"+data.index[i].strftime("%Y-%m-%d")+"\'"
 
 
@@ -82,15 +79,15 @@ class HData_hsgt(object):
 
         #print(clock()-t1)
 
-        #print(stock_code+" insert_perstock_hdatadate finish")
+        #print(" insert_perstock_hdatadate finish")
 
 
-    def insert_optimize_stock_hdatadate(self, stock_code, data):#插入一支股票的所有历史数据到数据库#如果有code和index相同的不重复插入
+    def insert_optimize_stock_hdatadate(self, data):#插入一支股票的所有历史数据到数据库#如果有code和index相同的不重复插入
 
-        #data format: record_date , stock_code , open , close , high , low  , volume ,  amount  , p_change 
+        #data format: record_date , stock_code, share_holding, percent
         t1=clock()
 
-        #print(stock_code+" insert_perstock_hdatadate begin")
+        #print(" insert_perstock_hdatadate begin")
         if data is None:
             print("None")
         else:
@@ -101,9 +98,8 @@ class HData_hsgt(object):
                 # print (i)
 
                 str_temp=""
-                #str_temp+="\'"+stock_code+"\'"+","
-                #str_temp+="\'"+data.index[i]+"\'"
-                str_temp+="\'"+data.index[i].strftime("%Y-%m-%d")+"\'"
+                #str_temp+="\'"+data.index[i].strftime("%Y-%m-%d")+"\'"
+                str_temp+="\'"+data.index[i]+"\'"
 
                 for j in range(0,data.shape[1]):
                     str_temp+=","+"\'"+str(data.iloc[i,j])+"\'"
@@ -117,13 +113,13 @@ class HData_hsgt(object):
                 if i % each_num == 0:
                     #print(sql_cmd)
                     if(sql_cmd != ""):
-                        self.cur.execute("insert into hdata_hsgt_table (record_date , stock_code , open , close , high , low  , volume ,  amount  , p_change ) values "+sql_cmd+";")
+                        self.cur.execute("insert into hdata_hsgt_table (record_date , stock_code , share_holding, percent ) values "+sql_cmd+";")
                         self.conn.commit()
                         sql_cmd = ""
 
             #print(sql_cmd)
             if(sql_cmd != ""):
-                self.cur.execute("insert into hdata_hsgt_table (record_date , stock_code , open , close , high , low  , volume ,  amount  , p_change ) values "+sql_cmd+";")
+                self.cur.execute("insert into hdata_hsgt_table (record_date , stock_code , share_holding, percent ) values "+sql_cmd+";")
                 self.conn.commit()
 
         #print(clock()-t1)

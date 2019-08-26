@@ -7,11 +7,21 @@ import json
 from file_interface import *
 
 
+import psycopg2 #使用的是PostgreSQL数据库
+import tushare as ts
+
+from HData_hsgt import *
+
+import  datetime
+
 
 debug=False
 
-#file_path='/home/ubuntu/tmp/a_stock/hkexnews_scrapy/hkexnews_scrapy/json/20190823.json.gz'
+file_path='/home/ubuntu/tmp/a_stock/hkexnews_scrapy/hkexnews_scrapy/json/20190823.json.gz'
 
+hdata_hsgt=HData_hsgt("usr","usr")
+hdata_hsgt.db_hdata_date_create()
+hdata_hsgt.db_connect()
 
 def getAllFiles(directory):
     files=[]
@@ -37,8 +47,10 @@ def cur_file_dir():
 
 
 def hsgt_get_day_item_from_json(file_path):
-    line_count=len(gzip.open(file_path).readlines())
     line_num=0
+    list_tmp=[]
+    line_count=len(gzip.open(file_path).readlines())
+
     for line in gzip.open(file_path):
         line_num = line_num + 1   
         if line_num == 1 or line_num == line_count:
@@ -70,16 +82,37 @@ def hsgt_get_day_item_from_json(file_path):
 
 
         #get share_holding
-        shgt_holding=line['share_holding']
+        shgt_holding=float(line['share_holding'])
         
         #get percent
         shgt_percent=line['percent']
         position=shgt_ename.rfind('%')
-        shgt_percent=shgt_percent[:position]
+        shgt_percent=float(shgt_percent[:position])
 
+        '''
         print("line_num:%d, shgt_date:%s, shgt_code:%s, shgt_holding:%s, shgt_percent:%s, shgt_ename:%s"% \
              (line_num, shgt_date, shgt_code, shgt_holding, shgt_percent, shgt_ename))
+        '''
 
+        list_tmp.append([shgt_date, shgt_code, shgt_holding, shgt_percent])
+
+    if debug:
+        print(list_tmp)
+
+    dataframe_cols = ['record_date', 'stock_code', 'share_holding', 'percent']
+
+    df = pd.DataFrame(list_tmp, columns=dataframe_cols)
+    index =  df["record_date"]
+    df = pd.DataFrame(list_tmp, index=index, columns=dataframe_cols)
+    del df["record_date"]
+    
+    if debug:
+        print(df)
+
+    hdata_hsgt.insert_optimize_stock_hdatadate(df)
+
+
+    return
 
 
 def hsgt_get_all_data():
@@ -90,17 +123,25 @@ def hsgt_get_all_data():
         print(all_file)
 
     for tmp_file in all_files:
-        if debug:
-            print(tmp_file)
         file_size=get_FileSize(tmp_file)
         if debug:
-            print(file_size)
+            print("%s size is:%f"%(tmp_file, file_size))
        
         if file_size < 1 :
             print(tmp_file)
             continue
 
-        hsgt_get_day_item_from_json(tmp_file)
+        
+        #hsgt_get_day_item_from_json(tmp_file)
+
+    return
+
+
+
+
+hsgt_get_day_item_from_json(file_path)
 
 
 hsgt_get_all_data()
+
+hdata_hsgt.db_disconnect()
