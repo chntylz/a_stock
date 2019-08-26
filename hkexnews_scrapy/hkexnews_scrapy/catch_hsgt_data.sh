@@ -20,25 +20,17 @@ do
         echo "workday"
         echo $target_file_gz
 
-        if [ -f $target_file ]; then
-            tar czf $target_file_gz $target_file 
-            rm $target_file
-        else
-            echo $target_file 'is not exist'
-        fi
-
-        if [ ! -f $target_file_gz  ]; then
+        if [ ! -f $target_file_gz ]; then
             echo 'scrapy crawl hkexnews -a date='$target_day  '-o '$target_file
             scrapy crawl hkexnews -a date=$target_day -o $target_file
+
             tar czf $target_file_gz $target_file 
+            echo 'tar czf' $target_file_gz $target_file 
+
             rm $target_file
-
+            echo 'rm' $target_file
         fi
-        
     fi
-    
-    
-
 done
 
 
