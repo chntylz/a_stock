@@ -15,12 +15,14 @@ from HData_hsgt import *
 
 import  datetime
 
+#keep 0.01 accrucy
+pd.set_option('display.float_format',lambda x : '%.2f' % x)
 
 ###################################################################################
 
 
-debug=False
-#debug=True
+debug=0
+#debug=1
 
 
 hdata_hsgt=HData_hsgt("usr","usr")
@@ -47,63 +49,20 @@ def hsgt_get_all_data():
     return df
 
 def hsgt_analysis_data():
-    list_df=hsgt_get_stock_list()
     all_df=hsgt_get_all_data()
-    latest_date=all_df.loc[0,'record_date'].strftime("%Y-%m-%d")
+    all_df["record_date"]=all_df["record_date"].apply(lambda x: str(x))
+    latest_date=all_df.loc[0,'record_date']
     print(latest_date)
-    
-    list_df_size = len(list_df)
-    list_tmp=[]
-    
-    
-    for i in range(0, list_df_size):
-        _stock_code = list_df.loc[i, 'stock_code']
-        #print('stock_code:%s'%(_stock_code))
-        
-        each_stock_data_df = all_df[all_df['stock_code'] == _stock_code]
-        each_stock_data_df.reset_index(drop=True, inplace=True) # reset index
-        
-        percent0 = each_stock_data_df.loc[0, 'percent']
-        percent1 = each_stock_data_df.loc[0+1, 'percent']
-        percent2 = each_stock_data_df.loc[0+2, 'percent']
-        percent3 = each_stock_data_df.loc[0+3, 'percent']
-        percent5 = each_stock_data_df.loc[0+5, 'percent']
-        percent10 = each_stock_data_df.loc[0+10, 'percent']
-        percent21 = each_stock_data_df.loc[0+21, 'percent']
-        
-        delta1=round(percent0-percent1, 2)
-        delta2=round(percent0-percent2, 2)
-        delta3=round(percent0-percent3, 2)
-        delta5=round(percent0-percent5, 2)
-        delta10=round(percent0-percent10, 2)
-        delta21=round(percent0-percent21, 2)
-        
-        #print('p0=%f, p1=%f, p2=%f, p3=%f, p5=%f, p10=%f, p21=%f'%(percent0, percent1, percent2, percent3, percent5, percent10, percent21))
-        #print('delta1=%f, delta2=%f, delta3=%f, delta5=%f, delta10=%f, delta21=%f '%(delta1, delta2, delta3, delta5, delta10, delta21))
-        
-        each_list_tmp=each_stock_data_df[0:1].values.tolist()
-        each_list_tmp[0][0]=each_list_tmp[0][0].strftime("%Y-%m-%d") #date -> string
-        if debug:
-            print(each_list_tmp)
-        
-        each_list_tmp[0].extend([ delta1,delta2, delta3, delta5, delta10, delta21])
-        if debug:
-            print(each_list_tmp)
-        
-        if latest_date ==  each_list_tmp[0][0]:
-            list_tmp.extend(each_list_tmp)
-            
-        if debug:
-            print(list_tmp)
-            if i > 2:
-                break
-        
-    dataframe_cols = ['record_date', 'stock_code', 'share_holding', 'percent', 'day1', 'day2', 'day3', 'day5', 'day10', 'day21']            
-    df= pd.DataFrame(list_tmp, columns=dataframe_cols)
-    print(df)
-    
-    return df
-    
+
+    all_df['delta1']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-1))
+    all_df['delta2']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-2))
+    all_df['delta3']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-3))
+    all_df['delta5']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-5))
+    all_df['delta10'] =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-10))
+    all_df['delta21'] =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-21))
+    all_df['delta120']=all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-120))
+    return all_df
+
     pass
             
 
