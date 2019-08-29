@@ -37,6 +37,7 @@ class HData_hsgt(object):
                 create table hdata_hsgt_table(
                     record_date date,
                     stock_code varchar,  
+                    stock_cname varchar,  
                     share_holding float,
                     percent float
                     );
@@ -128,13 +129,13 @@ class HData_hsgt(object):
                 if i % each_num == 0:
                     #print(sql_cmd)
                     if(sql_cmd != ""):
-                        self.cur.execute("insert into hdata_hsgt_table (record_date , stock_code , share_holding, percent ) values "+sql_cmd+";")
+                        self.cur.execute("insert into hdata_hsgt_table (record_date , stock_code, stock_cname, share_holding, percent ) values "+sql_cmd+";")
                         self.conn.commit()
                         sql_cmd = ""
 
             #print(sql_cmd)
             if(sql_cmd != ""):
-                self.cur.execute("insert into hdata_hsgt_table (record_date , stock_code , share_holding, percent ) values "+sql_cmd+";")
+                self.cur.execute("insert into hdata_hsgt_table (record_date , stock_code, stock_cname, share_holding, percent ) values "+sql_cmd+";")
                 self.conn.commit()
 
         #print(clock()-t1)

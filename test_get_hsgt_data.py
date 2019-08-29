@@ -15,12 +15,18 @@ from HData_hsgt import *
 import  datetime
 
 
-debug=False
+#funcat
+from funcat import *
+from funcat.data.aaron_backend import AaronDataBackend
+set_data_backend(AaronDataBackend())
+
+
+debug=0
 
 #file_path='/home/ubuntu/tmp/a_stock/hkexnews_scrapy/hkexnews_scrapy/json/20190823.json.gz'
 
 hdata_hsgt=HData_hsgt("usr","usr")
-#hdata_hsgt.db_hdata_date_create()
+hdata_hsgt.db_hdata_date_create()
 hdata_hsgt.db_connect()
 
 
@@ -60,6 +66,14 @@ def hsgt_get_day_item_from_json(file_path):
         position=shgt_ename.rfind('#')
         shgt_code=shgt_ename[position+1: -1]
 
+        #get stock_cname
+        shgt_cname=symbol(shgt_code)
+        pos_s=shgt_cname.rfind('[')
+        pos_e=shgt_cname.rfind(']')
+        shgt_cname=shgt_cname[pos_s+1: pos_e]
+        print(shgt_cname)
+
+
 
         #get share_holding
         shgt_holding=float(line['share_holding'])
@@ -70,16 +84,16 @@ def hsgt_get_day_item_from_json(file_path):
         shgt_percent=float(shgt_percent[:position])
 
         '''
-        print("line_num:%d, shgt_date:%s, shgt_code:%s, shgt_holding:%s, shgt_percent:%s, shgt_ename:%s"% \
-             (line_num, shgt_date, shgt_code, shgt_holding, shgt_percent, shgt_ename))
+        print("line_num:%d, shgt_date:%s, shgt_code:%s, shgt_holding:%s, shgt_percent:%s,shgt_ename:%s, shgt_cname:%s"% \
+             (line_num, shgt_date, shgt_code, shgt_holding, shgt_percent, shgt_ename, shgt_cname))
         '''
 
-        list_tmp.append([shgt_date, shgt_code, shgt_holding, shgt_percent])
+        list_tmp.append([shgt_date, shgt_code, shgt_cname, shgt_holding, shgt_percent])
 
     if debug:
         print(list_tmp)
 
-    dataframe_cols = ['record_date', 'stock_code', 'share_holding', 'percent']
+    dataframe_cols = ['record_date', 'stock_code','shgt_cname', 'share_holding', 'percent']
 
     df = pd.DataFrame(list_tmp, columns=dataframe_cols)
     index =  df["record_date"]
@@ -103,11 +117,14 @@ def hsgt_get_all_data():
     latest_date = str(latest_date)
     latest_date = latest_date.replace('-', '')
 
+    if latest_date is None:
+        latest_date='20180101'
+
     curr_dir=cur_file_dir()#获取当前.py脚本文件的文件路径
     json_dir=curr_dir+'/hkexnews_scrapy/hkexnews_scrapy/json'
     all_files=getAllFiles(json_dir)
     if debug:
-        print(all_file)
+        print(all_files)
 
     for tmp_file in all_files:
         file_size=get_FileSize(tmp_file)
@@ -121,9 +138,9 @@ def hsgt_get_all_data():
 
         position=tmp_file.rfind('.json.gz')
         curr_date=tmp_file[position-8:position]
-        result=compare_time(curr_date, latest_date)
         if debug:
-            print("curr_date %s < latest_date:%s = %d"%(curr_date, latest_date,  result))
+            print("curr_date %s < latest_date:%s"%(curr_date, latest_date))
+        result=compare_time(curr_date, latest_date)
 
         if result is False: 
             #insert data into hdata_hsgt_table
