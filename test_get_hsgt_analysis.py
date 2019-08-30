@@ -47,7 +47,7 @@ def hsgt_get_all_data():
     
     return df
 
-def hsgt_analysis_data():
+def hsgt_handle_all_data():
     all_df=hsgt_get_all_data()
     all_df["record_date"]=all_df["record_date"].apply(lambda x: str(x))
     latest_date=all_df.loc[0,'record_date']
@@ -61,7 +61,7 @@ def hsgt_analysis_data():
     all_df['delta21'] =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-21))
     all_df['delta120']=all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-120))
     all_df=all_df.round(2)
-    return all_df
+    return all_df, latest_date
 
     pass
             
@@ -103,19 +103,34 @@ def hsgt_write_to_file(f, df):
         f.write('</table>\n')
 
 ###################################################################################
+
 if __name__ == '__main__':
-    all_df =  hsgt_analysis_data()
-    daily_df = hsgt_get_daily_data(all_df)
+    all_df, latest_date = hsgt_handle_all_data()
+    daily_df  = hsgt_get_daily_data(all_df)
     delta1_df = hsgt_daily_sort(daily_df, 'delta1')
     delta2_df = hsgt_daily_sort(daily_df, 'delta2')
+    delta3_df = hsgt_daily_sort(daily_df, 'delta3')
+    delta5_df = hsgt_daily_sort(daily_df, 'delta5')
+    delta10_df = hsgt_daily_sort(daily_df, 'delta10')
+    delta21_df = hsgt_daily_sort(daily_df, 'delta21')
+    delta120_df = hsgt_daily_sort(daily_df, 'delta120')
 
+    '''
     print('day1')
     print("%s"%(delta1_df.head(10)))
     print('day2')
     print("%s"%(delta2_df.head(10)))
+    '''
 
     #df = pd.DataFrame(np.random.randint(0,100,size=[10,10]))
-    newfile='hsgt.html'
+
+    save_dir = "hsgt"
+    exec_command = "mkdir -p " + (save_dir)
+    print(exec_command)
+    os.system(exec_command)
+
+    file_name=save_dir + '-' + latest_date
+    newfile=save_dir + '/' + file_name + '.html'
     with open(newfile,'w') as f:
 
         f.write('<!DOCTYPE html>\n')
@@ -166,9 +181,28 @@ if __name__ == '__main__':
         #hsgt_write_to_file(f, df)
         hsgt_write_to_file(f, delta1_df.head(10))
         f.write('        <td>\n')
-        f.write('           <a>################################################################################### </a>\n')
+        f.write('           <a> </a>\n')
         f.write('        </td>\n')
         hsgt_write_to_file(f, delta2_df.head(10))
+        f.write('        <td>\n')
+        f.write('           <a> </a>\n')
+        f.write('        </td>\n')
+        hsgt_write_to_file(f, delta3_df.head(10))
+        f.write('        <td>\n')
+        f.write('           <a> </a>\n')
+        f.write('        </td>\n')
+        hsgt_write_to_file(f, delta5_df.head(10))
+        f.write('        <td>\n')
+        f.write('           <a> </a>\n')
+        f.write('        </td>\n')
+        hsgt_write_to_file(f, delta10_df.head(10))
+        f.write('        <td>\n')
+        f.write('           <a> </a>\n')
+        f.write('        </td>\n')
+        hsgt_write_to_file(f, delta21_df.head(10))
+        f.write('        <td>\n')
+        f.write('        </td>\n')
+        hsgt_write_to_file(f, delta120_df.head(10))
 ###################################################################################
 
         f.write('</body>\n')
