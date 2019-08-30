@@ -26,7 +26,7 @@ debug=0
 #file_path='/home/ubuntu/tmp/a_stock/hkexnews_scrapy/hkexnews_scrapy/json/20190823.json.gz'
 
 hdata_hsgt=HData_hsgt("usr","usr")
-hdata_hsgt.db_hdata_date_create()
+#hdata_hsgt.db_hdata_date_create()
 hdata_hsgt.db_connect()
 
 
