@@ -65,13 +65,16 @@ def hsgt_get_day_item_from_json(file_path):
         shgt_ename=line['stock_ename']
         position=shgt_ename.rfind('#')
         shgt_code=shgt_ename[position+1: -1]
+        if len(shgt_code) < 6:
+            print('error data! shgt_code:%s'%(shgt_code))
+            shgt_code='0'.join(shgt_code)
 
         #get stock_cname
         shgt_cname=symbol(shgt_code)
         pos_s=shgt_cname.rfind('[')
         pos_e=shgt_cname.rfind(']')
         shgt_cname=shgt_cname[pos_s+1: pos_e]
-        print(shgt_cname)
+        #print(shgt_cname)
 
 
 
