@@ -75,27 +75,30 @@ def hsgt_daily_sort(daily_df, orderby='delta1'):
     sort_df=daily_df.sort_values(orderby, ascending=0)
     return sort_df;
 
-def hsgt_write_to_file(f, df):
+def hsgt_write_to_file(f, k, df):
         f.write('<table class="gridtable">\n')
 
 
         f.write('    <tr>\n')
 
-        a_len=len(list(df))
-        for j in range(0, a_len): 
+        col_len=len(list(df))
+        for j in range(0, col_len): 
             f.write('        <td>\n')
             f.write('           <a> %s</a>\n'%(list(df)[j]))
             f.write('        </td>\n')
         f.write('    </tr>\n')
 
-       #f.write('%s\n'%(list(df)))
-        for i in range(0, 10):
+        #f.write('%s\n'%(list(df)))
+        df_len=len(df)
+        for i in range(0, df_len):
             f.write('    <tr>\n')
             a_array=df[i:i+1].values
-            a_len=len(a_array[0])
-            for j in range(0, a_len): 
+            for j in range(0, col_len): 
                 f.write('        <td>\n')
-                f.write('           <a> %s</a>\n'%(a_array[0][j]))
+                if (j == k + 5):
+                    f.write('           <a style="color: #FF0000"> %s</a>\n'%(a_array[0][j]))
+                else:
+                    f.write('           <a> %s</a>\n'%(a_array[0][j]))
                 f.write('        </td>\n')
 
             f.write('    </tr>\n')
@@ -106,14 +109,6 @@ def hsgt_write_to_file(f, df):
 
 if __name__ == '__main__':
     all_df, latest_date = hsgt_handle_all_data()
-    daily_df  = hsgt_get_daily_data(all_df)
-    delta1_df = hsgt_daily_sort(daily_df, 'delta1')
-    delta2_df = hsgt_daily_sort(daily_df, 'delta2')
-    delta3_df = hsgt_daily_sort(daily_df, 'delta3')
-    delta5_df = hsgt_daily_sort(daily_df, 'delta5')
-    delta10_df = hsgt_daily_sort(daily_df, 'delta10')
-    delta21_df = hsgt_daily_sort(daily_df, 'delta21')
-    delta120_df = hsgt_daily_sort(daily_df, 'delta120')
 
     '''
     print('day1')
@@ -178,31 +173,17 @@ if __name__ == '__main__':
  
         f.write('<body>\n')
 ###################################################################################
-        #hsgt_write_to_file(f, df)
-        hsgt_write_to_file(f, delta1_df.head(10))
-        f.write('        <td>\n')
-        f.write('           <a> </a>\n')
-        f.write('        </td>\n')
-        hsgt_write_to_file(f, delta2_df.head(10))
-        f.write('        <td>\n')
-        f.write('           <a> </a>\n')
-        f.write('        </td>\n')
-        hsgt_write_to_file(f, delta3_df.head(10))
-        f.write('        <td>\n')
-        f.write('           <a> </a>\n')
-        f.write('        </td>\n')
-        hsgt_write_to_file(f, delta5_df.head(10))
-        f.write('        <td>\n')
-        f.write('           <a> </a>\n')
-        f.write('        </td>\n')
-        hsgt_write_to_file(f, delta10_df.head(10))
-        f.write('        <td>\n')
-        f.write('           <a> </a>\n')
-        f.write('        </td>\n')
-        hsgt_write_to_file(f, delta21_df.head(10))
-        f.write('        <td>\n')
-        f.write('        </td>\n')
-        hsgt_write_to_file(f, delta120_df.head(10))
+        daily_df  = hsgt_get_daily_data(all_df)
+        delta_list = ['delta1', 'delta2', 'delta3', 'delta5', 'delta10', 'delta21', 'delta120']
+        lst_len = len(delta_list)
+        for k in range(0, lst_len):
+            f.write('           <a style="color: #FF0000">------------------------------------order by %s desc---------------------------------------------- </a>\n'%(delta_list[k]))
+            delta_tmp = hsgt_daily_sort(daily_df, delta_list[k])
+            delta_tmp = delta_tmp.head(10)
+            hsgt_write_to_file(f, k, delta_tmp)
+            f.write('        <td>\n')
+            f.write('        </td>\n')
+            
 ###################################################################################
 
         f.write('</body>\n')
