@@ -23,7 +23,7 @@ def showImageInHTML(imageTypes,savedir):
         f.write('<html>\n')
         f.write('<head>\n')
         f.write('<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n')
-        f.write('<title> index </title>\n')
+        f.write('<title> macd-index </title>\n')
         f.write('\n')
         f.write('\n')
         f.write('<style type="text/css">a {text-decoration: none}\n')
