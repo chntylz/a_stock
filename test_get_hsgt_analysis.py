@@ -110,15 +110,7 @@ def hsgt_write_to_file(f, k, df):
 if __name__ == '__main__':
     all_df, latest_date = hsgt_handle_all_data()
 
-    '''
-    print('day1')
-    print("%s"%(delta1_df.head(10)))
-    print('day2')
-    print("%s"%(delta2_df.head(10)))
-    '''
-
-    #df = pd.DataFrame(np.random.randint(0,100,size=[10,10]))
-
+##################### html generation start ##############################################################
     save_dir = "hsgt"
     exec_command = "mkdir -p " + (save_dir)
     print(exec_command)
@@ -132,7 +124,7 @@ if __name__ == '__main__':
         f.write('<html>\n')
         f.write('<head>\n')
         f.write('<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n')
-        f.write('<title> index </title>\n')
+        f.write('<title> hsgt-%s </title>\n'%(latest_date))
         f.write('\n')
         f.write('\n')
         f.write('<style type="text/css">a {text-decoration: none}\n')
@@ -172,7 +164,7 @@ if __name__ == '__main__':
         f.write('\n')
  
         f.write('<body>\n')
-###################################################################################
+####################### data handle start ############################################################
         daily_df  = hsgt_get_daily_data(all_df)
         delta_list = ['delta1', 'delta2', 'delta3', 'delta5', 'delta10', 'delta21', 'delta120']
         lst_len = len(delta_list)
@@ -184,7 +176,7 @@ if __name__ == '__main__':
             f.write('        <td>\n')
             f.write('        </td>\n')
             
-###################################################################################
+####################### data handle end ############################################################
 
         f.write('</body>\n')
         f.write('\n')
@@ -192,5 +184,12 @@ if __name__ == '__main__':
         f.write('</html>\n')
         f.write('\n')
 
+##################### html generation end ##############################################################
+    #copy to /var/www/html/hsgt
+    newfile=save_dir + '/' + file_name + '.html'
+    exec_command = 'cp -f ' + newfile + ' /var/www/html/hsgt/'
+    os.system(exec_command)
+
+     
 
 hdata_hsgt.db_disconnect()
