@@ -127,6 +127,8 @@ def getAllFiles(directory):
     for dirpath, dirnames,filenames in os.walk(directory):
         if filenames!=[]:
             for file in filenames:
+                if 'macd-index' in file:
+                    continue;
                 if 'macd' in file:
                     files.append(dirpath+'/'+file)
     # files.sort(key=len)
