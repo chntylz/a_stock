@@ -93,12 +93,26 @@ def hsgt_write_to_file(f, k, df):
         for i in range(0, df_len):
             f.write('    <tr>\n')
             a_array=df[i:i+1].values
+            tmp_stock_code=a_array[0][1] 
+            if tmp_stock_code[0:2] == '60':
+                stock_code_new='SH'+tmp_stock_code
+            else:
+                stock_code_new='SZ'+tmp_stock_code
+            xueqiu_url='https://xueqiu.com/S/' + stock_code_new
+
             for j in range(0, col_len): 
                 f.write('        <td>\n')
+
+                #set color to delta column, 5 is the position of first delta1
+                #record_date stock_code  stock_cname share_holding   percent delta1  delta2  delta3  delta5  delta10 delta21 delta120
                 if (j == k + 5):
                     f.write('           <a style="color: #FF0000"> %s</a>\n'%(a_array[0][j]))
                 else:
-                    f.write('           <a> %s</a>\n'%(a_array[0][j]))
+                    if(j == 1 or j == 2):
+                        f.write('           <a href="%s" target="_blank"> %s</a>\n'%(xueqiu_url, a_array[0][j]))
+                    else:
+                        f.write('           <a> %s</a>\n'%(a_array[0][j]))
+                
                 f.write('        </td>\n')
 
             f.write('    </tr>\n')
