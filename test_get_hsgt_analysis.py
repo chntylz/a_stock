@@ -47,9 +47,8 @@ def hsgt_get_all_data():
     
     return df
 
-def hsgt_handle_all_data():
-    all_df=hsgt_get_all_data()
-    all_df["record_date"]=all_df["record_date"].apply(lambda x: str(x))
+def hsgt_handle_all_data(df):
+    all_df=df
     latest_date=all_df.loc[0,'record_date']
     print(latest_date)
 
@@ -122,7 +121,8 @@ def hsgt_write_to_file(f, k, df):
 ###################################################################################
 
 if __name__ == '__main__':
-    all_df, latest_date = hsgt_handle_all_data()
+    df=hsgt_get_all_data()
+    all_df, latest_date = hsgt_handle_all_data(df)
 
 ##################### html generation start ##############################################################
     save_dir = "hsgt"
