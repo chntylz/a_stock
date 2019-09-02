@@ -20,7 +20,7 @@ hdata_hsgt.db_connect()
 
 form = cgi.FieldStorage()
 
-name = form.getvalue('name', '000401')
+name = form.getvalue('name', '')
 
 if name.isdigit():
     df=hdata_hsgt.get_all_hdata_of_stock_code(name)
@@ -30,7 +30,7 @@ else:
 all_df=df
 
 if len(all_df) is 0:
-    var = "error!!! data is null, please input correct code or name"
+    var = "data is null, please input correct code or name"
 else:
     all_df['delta1']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-1))
     all_df['delta2']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-2))
