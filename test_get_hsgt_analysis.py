@@ -98,6 +98,8 @@ def hsgt_write_to_file(f, k, df):
             else:
                 stock_code_new='SZ'+tmp_stock_code
             xueqiu_url='https://xueqiu.com/S/' + stock_code_new
+            hsgt_url='../../cgi-bin/hsgt-search.cgi?name=' + tmp_stock_code
+
 
             for j in range(0, col_len): 
                 f.write('        <td>\n')
@@ -107,8 +109,10 @@ def hsgt_write_to_file(f, k, df):
                 if (j == k + 5):
                     f.write('           <a style="color: #FF0000"> %s</a>\n'%(a_array[0][j]))
                 else:
-                    if(j == 1 or j == 2):
-                        f.write('           <a href="%s" target="_blank"> %s</a>\n'%(xueqiu_url, a_array[0][j]))
+                    if(j == 1): 
+                        f.write('           <a href="%s" target="_blank"> %s[hsgt]</a>\n'%(hsgt_url, a_array[0][j]))
+                    elif(j == 2):
+                        f.write('           <a href="%s" target="_blank"> %s[xueqiu]</a>\n'%(xueqiu_url, a_array[0][j]))
                     else:
                         f.write('           <a> %s</a>\n'%(a_array[0][j]))
                 
