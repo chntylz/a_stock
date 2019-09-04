@@ -184,7 +184,7 @@ if __name__ == '__main__':
         f.write('<body>\n')
 ####################### data handle start ############################################################
         daily_df  = hsgt_get_daily_data(all_df)
-        delta_list = ['delta1', 'delta2', 'delta3', 'delta5', 'delta10', 'delta21', 'delta120']
+        delta_list = ['delta1', 'delta2', 'delta3', 'delta5', 'delta10', 'delta21', 'delta120', 'percent']
         lst_len = len(delta_list)
         for k in range(0, lst_len):
             f.write('           <a style="color: #FF0000">------------------------------------order by %s desc---------------------------------------------- </a>\n'%(delta_list[k]))
