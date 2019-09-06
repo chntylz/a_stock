@@ -8,6 +8,7 @@ nowdate=datetime.datetime.now().date()
 #nowdate=nowdate-datetime.timedelta(1)
 src_dir=nowdate.strftime("%Y-%m-%d")
 target_html='index.html'
+stock_data_dir="stock_data"
 
 def showImageInHTML(imageTypes,savedir):
     files=getAllFiles(savedir)
@@ -109,7 +110,7 @@ def showImageInHTML(imageTypes,savedir):
             # '2019-07-10.html' -> '2019-07-10' 
             tmp_image=image[0:image.rfind('.')]
             print("%s" % (tmp_image))
-            image = tmp_image + '/' + image
+            image = stock_data_dir + '/' + tmp_image + '/' + image
 
 
             if i % column == 0:
@@ -164,4 +165,5 @@ def cur_file_dir():
         
 if __name__ == '__main__':
     savedir=cur_file_dir()#获取当前.py脚本文件的文件路径
+    #savedir= savedir + '/' + stock_data_dir
     showImageInHTML(('html'), savedir)#浏览所有jpg,png,gif文件
