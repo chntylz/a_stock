@@ -7,6 +7,7 @@ import datetime
 nowdate=datetime.datetime.now().date()
 #nowdate=nowdate-datetime.timedelta(1)
 src_dir=nowdate.strftime("%Y-%m-%d")
+stock_data_dir="stock_data"
 target_html='macd-index.html'
 
 def showImageInHTML(imageTypes,savedir):
@@ -94,7 +95,7 @@ def showImageInHTML(imageTypes,savedir):
             # '2019-07-10.html' -> '2019-07-10' 
             tmp_image=image[0:image.rfind('.')]
             print("%s" % (tmp_image))
-            image = tmp_image + '/' + image
+            image = stock_data_dir + '/' + tmp_image + '/' + image
 
 
             if i % column == 0:

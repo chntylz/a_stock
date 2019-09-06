@@ -35,6 +35,7 @@ curr_day=nowdate.strftime("%Y-%m-%d")
 last_day=lastdate.strftime("%Y-%m-%d")
 print("curr_day:%s, last_day:%s"%(curr_day, last_day))
 
+stock_data_dir="stock_data"
 curr_dir=curr_day+'-macd'
 
 def showImageInHTML(imageTypes,savedir):
@@ -143,7 +144,7 @@ def showImageInHTML(imageTypes,savedir):
         f.write('\n')
     
     
-    shell_cmd2='cp -rf ' + curr_dir + ' /var/www/html/'
+    shell_cmd2='cp -rf ' + stock_data_dir + '/' + curr_dir + ' /var/www/html/'+stock_data_dir+'/'
     os.system(shell_cmd2)
     print ('success,images are wrapped up in %s' % (newfile))
 
@@ -211,4 +212,5 @@ if __name__ == '__main__':
     '''
 
     savedir=cur_file_dir()#获取当前.py脚本文件的文件路径
+    savedir= savedir + '/' + stock_data_dir 
     showImageInHTML(('jpg','png','gif'), savedir)#浏览所有jpg,png,gif文件
