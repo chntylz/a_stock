@@ -109,7 +109,7 @@ debug = False;
 
 #define canvas out of loop
 plt.style.use('bmh')
-fig = plt.figure(figsize=(24, 30),dpi=160)
+fig = plt.figure(figsize=(24, 30),dpi=80)
 
 '''
 ax0  = fig.add_axes([0, 0.7, 1, 0.3])
