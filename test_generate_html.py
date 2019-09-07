@@ -8,6 +8,11 @@ from HData_select import *
 from HData_day import *
 import  datetime
 
+#funcat
+from funcat import *
+from funcat.data.aaron_backend import AaronDataBackend
+set_data_backend(AaronDataBackend())
+
 hdata=HData_day("usr","usr")
 sdata=HData_select("usr","usr")
 
@@ -105,6 +110,11 @@ def showImageInHTML(imageTypes,savedir):
         f.write('%s\n'%(s_debug))
 
         f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
+        #f.write('<p>蓝色：连续两天涨幅3个点以上   红色:连续三天涨幅3个点以上    绿色: 连续两天涨幅3个点以上，并且当天跳空高开2个点以上 /p>\n')
+        f.write('<p  style="color:blue;">蓝色: 连续两天涨幅3个点以上   </p>')
+        f.write('<p  style="color:red;">红色: 连续三天涨幅3个点以上   </p>')
+        f.write('<p  style="color:green;">绿色: 连续两天涨幅3个点以上，并且当天跳空高开2个点以上 </p>')
+        f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
         f.write('\n')
 
 
@@ -115,6 +125,16 @@ def showImageInHTML(imageTypes,savedir):
             print('%s' % (tmp_image))
             
             stock_code=image[11:17]
+
+            #funcat call
+            T(curr_day)
+            S(stock_code)
+            open_p = ((O - REF(C, 1))/REF(C, 1)) 
+            open_p = round (open_p.value, 4)
+            open_jump=open_p - 0.02
+            print(str(nowdate), stock_code, O, H, L, C, open_p)
+
+
             print('%s' % (stock_code))
             
             print('%s' % (stock_code[0:2]))
@@ -129,6 +149,8 @@ def showImageInHTML(imageTypes,savedir):
             f.write('<p>\n')
             if stock_code in conti_list:
                 f.write('<a href="%s" target="_blank" style="color: #FF0000"> %s </a>' % (image, tmp_image))
+            elif open_jump > 0 :
+                f.write('<a href="%s" target="_blank" style="color: #32CD32"> %s </a>' % (image, tmp_image))
             else:
                 f.write('<a href="%s" target="_blank"> %s </a>' % (image, tmp_image))
             f.write('---->')
