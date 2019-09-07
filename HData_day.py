@@ -236,5 +236,23 @@ class HData_day(object):
         return df
         pass
         
+    def get_data_accord_code_and_date(self, stock_code, record_date):#将数据库中的数据读取并转为dataframe格式返回
+        conn = psycopg2.connect(database="usr", user=self.user, password=self.password, host="127.0.0.1",
+                                port="5432")
+        cur = conn.cursor()
+        sql_temp="select * from hdata_d_table where stock_code = " + "\'" + stock_code + "\'  and record_date = " + "\'" + record_date + "\' ;"
+        cur.execute(sql_temp)
+        rows = cur.fetchall()
+
+        conn.commit()
+        conn.close()
+
+        dataframe_cols=[tuple[0] for tuple in cur.description]#列名和数据库列一致
+        df = pd.DataFrame(rows, columns=dataframe_cols)
+    
+        return df
+        pass
+        
+
 
 

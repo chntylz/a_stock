@@ -52,6 +52,12 @@ def hsgt_handle_all_data(df):
     latest_date=all_df.loc[0,'record_date']
     print(latest_date)
 
+    del all_df['open']
+    del all_df['high']
+    del all_df['low']
+    del all_df['volume']
+    
+
     all_df['delta1']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-1))
     all_df['delta2']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-2))
     all_df['delta3']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-3))
@@ -106,7 +112,7 @@ def hsgt_write_to_file(f, k, df):
 
                 #set color to delta column, 5 is the position of first delta1
                 #record_date stock_code  stock_cname share_holding   percent delta1  delta2  delta3  delta5  delta10 delta21 delta120
-                if (j == k + 5):
+                if (j == k + 6):
                     f.write('           <a style="color: #FF0000"> %s</a>\n'%(a_array[0][j]))
                 else:
                     if(j == 1): 

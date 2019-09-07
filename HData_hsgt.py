@@ -39,7 +39,12 @@ class HData_hsgt(object):
                     stock_code varchar,  
                     stock_cname varchar,  
                     share_holding float,
-                    percent float
+                    percent float,
+                    open float,
+                    close float,
+                    high float,
+                    low float,
+                    volume float
                     );
                 alter table hdata_hsgt_table add primary key(stock_code,record_date);
                 ''')
@@ -129,13 +134,13 @@ class HData_hsgt(object):
                 if i % each_num == 0:
                     #print(sql_cmd)
                     if(sql_cmd != ""):
-                        self.cur.execute("insert into hdata_hsgt_table (record_date , stock_code, stock_cname, share_holding, percent ) values "+sql_cmd+";")
+                        self.cur.execute("insert into hdata_hsgt_table (record_date , stock_code, stock_cname, share_holding, percent, open, close, high, low, volume ) values "+sql_cmd+";")
                         self.conn.commit()
                         sql_cmd = ""
 
             #print(sql_cmd)
             if(sql_cmd != ""):
-                self.cur.execute("insert into hdata_hsgt_table (record_date , stock_code, stock_cname, share_holding, percent ) values "+sql_cmd+";")
+                self.cur.execute("insert into hdata_hsgt_table (record_date , stock_code, stock_cname, share_holding, percent, open, close, high, low, volume ) values "+sql_cmd+";")
                 self.conn.commit()
 
         #print(clock()-t1)

@@ -11,6 +11,7 @@ import psycopg2 #使用的是PostgreSQL数据库
 import tushare as ts
 
 from HData_hsgt import *
+from HData_day import *
 
 import  datetime
 
@@ -24,6 +25,8 @@ set_data_backend(AaronDataBackend())
 debug=0
 
 #file_path='/home/ubuntu/tmp/a_stock/hkexnews_scrapy/hkexnews_scrapy/json/20190823.json.gz'
+hdata_day=HData_day("usr","usr")
+hdata_day.db_connect()
 
 hdata_hsgt=HData_hsgt("usr","usr")
 #hdata_hsgt.db_hdata_date_create()
@@ -86,17 +89,30 @@ def hsgt_get_day_item_from_json(file_path):
         position=shgt_ename.rfind('%')
         shgt_percent=float(shgt_percent[:position])
 
-        '''
-        print("line_num:%d, shgt_date:%s, shgt_code:%s, shgt_holding:%s, shgt_percent:%s,shgt_ename:%s, shgt_cname:%s"% \
-             (line_num, shgt_date, shgt_code, shgt_holding, shgt_percent, shgt_ename, shgt_cname))
-        '''
+        #get open, close, high, low, and volume
+        day_df=hdata_day.get_data_accord_code_and_date(shgt_code, shgt_date)
+        if debug:
+            print(day_df)
+        if len(day_df) > 0:
+            day_dict=day_df.to_dict()
 
-        list_tmp.append([shgt_date, shgt_code, shgt_cname, shgt_holding, shgt_percent])
+            shgt_open=day_dict['open'][0]
+            shgt_close=day_dict['close'][0]
+            shgt_high=day_dict['high'][0]
+            shgt_low=day_dict['low'][0]
+            shgt_volume=day_dict['volume'][0]
+
+            '''
+            print("line_num:%d, shgt_date:%s, shgt_code:%s, shgt_holding:%s, shgt_percent:%s,shgt_ename:%s, shgt_cname:%s"% \
+                 (line_num, shgt_date, shgt_code, shgt_holding, shgt_percent, shgt_ename, shgt_cname))
+            '''
+
+            list_tmp.append([shgt_date, shgt_code, shgt_cname, shgt_holding, shgt_percent, shgt_open, shgt_close, shgt_high, shgt_low, shgt_volume])
 
     if debug:
         print(list_tmp)
 
-    dataframe_cols = ['record_date', 'stock_code','shgt_cname', 'share_holding', 'percent']
+    dataframe_cols = ['record_date', 'stock_code','shgt_cname', 'share_holding', 'percent', 'open', 'close', 'high', 'low', 'volume']
 
     df = pd.DataFrame(list_tmp, columns=dataframe_cols)
     index =  df["record_date"]
@@ -120,8 +136,12 @@ def hsgt_get_all_data():
     latest_date = str(latest_date)
     latest_date = latest_date.replace('-', '')
 
-    if latest_date is None:
+    print('latest_date:%s'%(latest_date))
+
+    if latest_date is None :
         latest_date='20180101'
+
+    #latest_date='20180101'
 
     curr_dir=cur_file_dir()#获取当前.py脚本文件的文件路径
     json_dir=curr_dir+'/hkexnews_scrapy/hkexnews_scrapy/json'
@@ -156,3 +176,4 @@ def hsgt_get_all_data():
 hsgt_get_all_data()
 
 hdata_hsgt.db_disconnect()
+hdata_day.db_disconnect()
