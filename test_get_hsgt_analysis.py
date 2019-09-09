@@ -58,13 +58,18 @@ def hsgt_handle_all_data(df):
     del all_df['volume']
     
 
-    all_df['delta1']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-1))
+    all_df['delta1']  = all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-1))
     all_df['delta2']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-2))
     all_df['delta3']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-3))
     all_df['delta5']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-5))
     all_df['delta10'] =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-10))
     all_df['delta21'] =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-21))
     all_df['delta120']=all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-120))
+    
+    all_df['delta1_share'] = all_df.groupby('stock_code')['share_holding'].apply(lambda i:i.diff(-1))
+    all_df['delta1_money'] = all_df['close'] * all_df['delta1_share'] / 10000;
+    del all_df['delta1_share']
+    
     all_df=all_df.round(2)
     return all_df, latest_date
 
@@ -111,7 +116,7 @@ def hsgt_write_to_file(f, k, df):
                 f.write('        <td>\n')
 
                 #set color to delta column, 5 is the position of first delta1
-                #record_date stock_code  stock_cname share_holding   percent delta1  delta2  delta3  delta5  delta10 delta21 delta120
+                #record_date stock_code  stock_cname share_holding   percent close delta1 delta2  delta3  delta5  delta10 delta21 delta120 delta1_money  
                 if (j == k + 6):
                     f.write('           <a style="color: #FF0000"> %s</a>\n'%(a_array[0][j]))
                 else:
@@ -190,7 +195,7 @@ if __name__ == '__main__':
         f.write('<body>\n')
 ####################### data handle start ############################################################
         daily_df  = hsgt_get_daily_data(all_df)
-        delta_list = ['delta1', 'delta2', 'delta3', 'delta5', 'delta10', 'delta21', 'delta120', 'percent']
+        delta_list = ['delta1', 'delta2', 'delta3', 'delta5', 'delta10', 'delta21', 'delta120', 'delta1_money', 'percent']
         lst_len = len(delta_list)
         for k in range(0, lst_len):
             f.write('           <a style="color: #FF0000">------------------------------------order by %s desc---------------------------------------------- </a>\n'%(delta_list[k]))
