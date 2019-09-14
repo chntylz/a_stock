@@ -47,6 +47,19 @@ def hsgt_get_all_data():
     
     return df
 
+def hsgt_get_delta_m_of_day(df, days):
+    delta_dict={2:'delta2_m',  3:'delta3_m', 4:'delta4_m', 5:'delta5_m', 10:'delta10_m', 21:'delta21_m', 120:'delta120_m'}
+    target_column=delta_dict[days]
+    df[target_column] = df['delta1_m']
+    for i in range(1, days):
+        if debug:
+            print('i=%d, days=%d'%(i, days))
+        src_column='money_sft_'+ str(i)
+        df[target_column] = df[target_column] + df[src_column]
+
+    return df
+
+
 def hsgt_handle_all_data(df):
     all_df=df
     latest_date=all_df.loc[0,'record_date']
@@ -57,20 +70,52 @@ def hsgt_handle_all_data(df):
     del all_df['low']
     del all_df['volume']
     
+    all_df['percent_tmp'] = all_df['percent']
+    del all_df['percent']
+    all_df['percent'] = all_df['percent_tmp']
+    del all_df['percent_tmp']
 
     all_df['delta1']  = all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-1))
     all_df['delta2']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-2))
     all_df['delta3']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-3))
+    all_df['delta4']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-4))
     all_df['delta5']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-5))
     all_df['delta10'] =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-10))
     all_df['delta21'] =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-21))
     all_df['delta120']=all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-120))
     
     all_df['delta1_share'] = all_df.groupby('stock_code')['share_holding'].apply(lambda i:i.diff(-1))
-    all_df['delta1_money'] = all_df['close'] * all_df['delta1_share'] / 10000;
+    all_df['delta1_m'] = all_df['close'] * all_df['delta1_share'] / 10000;
     del all_df['delta1_share']
     
+
+    max_number=21
+    #temp column added
+    for index in range(1, max_number):
+        column='money_sft_'+ str(index)
+        all_df[column] = all_df.groupby('stock_code')['delta1_m'].shift(index*(-1))
+
+    all_df=all_df.fillna(0)
+
+    all_df=hsgt_get_delta_m_of_day(all_df, 2)
+    all_df=hsgt_get_delta_m_of_day(all_df, 3)
+    all_df=hsgt_get_delta_m_of_day(all_df, 4)
+    all_df=hsgt_get_delta_m_of_day(all_df, 5)
+    all_df=hsgt_get_delta_m_of_day(all_df, 10)
+    all_df=hsgt_get_delta_m_of_day(all_df, 21)
+    #all_df=hsgt_get_delta_m_of_day(all_df, 120)
+
     all_df=all_df.round(2)
+
+    #temp column delete
+    for index in range(1, max_number):
+        column='money_sft_'+ str(index)
+        del all_df[column]
+
+
+    if debug:
+        print(all_df.head(10))    
+
     return all_df, latest_date
 
     pass
@@ -91,6 +136,7 @@ def hsgt_write_to_file(f, k, df):
 
         f.write('    <tr>\n')
 
+        #headline
         col_len=len(list(df))
         for j in range(0, col_len): 
             f.write('        <td>\n')
@@ -98,6 +144,7 @@ def hsgt_write_to_file(f, k, df):
             f.write('        </td>\n')
         f.write('    </tr>\n')
 
+        #dataline
         #f.write('%s\n'%(list(df)))
         df_len=len(df)
         for i in range(0, df_len):
@@ -115,10 +162,10 @@ def hsgt_write_to_file(f, k, df):
             for j in range(0, col_len): 
                 f.write('        <td>\n')
 
-                #set color to delta column, 5 is the position of first delta1
-                #record_date stock_code  stock_cname share_holding   percent close delta1 delta2  delta3  delta5  delta10 delta21 delta120 delta1_money  
-                if (j == k + 6):
-                    f.write('           <a style="color: #FF0000"> %s</a>\n'%(a_array[0][j]))
+                #set color to delta column, 5 is the position of percent
+                #record_date  stock_code  stock_cname share_holding   close  percent  delta1  delta2  delta3  delta4  delta5  delta10 delta21 delta120    delta1_m    delta2_m    delta3_m    delta4_m    delta5_m    delta10_m   delta21_m
+                if (j == k + 5):
+                        f.write('           <a style="color: #FF0000"> %s</a>\n'%(a_array[0][j]))
                 else:
                     if(j == 1): 
                         f.write('           <a href="%s" target="_blank"> %s[hsgt]</a>\n'%(hsgt_url, a_array[0][j]))
@@ -193,12 +240,14 @@ if __name__ == '__main__':
         f.write('\n')
  
         f.write('<body>\n')
+        f.write('<p style="color: #FF0000"> delta1: delta percent of 1 day </p>\n')
+        f.write('<p style="color: #FF0000"> delta1_m: delta money of 1 day, delta share_holding * close </p>\n')
 ####################### data handle start ############################################################
         daily_df  = hsgt_get_daily_data(all_df)
-        delta_list = ['delta1', 'delta2', 'delta3', 'delta5', 'delta10', 'delta21', 'delta120', 'delta1_money', 'percent']
+        delta_list = ['percent', 'delta1', 'delta2', 'delta3', 'delta4',  'delta5', 'delta10', 'delta21', 'delta120', 'delta1_m', 'delta2_m',    'delta3_m',   'delta4_m', 'delta5_m', 'delta10_m', 'delta21_m']
         lst_len = len(delta_list)
         for k in range(0, lst_len):
-            f.write('           <a style="color: #FF0000">------------------------------------order by %s desc---------------------------------------------- </a>\n'%(delta_list[k]))
+            f.write('           <p style="color: #FF0000">------------------------------------top10 order by %s desc---------------------------------------------- </p>\n'%(delta_list[k]))
             delta_tmp = hsgt_daily_sort(daily_df, delta_list[k])
             delta_tmp = delta_tmp.head(10)
             hsgt_write_to_file(f, k, delta_tmp)
