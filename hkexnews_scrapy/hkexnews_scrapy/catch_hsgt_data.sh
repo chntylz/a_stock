@@ -1,5 +1,22 @@
 #!/bin/sh
 
+#check whether date is valid, or not
+function is_holiday() 
+{
+    arr=('20190913','20190914')
+    sub_str=$1
+    echo "target_day is $sub_str " 
+
+    if [[ " ${arr[*]} " == *"$sub_str"* ]]; then
+        echo "arr contains $sub_str" ;
+        return 1
+    else
+        echo "arr not contains $sub_str" 
+        return 0
+    fi
+}
+
+
 max=365
 for((i=0;i<$max;i++))
 do
@@ -8,6 +25,14 @@ do
 
     #get i day ago(format)
     target_day=`date -d "$input day ago" +"%Y%m%d"`
+    is_holiday $target_day
+    valid_chk=$?
+    echo "valid_chk is $valid_chk"
+    if [[ $valid_chk -eq 1 ]]; then
+        echo "holiday"
+        exit
+    fi
+
     target_file="./json/"$target_day".json"
     target_file_gz="./json/"$target_day".json.gz"
 
