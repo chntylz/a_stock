@@ -41,6 +41,9 @@ else:
     all_df['delta21'] =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-21))
     all_df['delta120']=all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-120))
 
+    del all_df['open']
+    del all_df['high']
+    del all_df['low']
 
 
     all_df=all_df.round(2)
