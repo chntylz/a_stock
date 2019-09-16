@@ -45,6 +45,13 @@ else:
     del all_df['high']
     del all_df['low']
 
+    stock_code_tmp=df['stock_code'][0]
+    stock_cname_tmp=df['stock_cname'][0]
+    if stock_code_tmp[0:2] == '60':
+        stock_code_new='SH'+stock_code_tmp
+    else:
+        stock_code_new='SZ'+stock_code_tmp
+    xueqiu_url='https://xueqiu.com/S/' + stock_code_new
 
     all_df=all_df.round(2)
 
@@ -68,8 +75,10 @@ print """Content-type: text/html
     code or name <input type='text' name='name' />
     <input type='submit' />
     </form>
+    <a href="%s" target="_blank"> %s[xueqiu]</a>
+    <p></p>
     %s
   </body>
 </html>
-""" % (var)
+""" % (xueqiu_url, stock_code_tmp, var)
 
