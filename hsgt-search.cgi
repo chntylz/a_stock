@@ -32,7 +32,7 @@ if len(all_df) is 0:
 else:
     all_df['delta1']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-1))
     all_df['delta1_share'] = all_df.groupby('stock_code')['share_holding'].apply(lambda i:i.diff(-1))
-    all_df['delta1_money'] = all_df['close'] * all_df['delta1_share'] / 10000;
+    all_df['delta1_m'] = all_df['close'] * all_df['delta1_share'] / 10000;
     del all_df['delta1_share']
     all_df['delta2']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-2))
     all_df['delta3']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-3))
