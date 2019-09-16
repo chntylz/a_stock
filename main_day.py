@@ -29,10 +29,13 @@ today_all = stocks.todayall
 
 nowdate=datetime.datetime.now().date()
 
+
 codestock_local=stocks.get_codestock_local()
 #print(codestock_local)
 
 hdata_day.db_connect()#由于每次连接数据库都要耗时0.0几秒，故获取历史数据时统一连接
+hdata_day.delete_data_of_day_stock(nowdate.strftime("%Y-%m-%d")) #delete first
+
 t1 = clock()
 length=len(codestock_local)
 cons = ts.get_apis()

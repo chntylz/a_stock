@@ -97,6 +97,7 @@ codestock_local=stocks.get_codestock_local()
 
 hdata.db_connect()#由于每次连接数据库都要耗时0.0几秒，故获取历史数据时统一连接
 sdata.db_connect()#由于每次连接数据库都要耗时0.0几秒，故获取历史数据时统一连接
+sdata.delete_data_of_day_stock(nowdate.strftime("%Y-%m-%d")) #delete first
 
 start_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 #all_info = hdata.my2_get_all_hdata_of_stock()

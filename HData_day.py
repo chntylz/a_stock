@@ -255,4 +255,15 @@ class HData_day(object):
         
 
 
+    def delete_data_of_day_stock(self, record_date):
+        conn = psycopg2.connect(database="usr", user=self.user, password=self.password, host="127.0.0.1",
+                                port="5432")
+        cur = conn.cursor()
+        sql_temp="delete from hdata_d_table where record_date = " + "\'" + record_date + "\' ;"
+        cur.execute(sql_temp)
 
+        conn.commit()
+        conn.close()
+
+        pass
+ 
