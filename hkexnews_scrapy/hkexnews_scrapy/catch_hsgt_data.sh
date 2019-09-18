@@ -30,7 +30,7 @@ do
     echo "valid_chk is $valid_chk"
     if [[ $valid_chk -eq 1 ]]; then
         echo "holiday"
-        exit
+        continue
     fi
 
     target_file="./json/"$target_day".json"
