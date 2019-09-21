@@ -247,6 +247,9 @@ if __name__ == '__main__':
         f.write('<p style="color: #FF0000"> delta1_m: delta money of 1 day, delta share_holding * close </p>\n')
 ####################### data handle start ############################################################
         daily_df  = hsgt_get_daily_data(all_df)
+        daily_net = daily_df['delta1_m'].sum()
+        f.write('<p style="color: #FF0000"> delta1_m sum is: %.2fw rmb </p>\n'%(daily_net))
+
         delta_list = ['percent', 'delta1', 'delta2', 'delta3', 'delta4',  'delta5', 'delta10', 'delta21', 'delta120', 'delta1_m', 'delta2_m',    'delta3_m',   'delta4_m', 'delta5_m', 'delta10_m', 'delta21_m']
         lst_len = len(delta_list)
         for k in range(0, lst_len):
