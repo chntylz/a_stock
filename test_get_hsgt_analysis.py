@@ -140,7 +140,10 @@ def hsgt_write_to_file(f, k, df):
         col_len=len(list(df))
         for j in range(0, col_len): 
             f.write('        <td>\n')
-            f.write('           <a> %s</a>\n'%(list(df)[j]))
+            if (j == 0):
+                f.write('           <a> record__date</a>\n') #align
+            else:
+                f.write('           <a> %s</a>\n'%(list(df)[j]))
             f.write('        </td>\n')
         f.write('    </tr>\n')
 
