@@ -28,7 +28,8 @@ debug=0
 hdata_hsgt=HData_hsgt("usr","usr")
 hdata_hsgt.db_connect()
 
-
+#get basic stock info
+basic_df=ts.get_stock_basics()
 
 ###################################################################################
 
@@ -145,6 +146,12 @@ def hsgt_write_to_file(f, k, df):
             else:
                 f.write('           <a> %s</a>\n'%(list(df)[j]))
             f.write('        </td>\n')
+
+        #add industry
+        f.write('        <td>\n')
+        f.write('           <a> _industry_ </a>\n')
+        f.write('        </td>\n')
+
         f.write('    </tr>\n')
 
         #dataline
@@ -178,7 +185,10 @@ def hsgt_write_to_file(f, k, df):
                         f.write('           <a> %s</a>\n'%(a_array[0][j]))
                 
                 f.write('        </td>\n')
-
+            #add industry
+            f.write('        <td>\n')
+            f.write('           <a> %s </a>\n' % (basic_df.loc[tmp_stock_code]['industry']))
+            f.write('        </td>\n')
             f.write('    </tr>\n')
 
         f.write('</table>\n')

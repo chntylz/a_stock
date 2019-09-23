@@ -16,6 +16,9 @@ set_data_backend(AaronDataBackend())
 hdata=HData_day("usr","usr")
 sdata=HData_select("usr","usr")
 
+daily_df=ts.get_stock_basics()
+
+
 from sys import argv
 # 如果执行的方式错误输出使用方法
 USAGE = '''
@@ -155,6 +158,7 @@ def showImageInHTML(imageTypes,savedir):
                 f.write('<a href="%s" target="_blank"> %s </a>' % (image, tmp_image))
             f.write('---->')
             f.write('<a href="%s" target="_blank">(%s) </a>\n' % (xueqiu_url , 'xueqiu:' + stock_code_new))
+            f.write('[%s]' % (daily_df.loc[stock_code]['industry']))
             f.write('</p>\n')
             
             
