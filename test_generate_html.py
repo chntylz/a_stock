@@ -138,7 +138,7 @@ def showImageInHTML(imageTypes,savedir):
             print('%s' % (stock_code))
             
             print('%s' % (stock_code[0:2]))
-            if stock_code[0:2] == '60':
+            if stock_code[0:1] == '6':
                 stock_code_new='SH'+stock_code
             else:
                 stock_code_new='SZ'+stock_code

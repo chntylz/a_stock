@@ -154,7 +154,7 @@ def hsgt_write_to_file(f, k, df):
             f.write('    <tr>\n')
             a_array=df[i:i+1].values
             tmp_stock_code=a_array[0][1] 
-            if tmp_stock_code[0:2] == '60':
+            if tmp_stock_code[0:1] == '6':
                 stock_code_new='SH'+tmp_stock_code
             else:
                 stock_code_new='SZ'+tmp_stock_code
