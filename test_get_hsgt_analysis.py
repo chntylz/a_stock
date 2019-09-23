@@ -180,7 +180,7 @@ def hsgt_write_to_file(f, k, df):
                     if(j == 1): 
                         f.write('           <a href="%s" target="_blank"> %s[hsgt]</a>\n'%(hsgt_url, a_array[0][j]))
                     elif(j == 2):
-                        f.write('           <a href="%s" target="_blank"> %s[xueqiu]</a>\n'%(xueqiu_url, a_array[0][j]))
+                        f.write('           <a href="%s" target="_blank"> %s</a>\n'%(xueqiu_url, a_array[0][j]))
                     else:
                         f.write('           <a> %s</a>\n'%(a_array[0][j]))
                 
