@@ -332,7 +332,7 @@ for i in range(0,stock_len):
     ax.legend();
     ax2.legend();
     ax3.legend();
-    save_name = nowdate.strftime("%Y-%m-%d")
+    save_name = nowdate.strftime("%Y-%m-%d-%w")
     figure_name = save_name + '-' +  nowcode + '-' + nowname + \
                     '-' + str(int(round(O.value *100, 4))) + \
                     '-' + str(int(round(C.value *100, 4))) + \

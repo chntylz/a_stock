@@ -205,7 +205,8 @@ if __name__ == '__main__':
     print(exec_command)
     os.system(exec_command)
 
-    file_name=save_dir + '-' + latest_date
+    #file_name=save_dir + '-' + latest_date
+    file_name=save_dir + '-' + datetime.datetime.strptime(latest_date,'%Y-%m-%d').strftime("%Y-%m-%d-%w")
     newfile=save_dir + '/' + file_name + '.html'
     with open(newfile,'w') as f:
 
