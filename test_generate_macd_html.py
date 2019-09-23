@@ -32,11 +32,12 @@ nowdate=nowdate-datetime.timedelta(int(para1))
 lastdate=nowdate-datetime.timedelta(1)
 
 curr_day=nowdate.strftime("%Y-%m-%d")
+curr_day_w=nowdate.strftime("%Y-%m-%d-%w")
 last_day=lastdate.strftime("%Y-%m-%d")
 print("curr_day:%s, last_day:%s"%(curr_day, last_day))
 
 stock_data_dir="stock_data"
-curr_dir=curr_day+'-macd'
+curr_dir=curr_day_w+'-macd'
 
 def showImageInHTML(imageTypes,savedir):
     files=getAllFiles(savedir+'/' + curr_dir)
@@ -113,7 +114,7 @@ def showImageInHTML(imageTypes,savedir):
             tmp_image=image[0:image.rfind('.')]
             print('%s' % (tmp_image))
             
-            stock_code=image[11:17]
+            stock_code=image[13:19]
             print('%s' % (stock_code))
             
             print('%s' % (stock_code[0:2]))

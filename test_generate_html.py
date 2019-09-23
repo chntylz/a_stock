@@ -40,22 +40,23 @@ nowdate=nowdate-datetime.timedelta(int(para1))
 lastdate=nowdate-datetime.timedelta(1)
 
 curr_day=nowdate.strftime("%Y-%m-%d")
+curr_day_w=nowdate.strftime("%Y-%m-%d-%w")
 last_day=lastdate.strftime("%Y-%m-%d")
 print("curr_day:%s, last_day:%s"%(curr_day, last_day))
 
 stock_data_dir="stock_data"
 
 def showImageInHTML(imageTypes,savedir):
-    files=getAllFiles(savedir+'/' + curr_day)
+    files=getAllFiles(savedir+'/' + curr_day_w)
     #print("file:%s" % (files))
     images=[f for f in files if f[f.rfind('.')+1:] in imageTypes]
     #print("%s"%(images))
     images=[item for item in images if os.path.getsize(item)>5*1024]
     #print("%s"%(images))
-    #images=[curr_day+item[item.rfind('/'):] for item in images]
+    #images=[curr_day_w+item[item.rfind('/'):] for item in images]
     images=[item[item.rfind('/')+1:] for item in images]
     print("%s"%(images))
-    newfile='%s/%s'%(savedir, curr_day + '/' + curr_day + '.html')
+    newfile='%s/%s'%(savedir, curr_day_w + '/' + curr_day_w + '.html')
     
     #get continuous stock_code
     last_day = get_valid_last_day(nowdate)
@@ -63,8 +64,8 @@ def showImageInHTML(imageTypes,savedir):
     conti_list = list(conti_df['stock_code'])
     print("last_day:%s, curr_day:%s conti_list:%s" % (last_day, curr_day, conti_list))
     
-    if os.path.exists(savedir + '/' + curr_day ) == False:
-        print("%s not exist!!! return" % (savedir + '/' + curr_day ))
+    if os.path.exists(savedir + '/' + curr_day_w ) == False:
+        print("%s not exist!!! return" % (savedir + '/' + curr_day_w))
         return
     
     with open(newfile,'w') as f:
@@ -124,10 +125,12 @@ def showImageInHTML(imageTypes,savedir):
         for image in images:
 
             #'2019-07-09-600095-哈高科-873-960-960-873-997.png' 
+            #2019-09-23-1-002436-兴森科技-814-878-891-796-840.png
             tmp_image=image[0:image.rfind('.')]
             print('%s' % (tmp_image))
             
-            stock_code=image[11:17]
+            #stock_code=image[11:17]
+            stock_code=image[13:19]
 
             #funcat call
             T(curr_day)
@@ -174,7 +177,7 @@ def showImageInHTML(imageTypes,savedir):
         f.write('\n')
     
     
-    shell_cmd2='cp -rf ' + stock_data_dir + '/' + curr_day + ' /var/www/html/'+stock_data_dir+'/'
+    shell_cmd2='cp -rf ' + stock_data_dir + '/' + curr_day_w + ' /var/www/html/'+stock_data_dir+'/'
     os.system(shell_cmd2)
     print ('success,images are wrapped up in %s' % (newfile))
 
