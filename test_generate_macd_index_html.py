@@ -47,7 +47,7 @@ def showImageInHTML(imageTypes,savedir):
         f.write('    border-style: solid;\n')
         f.write('    border-color: #666666;\n')
         f.write('    background-color: #dedede;\n')
-        #f.write('}\n')
+        f.write('}\n')
         f.write('table.gridtable td {\n')
         f.write('    border-width: 1px;\n')
         f.write('    padding: 8px;\n')
