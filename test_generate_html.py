@@ -6,6 +6,7 @@ import psycopg2 #使用的是PostgreSQL数据库
 import tushare as ts
 from HData_select import *
 from HData_day import *
+from HData_hsgt import *
 import  datetime
 
 #funcat
@@ -15,6 +16,7 @@ set_data_backend(AaronDataBackend())
 
 hdata=HData_day("usr","usr")
 sdata=HData_select("usr","usr")
+hsgtdata=HData_hsgt("usr","usr")
 
 daily_df=ts.get_stock_basics()
 
@@ -151,6 +153,8 @@ def showImageInHTML(imageTypes,savedir):
 
             print('%s' % (stock_code_new))
             xueqiu_url='https://xueqiu.com/S/' + stock_code_new
+            hsgt_url='../../cgi-bin/hsgt-search.cgi?name=' + stock_code
+            hsgt_df = hsgtdata.get_all_hdata_of_stock_code(stock_code)
 
             f.write('<p>\n')
             if stock_code in conti_list:
@@ -160,7 +164,10 @@ def showImageInHTML(imageTypes,savedir):
             else:
                 f.write('<a href="%s" target="_blank"> %s </a>' % (image, tmp_image))
             f.write('---->')
-            f.write('<a href="%s" target="_blank">(%s) </a>\n' % (xueqiu_url , 'xueqiu:' + stock_code_new))
+            f.write('<a href="%s" target="_blank"> %s </a>\n' % (xueqiu_url , 'xueqiu:' + stock_code_new))
+            if (len(hsgt_df) > 0):
+                f.write('---->')
+                f.write('<a href="%s" target="_blank"> %s</a>\n'%(hsgt_url, 'hsgt:' + stock_code_new))
             f.write('[%s]' % (daily_df.loc[stock_code]['industry']))
             f.write('</p>\n')
             
