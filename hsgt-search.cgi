@@ -45,6 +45,8 @@ all_df=df
 
 if len(all_df) is 0:
     var = "data is null, please input correct code or name"
+    xueqiu_url=''
+    stock_code_tmp=name
 else:
 
     del all_df['open']
