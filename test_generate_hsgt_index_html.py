@@ -70,17 +70,9 @@ def showImageInHTML(imageTypes,savedir):
         f.write('<body>\n')
 
 
-        f.write('<h2  align="center" style="color:blue ; font-size:34px">别人贪婪时我恐惧 别人恐惧时我贪婪</h2>\n')
+        #f.write('<h2  align="center" style="color:blue ; font-size:34px">别人贪婪时我恐惧 别人恐惧时我贪婪</h2>\n')
         f.write('<table class="gridtable">\n')
-        
-        #f.write('    <tr>\n')
-        #f.write('        <th>别人贪婪时我恐惧</th>\n')
-        #f.write('        <th>别人恐惧时我贪婪</th>\n')
-        #f.write('        <th>股市有风险</th>\n')
-        #f.write('        <th>入市需谨慎</th>\n')
-        #f.write('    </tr>\n')
-        
-
+       
 
         i=0
         column=5
