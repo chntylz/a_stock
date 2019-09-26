@@ -76,7 +76,11 @@ def hsgt_handle_all_data(df):
     all_df['percent'] = all_df['percent_tmp']
     del all_df['percent_tmp']
 
-    all_df['delta1']  = all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-1))
+    all_df['delta1']  = all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-1))    
+    all_df['delta1_share'] = all_df.groupby('stock_code')['share_holding'].apply(lambda i:i.diff(-1))
+    all_df['delta1_m'] = all_df['close'] * all_df['delta1_share'] / 10000;
+    del all_df['delta1_share']
+
     all_df['delta2']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-2))
     all_df['delta3']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-3))
     all_df['delta4']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-4))
@@ -84,10 +88,6 @@ def hsgt_handle_all_data(df):
     all_df['delta10'] =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-10))
     all_df['delta21'] =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-21))
     all_df['delta120']=all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-120))
-    
-    all_df['delta1_share'] = all_df.groupby('stock_code')['share_holding'].apply(lambda i:i.diff(-1))
-    all_df['delta1_m'] = all_df['close'] * all_df['delta1_share'] / 10000;
-    del all_df['delta1_share']
     
 
     max_number=21
@@ -131,85 +131,143 @@ def hsgt_daily_sort(daily_df, orderby='delta1'):
     sort_df=daily_df.sort_values(orderby, ascending=0)
     return sort_df;
 
-def hsgt_write_to_file(f, k, df):
-        f.write('<table class="gridtable">\n')
+def hsgt_write_headline_column(f, df):
 
-
-        f.write('    <tr>\n')
-
-        #headline
-        col_len=len(list(df))
-        for j in range(0, col_len): 
-            f.write('        <td>\n')
-            if (j == 0):
-                f.write('           <a> record__date</a>\n') #align
-            else:
-                f.write('           <a> %s</a>\n'%(list(df)[j]))
-            f.write('        </td>\n')
-
-        #add industry
+    f.write('    <tr>\n')
+    #headline
+    col_len=len(list(df))
+    for j in range(0, col_len): 
         f.write('        <td>\n')
-        f.write('           <a> _industry_ </a>\n')
+        if (j == 0):
+            f.write('           <a> record__date</a>\n') #align
+        else:
+            f.write('           <a> %s</a>\n'%(list(df)[j]))
         f.write('        </td>\n')
 
-        f.write('    </tr>\n')
+    #add industry
+    f.write('        <td>\n')
+    f.write('           <a> _industry_ </a>\n')
+    f.write('        </td>\n')
 
-        #dataline
-        #f.write('%s\n'%(list(df)))
-        df_len=len(df)
-        for i in range(0, df_len):
-            f.write('    <tr>\n')
-            a_array=df[i:i+1].values
-            tmp_stock_code=a_array[0][1] 
-            if tmp_stock_code[0:1] == '6':
-                stock_code_new='SH'+tmp_stock_code
+    f.write('    </tr>\n')
+
+def hsgt_handle_link(stock_code):
+
+    tmp_stock_code=stock_code
+    if tmp_stock_code[0:1] == '6':
+        stock_code_new='SH'+tmp_stock_code
+    else:
+        stock_code_new='SZ'+tmp_stock_code
+        
+    xueqiu_url='https://xueqiu.com/S/' + stock_code_new
+    hsgt_url='../../cgi-bin/hsgt-search.cgi?name=' + tmp_stock_code
+    
+    return xueqiu_url, hsgt_url
+    
+def hsgt_write_to_file(f, k, df):
+    f.write('<table class="gridtable">\n')
+
+    #headline
+    hsgt_write_headline_column(f, df)
+
+    #dataline
+    #f.write('%s\n'%(list(df)))
+    df_len=len(df)
+    for i in range(0, df_len): #loop line
+
+        f.write('    <tr>\n')
+        a_array=df[i:i+1].values  #get line of df
+        tmp_stock_code=a_array[0][1] 
+        xueqiu_url, hsgt_url = hsgt_handle_link(tmp_stock_code)
+
+        col_len=len(list(df))
+        for j in range(0, col_len): #loop column
+            f.write('        <td>\n')
+            element_value = a_array[0][j] #get a[i][j] element
+            if k is -1: #
+                #data_column=['record_date', 'stock_code', 'stock_cname', 'percent', 'close', 'delta1', 'delta1_m', 'p_count', 'money_flag']
+                if(j == 1): 
+                    f.write('           <a href="%s" target="_blank"> %s[hsgt]</a>\n'%(hsgt_url, element_value))
+                elif(j == 2):
+                    f.write('           <a href="%s" target="_blank"> %s</a>\n'%(xueqiu_url, element_value))
+                elif(j == 3):
+                    f.write('           <a> %.2f%s</a>\n'%(element_value, '%'))
+                elif(j == 8):
+                    f.write('           <a> %.2f</a>\n'%(element_value))
+                else:
+                    f.write('           <a> %s</a>\n'%(element_value))
+            
             else:
-                stock_code_new='SZ'+tmp_stock_code
-            xueqiu_url='https://xueqiu.com/S/' + stock_code_new
-            hsgt_url='../../cgi-bin/hsgt-search.cgi?name=' + tmp_stock_code
-
-
-            for j in range(0, col_len): 
-                f.write('        <td>\n')
-
                 #set color to delta column, 5 is the position of percent
-                #record_date  stock_code  stock_cname share_holding   close  percent  delta1  delta2  delta3  delta4  delta5  delta10 delta21 delta120    delta1_m    delta2_m    delta3_m    delta4_m    delta5_m    delta10_m   delta21_m
+                #record_date,  stock_code,  stock_cname, share_holding,   close,  percent,  delta1,  delta2,  delta3,  delta4,  delta5,  delta10, delta21, delta120,    delta1_m,    delta2_m,  delta3_m, delta4_m, delta5_m,    delta10_m,   delta21_m
                 if (j == k + 5):
-                        f.write('           <a style="color: #FF0000"> %s</a>\n'%(a_array[0][j]))
+                    f.write('           <a style="color: #FF0000"> %s</a>\n'%(element_value))
                 else:
                     if(j == 1): 
-                        f.write('           <a href="%s" target="_blank"> %s[hsgt]</a>\n'%(hsgt_url, a_array[0][j]))
+                        f.write('           <a href="%s" target="_blank"> %s[hsgt]</a>\n'%(hsgt_url, element_value))
                     elif(j == 2):
-                        f.write('           <a href="%s" target="_blank"> %s</a>\n'%(xueqiu_url, a_array[0][j]))
+                        f.write('           <a href="%s" target="_blank"> %s</a>\n'%(xueqiu_url, element_value))
                     else:
-                        f.write('           <a> %s</a>\n'%(a_array[0][j]))
-                
-                f.write('        </td>\n')
-            #add industry
-            f.write('        <td>\n')
-            f.write('           <a> %s </a>\n' % (basic_df.loc[tmp_stock_code]['industry']))
+                        f.write('           <a> %s</a>\n'%(element_value))
+            
+                                
             f.write('        </td>\n')
-            f.write('    </tr>\n')
+        #add industry
+        f.write('        <td>\n')
+        f.write('           <a> %s </a>\n' % (basic_df.loc[tmp_stock_code]['industry']))
+        f.write('        </td>\n')
+        f.write('    </tr>\n')
 
-        f.write('</table>\n')
+    f.write('</table>\n')
 
-###################################################################################
+    pass
 
-if __name__ == '__main__':
-    df=hsgt_get_all_data()
-    all_df, latest_date = hsgt_handle_all_data(df)
+def hsgt_get_continuous_info(df):
+    all_df = df
+    data_list = []
+    group_by_stock_code_df=all_df.groupby('stock_code')
+    for stock_code, group_df in group_by_stock_code_df:
+        if debug:
+            print(stock_code)
+            print(group_df.head(1))
+        
+        group_df=group_df.reset_index(drop=True) #reset index
+        max_date=group_df.loc[0, 'record_date']
+        stock_cname=group_df.loc[0, 'stock_cname']
+        percent=group_df.loc[0, 'percent']
+        delta1=group_df.loc[0, 'delta1']
+        delta1_m=group_df.loc[0, 'delta1_m']
+        close=group_df.loc[0, 'close']
 
-##################### html generation start ##############################################################
-    save_dir = "hsgt"
-    exec_command = "mkdir -p " + (save_dir)
-    print(exec_command)
-    os.system(exec_command)
+        length=len(group_df)
+        money_flag = 0
+        for i in range(length):
+            #delta_p = group_df.loc[i, 'delta1'] #got error
+            delta_p = group_df.ix[i]['delta1']
+            delta_m = group_df.ix[i]['delta1_m']
+            if debug:
+                print('delta_p=%f'%(delta_p))
 
-    #file_name=save_dir + '-' + latest_date
-    file_name=save_dir + '-' + datetime.datetime.strptime(latest_date,'%Y-%m-%d').strftime("%Y-%m-%d-%w")
-    newfile=save_dir + '/' + file_name + '.html'
-    with open(newfile,'w') as f:
+            if delta_p > 0:
+                money_flag = money_flag + delta_m
+            else:
+                break
 
+        money_flag = round(money_flag,2)
+        if debug:
+            print(max_date, stock_code, stock_cname, percent, close, delta1, i, money_flag)
+
+        data_list.append([max_date, stock_code, stock_cname, percent, close, delta1, delta1_m, i, money_flag])
+
+    data_column=['record_date', 'stock_code', 'stock_cname', 'percent', 'close', 'delta1', 'delta1_m', 'p_count', 'money_flag']
+
+    df = pd.DataFrame(data_list, columns=data_column)
+    df = df.sort_values('money_flag', ascending=0)
+
+    return df
+         
+def hsgt_handle_html_head(filename):
+    with open(filename,'w') as f:
         f.write('<!DOCTYPE html>\n')
         f.write('<html>\n')
         f.write('<head>\n')
@@ -256,35 +314,70 @@ if __name__ == '__main__':
         f.write('<body>\n')
         f.write('<p style="color: #FF0000"> delta1: delta percent of 1 day </p>\n')
         f.write('<p style="color: #FF0000"> delta1_m: delta money of 1 day, delta share_holding * close </p>\n')
-####################### data handle start ############################################################
-        daily_df  = hsgt_get_daily_data(all_df)
-        daily_net = daily_df['delta1_m'].sum()
-        f.write('<p style="color: #FF0000"> delta1_m sum is: %.2fw rmb </p>\n'%(daily_net))
+    pass
 
-        delta_list = ['percent', 'delta1', 'delta2', 'delta3', 'delta4',  'delta5', 'delta10', 'delta21', 'delta120', 'delta1_m', 'delta2_m',    'delta3_m',   'delta4_m', 'delta5_m', 'delta10_m', 'delta21_m']
-        lst_len = len(delta_list)
-        for k in range(0, lst_len):
-            f.write('           <p style="color: #FF0000">------------------------------------top10 order by %s desc---------------------------------------------- </p>\n'%(delta_list[k]))
-            delta_tmp = hsgt_daily_sort(daily_df, delta_list[k])
-            delta_tmp = delta_tmp.head(10)
-            hsgt_write_to_file(f, k, delta_tmp)
-            f.write('        <td>\n')
-            f.write('        </td>\n')
-            
-####################### data handle end ############################################################
+def hsgt_handle_html_body(filename, all_df, select=0):
+    with open(filename,'a') as f:
+        if select is 0:
+            daily_df  = hsgt_get_daily_data(all_df)
+            daily_net = daily_df['delta1_m'].sum()
+            f.write('<p style="color: #FF0000"> delta1_m sum is: %.2fw rmb </p>\n'%(daily_net))
 
+            delta_list = ['percent', 'delta1', 'delta1_m', 'delta2', 'delta3', 'delta4',  'delta5', 'delta10', 'delta21', 'delta120', 'delta2_m',    'delta3_m',   'delta4_m', 'delta5_m', 'delta10_m', 'delta21_m']
+            lst_len = len(delta_list)
+            for k in range(0, lst_len):
+                f.write('           <p style="color: #FF0000">------------------------------------top10 order by %s desc---------------------------------------------- </p>\n'%(delta_list[k]))
+                delta_tmp = hsgt_daily_sort(daily_df, delta_list[k])
+                delta_tmp = delta_tmp.head(10)
+                hsgt_write_to_file(f, k, delta_tmp)
+
+        elif select is 1:
+            conti_df = hsgt_get_continuous_info(all_df)
+            conti_df = conti_df[ (conti_df.money_flag > 2000) & (conti_df.delta1_m > 2000) ]
+            hsgt_write_to_file(f, -1, conti_df)
+        
+    pass
+
+def hsgt_handle_html_end(filename):
+    with open(filename,'a') as f:
+        f.write('        <td>\n')
+        f.write('        </td>\n')
         f.write('</body>\n')
         f.write('\n')
         f.write('\n')
         f.write('</html>\n')
         f.write('\n')
 
-##################### html generation end ##############################################################
     #copy to /var/www/html/hsgt
-    newfile=save_dir + '/' + file_name + '.html'
-    exec_command = 'cp -f ' + newfile + ' /var/www/html/hsgt/'
+    exec_command = 'cp -f ' + filename + ' /var/www/html/hsgt/'
     os.system(exec_command)
 
-     
+    pass
+
+
+
+
+###################################################################################
+
+if __name__ == '__main__':
+    df=hsgt_get_all_data()
+    all_df, latest_date = hsgt_handle_all_data(df)
+
+    save_dir = "hsgt"
+    exec_command = "mkdir -p " + (save_dir)
+    print(exec_command)
+    os.system(exec_command)
+
+    file_name=save_dir + '-' + datetime.datetime.strptime(latest_date,'%Y-%m-%d').strftime("%Y-%m-%d-%w") 
+    newfile=save_dir + '/' + file_name + '.html'
+    hsgt_handle_html_head(newfile)
+    hsgt_handle_html_body(newfile, all_df, 0)
+    hsgt_handle_html_end(newfile)
+
+    file_name=save_dir + '-' + datetime.datetime.strptime(latest_date,'%Y-%m-%d').strftime("%Y-%m-%d-%w") + '-top'
+    newfile=save_dir + '/' + file_name + '.html'
+    hsgt_handle_html_head(newfile)
+    hsgt_handle_html_body(newfile, all_df, 1)
+    hsgt_handle_html_end(newfile)
 
 hdata_hsgt.db_disconnect()
