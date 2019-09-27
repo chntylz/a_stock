@@ -58,7 +58,7 @@ do
 
         #check file size
         file_size=`wc -c < $target_file_gz`
-        if [[ $file_size -le 1000 ]] && [[ $max -eq $[i+1] ]] ; then
+        if [[ $file_size -le 50000 ]] && [[ $max -eq $[i+1] ]] ; then
             echo "$i: $target_file_gz not valid, delete it"
             rm $target_file_gz
         fi

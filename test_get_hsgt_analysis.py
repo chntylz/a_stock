@@ -242,13 +242,11 @@ def hsgt_get_continuous_info(df):
         length=len(group_df)
         money_flag = 0
         for i in range(length):
-            #delta_p = group_df.loc[i, 'delta1'] #got error
-            delta_p = group_df.ix[i]['delta1']
             delta_m = group_df.ix[i]['delta1_m']
             if debug:
-                print('delta_p=%f'%(delta_p))
+                print('delta_m=%f'%(delta_m))
 
-            if delta_p > 0:
+            if delta_m >= 0:
                 money_flag = money_flag + delta_m
             else:
                 break
@@ -262,7 +260,8 @@ def hsgt_get_continuous_info(df):
     data_column=['record_date', 'stock_code', 'stock_cname', 'percent', 'close', 'delta1', 'delta1_m', 'p_count', 'money_flag']
 
     df = pd.DataFrame(data_list, columns=data_column)
-    df = df.sort_values('money_flag', ascending=0)
+    #df = df.sort_values('money_flag', ascending=0)
+    df = df.sort_values('p_count', ascending=0)
 
     return df
          
@@ -333,7 +332,8 @@ def hsgt_handle_html_body(filename, all_df, select=0):
 
         elif select is 1:
             conti_df = hsgt_get_continuous_info(all_df)
-            conti_df = conti_df[ (conti_df.money_flag > 2000) & (conti_df.delta1_m > 2000) ]
+            #select condition
+            conti_df = conti_df[ (conti_df.money_flag / conti_df.p_count > 1000) & (conti_df.money_flag > 2000)] 
             hsgt_write_to_file(f, -1, conti_df)
         
     pass
