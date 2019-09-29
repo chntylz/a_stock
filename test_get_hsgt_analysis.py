@@ -260,8 +260,11 @@ def hsgt_get_continuous_info(df):
     data_column=['record_date', 'stock_code', 'stock_cname', 'percent', 'close', 'delta1', 'delta1_m', 'p_count', 'money_flag']
 
     df = pd.DataFrame(data_list, columns=data_column)
+    df['m_per_day'] = df.money_flag / df.p_count
+    df=df.round(2)
     #df = df.sort_values('money_flag', ascending=0)
-    df = df.sort_values('p_count', ascending=0)
+    #df = df.sort_values('p_count', ascending=0)
+    df = df.sort_values('m_per_day', ascending=0)
 
     return df
          
@@ -333,7 +336,7 @@ def hsgt_handle_html_body(filename, all_df, select=0):
         elif select is 1:
             conti_df = hsgt_get_continuous_info(all_df)
             #select condition
-            conti_df = conti_df[ (conti_df.money_flag / conti_df.p_count > 1000) & (conti_df.money_flag > 2000)] 
+            conti_df = conti_df[ (conti_df.money_flag / conti_df.p_count > 1000) & (conti_df.money_flag > 2000) &(conti_df.delta1_m > 1000)] 
             hsgt_write_to_file(f, -1, conti_df)
         
     pass
