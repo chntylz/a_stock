@@ -221,7 +221,7 @@ def get_continuous_item(today, yesterday):
 def get_valid_last_day(nowdate):
     poll_flag = True
     i = 1
-    item_number = 7
+    item_number = 10
     #test
     #nowdate=nowdate-datetime.timedelta(1)
     stopdate=nowdate-datetime.timedelta(item_number) #get 7 item from hdata_day(db)
