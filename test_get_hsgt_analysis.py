@@ -222,7 +222,7 @@ def hsgt_write_to_file(f, k, df):
 
     pass
 
-def hsgt_get_continuous_info(df):
+def hsgt_get_continuous_info(df, select):
     all_df = df
     data_list = []
     group_by_stock_code_df=all_df.groupby('stock_code')
@@ -264,7 +264,10 @@ def hsgt_get_continuous_info(df):
     df=df.round(2)
     #df = df.sort_values('money_flag', ascending=0)
     #df = df.sort_values('p_count', ascending=0)
-    df = df.sort_values('m_per_day', ascending=0)
+    if select is 1:
+        df = df.sort_values('m_per_day', ascending=0)
+    elif select is 2:
+        df = df.sort_values('p_count', ascending=0)
 
     return df
          
@@ -334,7 +337,13 @@ def hsgt_handle_html_body(filename, all_df, select=0):
                 hsgt_write_to_file(f, k, delta_tmp)
 
         elif select is 1:
-            conti_df = hsgt_get_continuous_info(all_df)
+            conti_df = hsgt_get_continuous_info(all_df, 1)
+            #select condition
+            conti_df = conti_df[ (conti_df.money_flag / conti_df.p_count > 1000) & (conti_df.money_flag > 2000) &(conti_df.delta1_m > 1000)] 
+            hsgt_write_to_file(f, -1, conti_df)
+
+        elif select is 2:
+            conti_df = hsgt_get_continuous_info(all_df, 2)
             #select condition
             conti_df = conti_df[ (conti_df.money_flag / conti_df.p_count > 1000) & (conti_df.money_flag > 2000) &(conti_df.delta1_m > 1000)] 
             hsgt_write_to_file(f, -1, conti_df)
@@ -382,5 +391,12 @@ if __name__ == '__main__':
     hsgt_handle_html_head(newfile)
     hsgt_handle_html_body(newfile, all_df, 1)
     hsgt_handle_html_end(newfile)
+
+    file_name=save_dir + '-' + datetime.datetime.strptime(latest_date,'%Y-%m-%d').strftime("%Y-%m-%d-%w") + '-top_conti_day'
+    newfile=save_dir + '/' + file_name + '.html'
+    hsgt_handle_html_head(newfile)
+    hsgt_handle_html_body(newfile, all_df, 2)
+    hsgt_handle_html_end(newfile)
+
 
 hdata_hsgt.db_disconnect()

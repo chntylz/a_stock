@@ -138,7 +138,7 @@ def getAllFiles(directory):
     for dirpath, dirnames,filenames in os.walk(directory):
         if filenames!=[]:
             for file in filenames:
-                if 'index' in file or 'zheli' in file or 'macd' in file or 'hsgt' in file:
+                if ('index' in file) or ('zheli' in file) or ('macd' in file) or ('hsgt' in file ) or ('test' in file ):
                     continue
                 files.append(dirpath+'/'+file)
     # files.sort(key=len)
