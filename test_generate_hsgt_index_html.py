@@ -68,6 +68,13 @@ def showImageInHTML(imageTypes,savedir):
         f.write('\n')
         f.write('\n')
         f.write('<body>\n')
+        f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
+        f.write('<p  style="color:blue; font-size:27px">r0: rank top10</p>')
+        f.write('<p  style="color:red; font-size:27px">r1: rank by p_money </p>')
+        f.write('<p  style="color:green; font-size:27px">r2: rank by p_continous day</p>')
+        f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
+        f.write('\n')
+
 
 
         #f.write('<h2  align="center" style="color:blue ; font-size:34px">别人贪婪时我恐惧 别人恐惧时我贪婪</h2>\n')

@@ -380,19 +380,19 @@ if __name__ == '__main__':
     print(exec_command)
     os.system(exec_command)
 
-    file_name=save_dir + '-' + datetime.datetime.strptime(latest_date,'%Y-%m-%d').strftime("%Y-%m-%d-%w") 
+    file_name=save_dir + '-' + datetime.datetime.strptime(latest_date,'%Y-%m-%d').strftime("%Y-%m-%d-%w") + '-r0'
     newfile=save_dir + '/' + file_name + '.html'
     hsgt_handle_html_head(newfile)
     hsgt_handle_html_body(newfile, all_df, 0)
     hsgt_handle_html_end(newfile)
 
-    file_name=save_dir + '-' + datetime.datetime.strptime(latest_date,'%Y-%m-%d').strftime("%Y-%m-%d-%w") + '-top'
+    file_name=save_dir + '-' + datetime.datetime.strptime(latest_date,'%Y-%m-%d').strftime("%Y-%m-%d-%w") + '-r1'
     newfile=save_dir + '/' + file_name + '.html'
     hsgt_handle_html_head(newfile)
     hsgt_handle_html_body(newfile, all_df, 1)
     hsgt_handle_html_end(newfile)
 
-    file_name=save_dir + '-' + datetime.datetime.strptime(latest_date,'%Y-%m-%d').strftime("%Y-%m-%d-%w") + '-top_conti_day'
+    file_name=save_dir + '-' + datetime.datetime.strptime(latest_date,'%Y-%m-%d').strftime("%Y-%m-%d-%w") + '-r2'
     newfile=save_dir + '/' + file_name + '.html'
     hsgt_handle_html_head(newfile)
     hsgt_handle_html_body(newfile, all_df, 2)
