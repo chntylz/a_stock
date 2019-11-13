@@ -345,7 +345,8 @@ def hsgt_handle_html_body(filename, all_df, select=0):
         elif select is 2:
             conti_df = hsgt_get_continuous_info(all_df, 2)
             #select condition
-            conti_df = conti_df[ (conti_df.money_flag / conti_df.p_count > 1000) & (conti_df.money_flag > 2000) &(conti_df.delta1_m > 1000)] 
+            #conti_df = conti_df[ (conti_df.money_flag / conti_df.p_count > 1000) & (conti_df.money_flag > 2000) &(conti_df.delta1_m > 1000)] 
+            conti_df = conti_df[conti_df.money_flag > 2000] 
             hsgt_write_to_file(f, -1, conti_df)
         
     pass
