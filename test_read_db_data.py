@@ -12,6 +12,8 @@ from HData_select import *
 from HData_60m import *
 import  datetime
 
+from zig import *
+
 
 
 # basic
@@ -113,12 +115,12 @@ plt.style.use('bmh')
 fig = plt.figure(figsize=(24, 30),dpi=80)
 
 '''
-ax0  = fig.add_axes([0, 0.7, 1, 0.3])
-ax0.grid()
-ax  = fig.add_axes([0, 0.4, 1, 0.3])
-ax2 = fig.add_axes([0, 0.3, 1, 0.1])
-ax3 = fig.add_axes([0, 0.2, 1, 0.1])
-ax4 = fig.add_axes([0, 0,   1, 0.2])
+ax04  = fig.add_axes([0, 0.7, 1, 0.3])
+ax04.grid()
+ax03  = fig.add_axes([0, 0.4, 1, 0.3])
+ax02 = fig.add_axes([0, 0.3, 1, 0.1])
+ax01 = fig.add_axes([0, 0.2, 1, 0.1])
+ax00 = fig.add_axes([0, 0,   1, 0.2])
 '''
 
 stock_len=len(codestock_local)
@@ -142,7 +144,7 @@ for i in range(0,stock_len):
             print("skip code: code:%s, name:%s" % (nowcode, nowname ))
         continue
 
-    detail_info = hdata.get_limit_hdata_of_stock(nowcode, nowdate.strftime("%Y-%m-%d"), 100)
+    detail_info = hdata.get_limit_hdata_of_stock(nowcode, nowdate.strftime("%Y-%m-%d"), 300)
     #detail_info = hdata.get_limit_hdata_of_stock('000029',100) # test 'Exception: inputs are all NaN'
     #detail_info = all_info[all_info['stock_code'].isin([nowcode])]  #get date if nowcode == all_info['stock_code']
     #detail_info = detail_info.tail(100)
@@ -274,65 +276,83 @@ for i in range(0,stock_len):
 
     plt.title(nowcode + ': ' + nowname)
     
-    ax0  = fig.add_axes([0, 0.7, 1, 0.3])
-    ax0.grid()
-    ax  = fig.add_axes([0, 0.4, 1, 0.3])
-    ax2 = fig.add_axes([0, 0.3, 1, 0.1])
-    ax3 = fig.add_axes([0, 0.2, 1, 0.1])
-    ax4 = fig.add_axes([0, 0,   1, 0.2])
+    ax05  = fig.add_axes([0, 0.8, 1, 0.1])
+    ax05.grid()
+    ax04  = fig.add_axes([0, 0.55, 1, 0.25])
+    ax03  = fig.add_axes([0, 0.3, 1, 0.25])
+    ax02 = fig.add_axes([0, 0.2, 1, 0.1])
+    ax01 = fig.add_axes([0, 0.1, 1, 0.1])
+    ax00 = fig.add_axes([0, 0,   1, 0.1])
 
+    #zig
+    ax05.set_xticks(range(0, len(detail_info.index), 10))
+    ax05.set_xticklabels(detail_info.index[::10])
+    z_df, z_peers, z_d, z_k =zig(detail_info)
+    ax05.plot(z_df)
+    for i in range(len(z_peers) - 1):
+        x1 = z_peers[i]
+        y1 = z_df[z_peers[i]]
+        if i is 0:
+            continue
+        print("y1:%s" % y1)
+        ax05.vlines(x1, 0, y1, colors='blue')
+        
+        text1=z_d[x1] + '-' + str(z_k[x1])
+        ax05.annotate(text1, xy=(x1, y1 ), xytext=(x1+2 , y1), color="b",arrowprops=dict(facecolor='red', shrink=0.05))
 
-    #candles
-    ax0.set_xticks(range(0, len(detail_info.index), 10))
-    ax0.set_xticklabels(detail_info.index[::10])
-    mpf.candlestick2_ochl(ax0, detail_info['open'], detail_info['close'], detail_info['high'],
+    
+
+    #boll, candles
+    ax04.set_xticks(range(0, len(detail_info.index), 10))
+    ax04.set_xticklabels(detail_info.index[::10])
+    mpf.candlestick2_ochl(ax04, detail_info['open'], detail_info['close'], detail_info['high'],
                                   detail_info['low'], width=0.6, colorup='r', colordown='g', alpha=0.75)
     #boll
     upperband, middleband, lowerband = talib.BBANDS(np.array(detail_info['close']),timeperiod=20, nbdevdn=2, nbdevup=2)
-    ax0.plot(upperband, label="upper")
-    ax0.plot(middleband, label="middle")
-    ax0.plot(lowerband, label="bottom")
+    ax04.plot(upperband, label="upper")
+    ax04.plot(middleband, label="middle")
+    ax04.plot(lowerband, label="bottom")
 
     #candles
-    ax.set_xticks(range(0, len(detail_info.index), 10))
-    ax.set_xticklabels(detail_info.index[::10])
-    mpf.candlestick2_ochl(ax, detail_info['open'], detail_info['close'], detail_info['high'],
+    ax03.set_xticks(range(0, len(detail_info.index), 10))
+    ax03.set_xticklabels(detail_info.index[::10])
+    mpf.candlestick2_ochl(ax03, detail_info['open'], detail_info['close'], detail_info['high'],
                                   detail_info['low'], width=0.6, colorup='r', colordown='g', alpha=0.75)
     #plt.rcParams['font.sans-serif']=['Microsoft JhengHei'] 
 
     #k-line
-    ax.plot(ma_5, label='MA5')
-    ax.plot(ma_13, label='MA13')
-    ax.plot(ma_21, label='MA21')
+    ax03.plot(ma_5, label='MA5')
+    ax03.plot(ma_13, label='MA13')
+    ax03.plot(ma_21, label='MA21')
 
     #kd
-    ax2.plot(detail_info['k'], label='K-Value')
-    ax2.plot(detail_info['d'], label='D-Value')
-    ax2.set_xticks(range(0, len(detail_info.index), 10))
-    ax2.set_xticklabels(detail_info.index[::10])
+    ax02.plot(detail_info['k'], label='K-Value')
+    ax02.plot(detail_info['d'], label='D-Value')
+    ax02.set_xticks(range(0, len(detail_info.index), 10))
+    ax02.set_xticklabels(detail_info.index[::10])
 
     #macd
-    ax3.plot(dif, color="y", label="dif")
-    ax3.plot(dea, color="b", label="dea")
+    ax01.plot(dif, color="y", label="dif")
+    ax01.plot(dea, color="b", label="dea")
     red_hist = np.where(macd_hist > 0 , macd_hist, 0)
     green_hist = np.where(macd_hist < 0 , macd_hist, 0)
 
-    ax3.bar(detail_info.index, red_hist, label="Red-MACD", color='r')
-    ax3.bar(detail_info.index, green_hist, label="Green-MACD", color='g')
+    ax01.bar(detail_info.index, red_hist, label="Red-MACD", color='r')
+    ax01.bar(detail_info.index, green_hist, label="Green-MACD", color='g')
 
-    ax3.set_xticks(range(0, len(detail_info.index), 10))
-    ax3.set_xticklabels(detail_info.index[::10])
+    ax01.set_xticks(range(0, len(detail_info.index), 10))
+    ax01.set_xticklabels(detail_info.index[::10])
 
 
     #volume
-    mpf.volume_overlay(ax4, detail_info['open'], detail_info['close'], detail_info['volume'], colorup='r', colordown='g', width=0.5, alpha=0.8)
-    ax4.set_xticks(range(0, len(detail_info.index), 10))
-    ax4.set_xticklabels(detail_info.index[::10])
-    ax4.plot(ma_vol_50, label='MA50')
+    mpf.volume_overlay(ax00, detail_info['open'], detail_info['close'], detail_info['volume'], colorup='r', colordown='g', width=0.5, alpha=0.8)
+    ax00.set_xticks(range(0, len(detail_info.index), 10))
+    ax00.set_xticklabels(detail_info.index[::10])
+    ax00.plot(ma_vol_50, label='MA50')
 
-    ax.legend();
-    ax2.legend();
-    ax3.legend();
+    ax03.legend();
+    ax02.legend();
+    ax01.legend();
     save_name = nowdate.strftime("%Y-%m-%d-%w")
     figure_name = save_name + '-' +  nowcode + '-' + nowname + \
                     '-' + str(int(round(O.value *100, 4))) + \
