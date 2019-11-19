@@ -50,7 +50,7 @@ set_data_backend(AaronDataBackend())
 #debug switch
 debug = False;
 
-def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig):
+def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name):
     log.debug("code:%s, name:%s" % (nowcode, nowname ))
     if debug:
         print("code:%s, name:%s" % (nowcode, nowname ))
@@ -207,7 +207,7 @@ def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig):
     exec_command = "mkdir -p " + save_dir
     os.system(exec_command)
 
-    save_dir = save_dir + "/" + save_name
+    save_dir = save_dir + "/" + save_name + sub_name
     exec_command_1 = "mkdir -p " + save_dir
     os.system(exec_command_1)
 

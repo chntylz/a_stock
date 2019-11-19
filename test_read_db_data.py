@@ -245,7 +245,8 @@ for i in range(0,stock_len):
     
 
     save_dir = 'stock_data'
-    plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig) 
+    sub_name = ''
+    plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name) 
     ################################################################
 
 
