@@ -287,18 +287,26 @@ for i in range(0,stock_len):
     #zig
     ax05.set_xticks(range(0, len(detail_info.index), 10))
     ax05.set_xticklabels(detail_info.index[::10])
+
+    #add label and vlines for zig
     z_df, z_peers, z_d, z_k =zig(detail_info)
     ax05.plot(z_df)
-    for i in range(len(z_peers) - 1):
+    z_len = len(z_peers)
+    for i in range(z_len): 
+        #print("i%d"%i)
         x1 = z_peers[i]
         y1 = z_df[z_peers[i]]
-        if i is 0:
+
+        text1=z_d[x1] + '-' + str(z_k[x1])
+        ax05.annotate(text1, xy=(x1, y1 ), xytext=(x1+2 , y1), color="b",arrowprops=dict(facecolor='red', shrink=0.05))
+
+        if i is 0 or i is (z_len - 1):
+            #skip plot.vlines for first and last
             continue
+
         print("y1:%s" % y1)
         ax05.vlines(x1, 0, y1, colors='blue')
         
-        text1=z_d[x1] + '-' + str(z_k[x1])
-        ax05.annotate(text1, xy=(x1, y1 ), xytext=(x1+2 , y1), color="b",arrowprops=dict(facecolor='red', shrink=0.05))
 
     
 
