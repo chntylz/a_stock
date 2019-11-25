@@ -48,6 +48,61 @@ print("curr_day:%s, last_day:%s"%(curr_day, last_day))
 
 stock_data_dir="stock_data"
 
+def generate_head_html(file_f, day):
+    f = file_f
+    curr_day = day
+    f.write('<!DOCTYPE html>\n')
+    f.write('<html>\n')
+    f.write('<head>\n')
+    f.write('<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n')
+    f.write('<title> %s </title>\n'%(curr_day))
+    f.write('\n')
+    f.write('\n')
+    f.write('<style type="text/css">a {text-decoration: none}</style>\n')
+    f.write('\n')
+
+    f.write('</head>\n')
+    f.write('<body>\n')
+    f.write('\n')
+    f.write('\n')
+    f.write('\n')
+    f.write('\n')
+    f.write('<p> 日期 %s </p>\n' %(curr_day))
+
+    df = get_today_item(curr_day)
+
+    # 找出上涨的股票
+    df_up = df[df['p_change'] > 0.00]
+    # 走平股数
+    df_even = df[df['p_change'] == 0.00]
+    # 找出下跌的股票
+    df_down = df[df['p_change'] < 0.00]
+
+    # 找出涨停的股票
+    limit_up = df[df['p_change'] >= 9.70]
+    limit_down = df[df['p_change'] <= -9.70]
+
+    s_debug= ('<p> A股上涨个数： %d,  A股下跌个数： %d,  A股走平个数:  %d</p>' % (df_up.shape[0], df_down.shape[0], df_even.shape[0]))
+    print(s_debug)
+    f.write('%s\n'%(s_debug))
+
+    s_debug=('<p> 涨停数量：%d 个</p>' % (limit_up.shape[0]))
+    print(s_debug)
+    f.write('%s\n'%(s_debug))
+
+    s_debug=('<p> 跌停数量：%d 个</p>' % (limit_down.shape[0]))
+    print(s_debug)
+    f.write('%s\n'%(s_debug))
+
+    f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
+    #f.write('<p>蓝色：连续两天涨幅3个点以上   红色:连续三天涨幅3个点以上    绿色: 连续两天涨幅3个点以上，并且当天跳空高开2个点以上 /p>\n')
+    f.write('<p  style="color:blue;">蓝色: 连续两天涨幅3个点以上   </p>')
+    f.write('<p  style="color:red;">红色: 连续三天涨幅3个点以上   </p>')
+    f.write('<p  style="color:green;">绿色: 连续两天涨幅3个点以上，并且当天跳空高开2个点以上 </p>')
+    f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
+    f.write('\n')
+
+
 def showImageInHTML(imageTypes,savedir):
     files=getAllFiles(savedir+'/' + curr_day_w)
     #print("file:%s" % (files))
@@ -72,57 +127,7 @@ def showImageInHTML(imageTypes,savedir):
     
     with open(newfile,'w') as f:
 
-        f.write('<!DOCTYPE html>\n')
-        f.write('<html>\n')
-        f.write('<head>\n')
-        f.write('<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n')
-        f.write('<title> %s </title>\n'%(curr_day))
-        f.write('\n')
-        f.write('\n')
-        f.write('<style type="text/css">a {text-decoration: none}</style>\n')
-        f.write('\n')
-
-        f.write('</head>\n')
-        f.write('<body>\n')
-        f.write('\n')
-        f.write('\n')
-        f.write('\n')
-        f.write('\n')
-        f.write('<p> 日期 %s </p>\n' %(curr_day))
-
-        df = get_today_item(curr_day)
-
-        # 找出上涨的股票
-        df_up = df[df['p_change'] > 0.00]
-        # 走平股数
-        df_even = df[df['p_change'] == 0.00]
-        # 找出下跌的股票
-        df_down = df[df['p_change'] < 0.00]
-
-        # 找出涨停的股票
-        limit_up = df[df['p_change'] >= 9.70]
-        limit_down = df[df['p_change'] <= -9.70]
-
-        s_debug= ('<p> A股上涨个数： %d,  A股下跌个数： %d,  A股走平个数:  %d</p>' % (df_up.shape[0], df_down.shape[0], df_even.shape[0]))
-        print(s_debug)
-        f.write('%s\n'%(s_debug))
-
-        s_debug=('<p> 涨停数量：%d 个</p>' % (limit_up.shape[0]))
-        print(s_debug)
-        f.write('%s\n'%(s_debug))
-
-        s_debug=('<p> 跌停数量：%d 个</p>' % (limit_down.shape[0]))
-        print(s_debug)
-        f.write('%s\n'%(s_debug))
-
-        f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
-        #f.write('<p>蓝色：连续两天涨幅3个点以上   红色:连续三天涨幅3个点以上    绿色: 连续两天涨幅3个点以上，并且当天跳空高开2个点以上 /p>\n')
-        f.write('<p  style="color:blue;">蓝色: 连续两天涨幅3个点以上   </p>')
-        f.write('<p  style="color:red;">红色: 连续三天涨幅3个点以上   </p>')
-        f.write('<p  style="color:green;">绿色: 连续两天涨幅3个点以上，并且当天跳空高开2个点以上 </p>')
-        f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
-        f.write('\n')
-
+        generate_head_html(f, curr_day)
 
         for image in images:
 
