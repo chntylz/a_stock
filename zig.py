@@ -91,7 +91,7 @@ def zig(df):
         for j in range(peer_end_i - peer_start_i +1):
             z[j + peer_start_i] = start_value + a*j
     
-    print(u'...转向点的阀值、个数、位置和日期...')        
+    # print(u'...转向点的阀值、个数、位置和日期...')        
     print(x, len(peers))
     print("peers:%s" % peers)
     dates = [d[i] for i in peers]
