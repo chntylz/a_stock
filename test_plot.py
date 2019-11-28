@@ -145,6 +145,7 @@ def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name
     
 
     #boll, candles
+    ax04.set_title(nowcode + '-' + nowname)
     ax04.set_xticks(range(0, len(detail_info.index), 10))
     ax04.set_xticklabels(detail_info.index[::10])
     mpf.candlestick2_ochl(ax04, detail_info['open'], detail_info['close'], detail_info['high'],

@@ -23,7 +23,7 @@ import  datetime
 debug=0
 
 nowdate=datetime.datetime.now().date()
-nowdate=nowdate-datetime.timedelta(1)
+#nowdate=nowdate-datetime.timedelta(1)
 
 hdata_day=HData_day("usr","usr")
 hdata_day.db_connect()
@@ -169,7 +169,7 @@ print ('   code or name <input type="text" name="name" />')
 print ('   <input type="submit" />')
 print ('   </form>')
 print ('   <a href="%s" target="_blank"> %s[xueqiu]</a>' % (xueqiu_url, stock_code_tmp))
-print ('   <a href="%s" target="_blank"> picture</a>' % ('http://148.70.81.64/test.png'))
+print ('   <a href="%s" target="_blank"> picture</a>' % ('../html/test.png'))
 print ('   <p></p>')
 print ('   %s'% var)
 print (' </body>')
