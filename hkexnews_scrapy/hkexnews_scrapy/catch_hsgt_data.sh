@@ -46,8 +46,10 @@ do
         echo $target_file_gz
 
         if [ ! -f $target_file_gz ]; then
-            echo 'scrapy crawl hkexnews -a date='$target_day  '-o '$target_file
-            scrapy crawl hkexnews -a date=$target_day -o $target_file
+            #echo 'scrapy crawl hkexnews -a date='$target_day  '-o '$target_file
+            #scrapy crawl hkexnews -a date=$target_day -o $target_file
+            echo 'scrapy crawl hkexnews_oneday -a date='$target_day  '-o '$target_file
+            scrapy crawl hkexnews_oneday -a date=$target_day -o $target_file
 
             tar czf $target_file_gz $target_file 
             echo 'tar czf' $target_file_gz $target_file 
