@@ -19,6 +19,7 @@ sdata=HData_select("usr","usr")
 hsgtdata=HData_hsgt("usr","usr")
 
 daily_df=ts.get_stock_basics()
+dict_industry={}
 
 
 from sys import argv
@@ -47,6 +48,14 @@ last_day=lastdate.strftime("%Y-%m-%d")
 print("curr_day:%s, last_day:%s"%(curr_day, last_day))
 
 stock_data_dir="stock_data"
+
+def insert_industry(dict_name, key):
+    if dict_name.get(key) is None :
+       dict_name.setdefault(key, 1)
+    else:
+        dict_name[key]=dict_name[key] + 1
+
+
 
 def generate_head_html(file_f, day):
     f = file_f
@@ -173,8 +182,10 @@ def showImageInHTML(imageTypes,savedir):
             if (len(hsgt_df) > 0):
                 f.write('---->')
                 f.write('<a href="%s" target="_blank"> %s</a>\n'%(hsgt_url, 'hsgt:' + stock_code_new))
-            f.write('[%s]' % (daily_df.loc[stock_code]['industry']))
+            industry_name = daily_df.loc[stock_code]['industry']
+            f.write('[%s]' % (industry_name))
             f.write('</p>\n')
+            insert_industry(dict_industry, industry_name)
             
             
         f.write('\n')
@@ -182,6 +193,10 @@ def showImageInHTML(imageTypes,savedir):
         f.write('\n')
         f.write('\n')
         f.write('\n')
+        f.write('\n')
+        f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
+        f.write('\n')
+        f.write('<p>industry %s</p>\n' % (sorted(dict_industry.items(),key=lambda x:x[1],reverse=True)))
         f.write('\n')
         f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
         f.write('</body>\n')
