@@ -18,7 +18,7 @@ stocks=Stocks("usr","usr")
 hdata_fina=HData_fina("usr","usr")
 debug = False
    
-def get_fina_data():
+def set_fina_data():
     nowdate=datetime.datetime.now().date()
 
 
@@ -33,11 +33,9 @@ def get_fina_data():
     #for i in range(0, 1):
         print("----------------------------------------------------------")
         
-        #add delay for 80/min limitation
-        time.sleep(0.5)
         
         nowcode=codestock_local[i][0]
-        #nowcode='600485'
+        #nowcode='000401'
 
         #add SH or SZ because fina interface request
         if nowcode[0:1] == '6':
@@ -51,6 +49,9 @@ def get_fina_data():
         
         maxdate=hdata_fina.db_get_maxdate_of_stock(nowcode)
         print('maxdate:%s, nowdate:%s' % (maxdate, nowdate))
+
+        #add delay for 80/min limitation
+        time.sleep(0.5)
 
         if(maxdate):
             print("%s: fina is already exist!" % nowcode)
@@ -68,7 +69,14 @@ def get_fina_data():
             continue
 
         fina_data=fina_data.fillna(0)
-        fina_data['ts_code']=nowcode
+       
+        if debug:
+            print("ts_code:%s" % fina_data['ts_code'][1])
+
+        fina_data['ts_code']= str(nowcode) 
+
+        if debug:
+            print("ts_code:%s" % fina_data['ts_code'][1])
 
 
         if debug:
@@ -90,14 +98,14 @@ if __name__ == '__main__':
 
     hdata_fina.db_connect()#由于每次连接数据库都要耗时0.0几秒，故获取历史数据时统一连接
 
-    #hdata_fina.db_hdata_fina_create()#如果还没有表则需要创建
-    df =  get_fina_data()
+    hdata_fina.db_hdata_fina_create()#如果还没有表则需要创建
+    df =  set_fina_data()
     t2 = clock()
     print("t1:%s, t2:%s, delta=%s"%(t1, t2, t2-t1))
     hdata_fina.db_disconnect()
 
 
-
+#####################################################################################
 '''
 ts_code                         varchar , /*  srt Y   TS代码 */
 ann_date                        date , /*  srt Y   公告日期 */

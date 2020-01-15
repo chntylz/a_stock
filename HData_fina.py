@@ -6,6 +6,8 @@ import tushare as ts
 import pandas as pd
 from time import clock
 
+debug = False
+
 class HData_fina(object):
     def __init__(self,user,password):
         # self.aaa = aaa
@@ -180,11 +182,14 @@ class HData_fina(object):
                 #str_temp+="\'"+data.index[i]+"\'"
                 # str_temp+="\'"+data.index[i].strftime("%Y-%m-%d")+"\'"
 
-                for j in range(0,data.shape[1] - 1):
+                str_temp+= "\'" + str(data.iloc[i,0]) + "\'" + ","  # fix bug: 000401 save -> 401 read
+                for j in range(1,data.shape[1] - 1):
                     #str_temp+=","+"\'"+str(data.iloc[i,j])+"\'"
                     str_temp+= str(data.iloc[i,j]) + ","
-                    #print("i=%d j=%d" % (i, j))
-                #print("i=%d j=%d" % (i, j))
+                    if debug:
+                        print("i=%d j=%d" % (i, j))
+                if debug:
+                    print("i=%d j=%d" % (i, j))
                 str_temp+= str(data.iloc[i,j+1])
                     
                 sql_cmd= sql_cmd + "("+str_temp+")"
@@ -194,13 +199,16 @@ class HData_fina(object):
                     sql_cmd = sql_cmd+","
 
                 if i % each_num == 0:
-                    #print(sql_cmd)
+                    if debug:
+                        print(sql_cmd)
+
                     if(sql_cmd != ""):
                         self.cur.execute("insert into hdata_fina_table (ts_code, ann_date, end_date, eps, dt_eps, total_revenue_ps, revenue_ps, capital_rese_ps, surplus_rese_ps, undist_profit_ps, extra_item, profit_dedt, gross_margin, current_ratio, quick_ratio, cash_ratio, ar_turn, ca_turn, fa_turn, assets_turn, op_income, ebit, ebitda, fcff, fcfe, current_exint, noncurrent_exint, interestdebt, netdebt, tangible_asset, working_capital, networking_capital, invest_capital, retained_earnings, diluted2_eps, bps, ocfps, retainedps, cfps, ebit_ps, fcff_ps, fcfe_ps, netprofit_margin, grossprofit_margin, cogs_of_sales, expense_of_sales, profit_to_gr, saleexp_to_gr, adminexp_of_gr, finaexp_of_gr, impai_ttm, gc_of_gr, op_of_gr, ebit_of_gr, roe, roe_waa, roe_dt, roa, npta, roic, roe_yearly, roa2_yearly, debt_to_assets, assets_to_eqt, dp_assets_to_eqt, ca_to_assets, nca_to_assets, tbassets_to_totalassets, int_to_talcap, eqt_to_talcapital, currentdebt_to_debt, longdeb_to_debt, ocf_to_shortdebt, debt_to_eqt, eqt_to_debt, eqt_to_interestdebt, tangibleasset_to_debt, tangasset_to_intdebt, tangibleasset_to_netdebt, ocf_to_debt, turn_days, roa_yearly, roa_dp, fixed_assets, profit_to_op, q_saleexp_to_gr, q_gc_to_gr, q_roe, q_dt_roe, q_npta, q_ocf_to_sales, basic_eps_yoy, dt_eps_yoy, cfps_yoy, op_yoy, ebt_yoy, netprofit_yoy, dt_netprofit_yoy, ocf_yoy, roe_yoy, bps_yoy, assets_yoy, eqt_yoy, tr_yoy, or_yoy, q_sales_yoy, q_op_qoq, equity_yoy ) values "+sql_cmd+";")
                         self.conn.commit()
                         sql_cmd = ""
 
-            #print(sql_cmd)
+            if debug:
+                print(sql_cmd)
             if(sql_cmd != ""):
                 self.cur.execute("insert into hdata_fina_table (ts_code, ann_date, end_date, eps, dt_eps, total_revenue_ps, revenue_ps, capital_rese_ps, surplus_rese_ps, undist_profit_ps, extra_item, profit_dedt, gross_margin, current_ratio, quick_ratio, cash_ratio, ar_turn, ca_turn, fa_turn, assets_turn, op_income, ebit, ebitda, fcff, fcfe, current_exint, noncurrent_exint, interestdebt, netdebt, tangible_asset, working_capital, networking_capital, invest_capital, retained_earnings, diluted2_eps, bps, ocfps, retainedps, cfps, ebit_ps, fcff_ps, fcfe_ps, netprofit_margin, grossprofit_margin, cogs_of_sales, expense_of_sales, profit_to_gr, saleexp_to_gr, adminexp_of_gr, finaexp_of_gr, impai_ttm, gc_of_gr, op_of_gr, ebit_of_gr, roe, roe_waa, roe_dt, roa, npta, roic, roe_yearly, roa2_yearly, debt_to_assets, assets_to_eqt, dp_assets_to_eqt, ca_to_assets, nca_to_assets, tbassets_to_totalassets, int_to_talcap, eqt_to_talcapital, currentdebt_to_debt, longdeb_to_debt, ocf_to_shortdebt, debt_to_eqt, eqt_to_debt, eqt_to_interestdebt, tangibleasset_to_debt, tangasset_to_intdebt, tangibleasset_to_netdebt, ocf_to_debt, turn_days, roa_yearly, roa_dp, fixed_assets, profit_to_op, q_saleexp_to_gr, q_gc_to_gr, q_roe, q_dt_roe, q_npta, q_ocf_to_sales, basic_eps_yoy, dt_eps_yoy, cfps_yoy, op_yoy, ebt_yoy, netprofit_yoy, dt_netprofit_yoy, ocf_yoy, roe_yoy, bps_yoy, assets_yoy, eqt_yoy, tr_yoy, or_yoy, q_sales_yoy, q_op_qoq, equity_yoy ) values "+sql_cmd+";")
                 self.conn.commit()
@@ -230,13 +238,32 @@ class HData_fina(object):
         return df
         pass
         
-
-      
-    def my2_get_all_hdata_of_stock(self):#将数据库中的数据读取并转为dataframe格式返回
+    def get_all_hdata_of_stock(self):#将数据库中的数据读取并转为dataframe格式返回
         conn = psycopg2.connect(database="usr", user=self.user, password=self.password, host="127.0.0.1",
                                 port="5432")
         cur = conn.cursor()
         sql_temp="select * from hdata_fina_table;"
+        cur.execute(sql_temp)
+        rows = cur.fetchall()
+
+        conn.commit()
+        conn.close()
+
+        dataframe_cols=[tuple[0] for tuple in cur.description]#列名和数据库列一致
+        df = pd.DataFrame(rows, columns=dataframe_cols)
+        index =  df["ann_date"]
+        df = pd.DataFrame(rows, index=index, columns=dataframe_cols)
+        
+        return df
+        pass
+        
+ 
+      
+    def get_all_hdata_of_stock_accord_time(self, start_time, end_time):#将数据库中的数据读取并转为dataframe格式返回
+        conn = psycopg2.connect(database="usr", user=self.user, password=self.password, host="127.0.0.1",
+                                port="5432")
+        cur = conn.cursor()
+        sql_temp="select * from hdata_fina_table where ann_date between " + "\'" + start_time + "\'  and  " + "\'" + end_time + "\';"
         cur.execute(sql_temp)
         rows = cur.fetchall()
 
