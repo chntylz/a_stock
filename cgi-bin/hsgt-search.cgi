@@ -75,7 +75,8 @@ def plot_stock_picture(nowcode, nowname):
 
 def get_xueqiu_url(stock_code_tmp):
 
-    if stock_code_tmp[0:2] == '60':
+    #if stock_code_tmp[0:2] == '60':
+    if stock_code_tmp[0:1] == '6':
         stock_code_new='SH'+stock_code_tmp
     else:
         stock_code_new='SZ'+stock_code_tmp
