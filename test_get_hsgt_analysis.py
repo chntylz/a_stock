@@ -255,21 +255,21 @@ def hsgt_get_continuous_info(df, select):
         if debug:
             print(max_date, stock_code, stock_cname, percent, close, delta1, i, money_flag)
 
-        data_list.append([max_date, stock_code, stock_cname, percent, close, delta1, delta1_m, i, money_flag])
+        data_list.append([max_date, stock_code, stock_cname, percent, close, delta1, delta1_m, i, money_flag])  #i  is p_count
 
     data_column=['record_date', 'stock_code', 'stock_cname', 'percent', 'close', 'delta1', 'delta1_m', 'p_count', 'money_flag']
 
-    df = pd.DataFrame(data_list, columns=data_column)
-    df['m_per_day'] = df.money_flag / df.p_count
-    df=df.round(2)
-    #df = df.sort_values('money_flag', ascending=0)
-    #df = df.sort_values('p_count', ascending=0)
+    ret_df = pd.DataFrame(data_list, columns=data_column)
+    ret_df['m_per_day'] = ret_df.money_flag / ret_df.p_count
+    ret_df=ret_df.round(2)
+    #ret_df = ret_df.sort_values('money_flag', ascending=0)
+    #ret_df = ret_df.sort_values('p_count', ascending=0)
     if select is 1:
-        df = df.sort_values('m_per_day', ascending=0)
+        ret_df = ret_df.sort_values('m_per_day', ascending=0)
     elif select is 2:
-        df = df.sort_values('p_count', ascending=0)
+        ret_df = ret_df.sort_values('p_count', ascending=0)
 
-    return df
+    return ret_df
          
 def hsgt_handle_html_head(filename):
     with open(filename,'w') as f:
