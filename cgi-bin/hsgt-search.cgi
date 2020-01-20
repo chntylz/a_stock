@@ -81,8 +81,9 @@ def get_xueqiu_url(stock_code_tmp):
     else:
         stock_code_new='SZ'+stock_code_tmp
     xueqiu_url='https://xueqiu.com/S/' + stock_code_new
+    finance_url = xueqiu_url + '/detail#/ZYCWZB'
 
-    return xueqiu_url
+    return xueqiu_url, finance_url
 
 
 def gete_df_and_stock_code(name):
@@ -150,7 +151,7 @@ def get_html_data(all_df):
     return var
 
 all_df, stock_code_tmp = gete_df_and_stock_code(name)
-xueqiu_url=get_xueqiu_url(stock_code_tmp)
+xueqiu_url, finance_url=get_xueqiu_url(stock_code_tmp)
 var = get_html_data(all_df)
 
 #print(df['stock_cname'].head(10))
@@ -170,6 +171,7 @@ print ('   code or name <input type="text" name="name" />')
 print ('   <input type="submit" />')
 print ('   </form>')
 print ('   <a href="%s" target="_blank"> %s[xueqiu]</a>' % (xueqiu_url, stock_code_tmp))
+print ('   <a href="%s" target="_blank"> [finance]</a>' % (finance_url))
 print ('   <a href="%s" target="_blank"> picture</a>' % ('../html/test.png'))
 print ('   <p></p>')
 print ('   %s'% var)
