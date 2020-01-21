@@ -264,9 +264,9 @@ def hsgt_get_continuous_info(df, select):
     ret_df=ret_df.round(2)
     #ret_df = ret_df.sort_values('money_flag', ascending=0)
     #ret_df = ret_df.sort_values('p_count', ascending=0)
-    if select is 1:
+    if select is 'p_money':
         ret_df = ret_df.sort_values('m_per_day', ascending=0)
-    elif select is 2:
+    elif select is 'p_continous_day':
         ret_df = ret_df.sort_values('p_count', ascending=0)
 
     return ret_df
@@ -321,9 +321,9 @@ def hsgt_handle_html_head(filename):
         f.write('<p style="color: #FF0000"> delta1_m: delta money of 1 day, delta share_holding * close </p>\n')
     pass
 
-def hsgt_handle_html_body(filename, all_df, select=0):
+def hsgt_handle_html_body(filename, all_df, select='topy10'):
     with open(filename,'a') as f:
-        if select is 0:
+        if select is 'top10':
             daily_df  = hsgt_get_daily_data(all_df)
             daily_net = daily_df['delta1_m'].sum()
             f.write('<p style="color: #FF0000"> delta1_m sum is: %.2fw rmb </p>\n'%(daily_net))
@@ -336,14 +336,14 @@ def hsgt_handle_html_body(filename, all_df, select=0):
                 delta_tmp = delta_tmp.head(10)
                 hsgt_write_to_file(f, k, delta_tmp)
 
-        elif select is 1:
-            conti_df = hsgt_get_continuous_info(all_df, 1)
+        elif select is 'p_money':
+            conti_df = hsgt_get_continuous_info(all_df, 'p_money')
             #select condition
             conti_df = conti_df[ (conti_df.money_flag / conti_df.p_count > 1000) & (conti_df.money_flag > 2000) &(conti_df.delta1_m > 1000)] 
             hsgt_write_to_file(f, -1, conti_df)
 
-        elif select is 2:
-            conti_df = hsgt_get_continuous_info(all_df, 2)
+        elif select is 'p_continous_day':
+            conti_df = hsgt_get_continuous_info(all_df, 'p_continous_day')
             #select condition
             #conti_df = conti_df[ (conti_df.money_flag / conti_df.p_count > 1000) & (conti_df.money_flag > 2000) &(conti_df.delta1_m > 1000)] 
             conti_df = conti_df[conti_df.money_flag > 2000] 
@@ -384,19 +384,19 @@ if __name__ == '__main__':
     file_name=save_dir + '-' + datetime.datetime.strptime(latest_date,'%Y-%m-%d').strftime("%Y-%m-%d-%w") + '-r0'
     newfile=save_dir + '/' + file_name + '.html'
     hsgt_handle_html_head(newfile)
-    hsgt_handle_html_body(newfile, all_df, 0)
+    hsgt_handle_html_body(newfile, all_df, 'top10')
     hsgt_handle_html_end(newfile)
 
     file_name=save_dir + '-' + datetime.datetime.strptime(latest_date,'%Y-%m-%d').strftime("%Y-%m-%d-%w") + '-r1'
     newfile=save_dir + '/' + file_name + '.html'
     hsgt_handle_html_head(newfile)
-    hsgt_handle_html_body(newfile, all_df, 1)
+    hsgt_handle_html_body(newfile, all_df, 'p_money')
     hsgt_handle_html_end(newfile)
 
     file_name=save_dir + '-' + datetime.datetime.strptime(latest_date,'%Y-%m-%d').strftime("%Y-%m-%d-%w") + '-r2'
     newfile=save_dir + '/' + file_name + '.html'
     hsgt_handle_html_head(newfile)
-    hsgt_handle_html_body(newfile, all_df, 2)
+    hsgt_handle_html_body(newfile, all_df, 'p_continous_day')
     hsgt_handle_html_end(newfile)
 
 
