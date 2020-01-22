@@ -323,10 +323,10 @@ def hsgt_handle_html_head(filename):
 
 def hsgt_handle_html_body(filename, all_df, select='topy10'):
     with open(filename,'a') as f:
+        daily_df  = hsgt_get_daily_data(all_df)
+        daily_net = daily_df['delta1_m'].sum()
+        f.write('<p style="color: #FF0000"> delta1_m sum is: %.2fw rmb </p>\n'%(daily_net))
         if select is 'top10':
-            daily_df  = hsgt_get_daily_data(all_df)
-            daily_net = daily_df['delta1_m'].sum()
-            f.write('<p style="color: #FF0000"> delta1_m sum is: %.2fw rmb </p>\n'%(daily_net))
 
             delta_list = ['percent', 'delta1', 'delta1_m', 'delta2', 'delta3', 'delta4',  'delta5', 'delta10', 'delta21', 'delta120', 'delta2_m',    'delta3_m',   'delta4_m', 'delta5_m', 'delta10_m', 'delta21_m']
             lst_len = len(delta_list)
