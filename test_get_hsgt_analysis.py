@@ -161,8 +161,10 @@ def hsgt_handle_link(stock_code):
         
     xueqiu_url='https://xueqiu.com/S/' + stock_code_new
     hsgt_url='../../cgi-bin/hsgt-search.cgi?name=' + tmp_stock_code
+
+    fina_url = xueqiu_url + '/detail#/ZYCWZB'    
+    return xueqiu_url, hsgt_url, fina_url
     
-    return xueqiu_url, hsgt_url
     
 def hsgt_write_to_file(f, k, df):
     f.write('<table class="gridtable">\n')
@@ -178,7 +180,7 @@ def hsgt_write_to_file(f, k, df):
         f.write('    <tr>\n')
         a_array=df[i:i+1].values  #get line of df
         tmp_stock_code=a_array[0][1] 
-        xueqiu_url, hsgt_url = hsgt_handle_link(tmp_stock_code)
+        xueqiu_url, hsgt_url, fina_url = hsgt_handle_link(tmp_stock_code)
 
         col_len=len(list(df))
         for j in range(0, col_len): #loop column
@@ -186,7 +188,9 @@ def hsgt_write_to_file(f, k, df):
             element_value = a_array[0][j] #get a[i][j] element
             if k is -1: #
                 #data_column=['record_date', 'stock_code', 'stock_cname', 'percent', 'close', 'delta1', 'delta1_m', 'p_count', 'money_flag']
-                if(j == 1): 
+                if(j == 0): 
+                    f.write('           <a href="%s" target="_blank"> %s[fina]</a>\n'%(fina_url, element_value))
+                elif(j == 1): 
                     f.write('           <a href="%s" target="_blank"> %s[hsgt]</a>\n'%(hsgt_url, element_value))
                 elif(j == 2):
                     f.write('           <a href="%s" target="_blank"> %s</a>\n'%(xueqiu_url, element_value))
