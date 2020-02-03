@@ -3,7 +3,7 @@
 #check whether date is valid, or not
 function is_holiday() 
 {
-    arr=('20190913','20190914', '20191002','20191003','20191004', '20191005', '20200101', '20200124', '20200127', '20200128', '20200129', '20200130')
+    arr=('20190913','20190914', '20191002','20191003','20191004', '20191005', '20200101','20200124', '20200127', '20200128', '20200129', '20200130', '20200131')
     sub_str=$1
     echo "target_day is $sub_str " 
 
@@ -29,7 +29,7 @@ do
     valid_chk=$?
     echo "valid_chk is $valid_chk"
     if [[ $valid_chk -eq 1 ]]; then
-        echo "holiday"
+        echo "holiday, skip this day !!!"
         continue
     fi
 
@@ -40,16 +40,16 @@ do
     weekday=`date -d $target_day +%w`
     echo "$target_day is $weekday"
     if [[ $weekday -eq 0 || $weekday -eq 6 ]];then
-        echo "Sunday or Saturday"
+        echo "Sunday or Saturday, skip this day!!!"
     else
         echo "workday"
         echo $target_file_gz
 
         if [ ! -f $target_file_gz ]; then
-            #echo 'scrapy crawl hkexnews -a date='$target_day  '-o '$target_file
-            #scrapy crawl hkexnews -a date=$target_day -o $target_file
-            echo 'scrapy crawl hkexnews_oneday -a date='$target_day  '-o '$target_file
-            scrapy crawl hkexnews_oneday -a date=$target_day -o $target_file
+            echo 'scrapy crawl hkexnews -a date='$target_day  '-o '$target_file
+            scrapy crawl hkexnews -a date=$target_day -o $target_file
+            #echo 'scrapy crawl hkexnews_oneday -a date='$target_day  '-o '$target_file
+            #scrapy crawl hkexnews_oneday -a date=$target_day -o $target_file
 
             tar czf $target_file_gz $target_file 
             echo 'tar czf' $target_file_gz $target_file 
