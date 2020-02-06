@@ -140,13 +140,13 @@ for i in range(0,stock_len):
 
     #skip ST
     #if ('ST' in nowname or '300' in nowcode):
-    if ('ST' in nowname):
+    if ('ST' in nowname or '68' in nowcode):
         #log.debug("ST: code:%s, name:%s" % (nowcode, nowname ))
         if debug:
             print("skip code: code:%s, name:%s" % (nowcode, nowname ))
         continue
 
-    detail_info = hdata.get_limit_hdata_of_stock(nowcode, nowdate.strftime("%Y-%m-%d"), 300)
+    detail_info = hdata.get_limit_hdata_of_stock(nowcode, nowdate.strftime("%Y-%m-%d"), 600)
     #detail_info = hdata.get_limit_hdata_of_stock('000029',100) # test 'Exception: inputs are all NaN'
     #detail_info = all_info[all_info['stock_code'].isin([nowcode])]  #get date if nowcode == all_info['stock_code']
     #detail_info = detail_info.tail(100)
