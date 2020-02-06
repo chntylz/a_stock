@@ -92,6 +92,9 @@ def hsgt_get_day_item_from_json(file_path):
         #get open, close, high, low, and volume
         day_df=hdata_day.get_data_accord_code_and_date(shgt_code, shgt_date)
         if debug:
+            print("line_num:%d, shgt_date:%s, shgt_code:%s, shgt_holding:%s, shgt_percent:%s,shgt_ename:%s, shgt_cname:%s"% \
+                 (line_num, shgt_date, shgt_code, shgt_holding, shgt_percent, shgt_ename, shgt_cname))
+            print('print day_df')
             print(day_df)
         if len(day_df) > 0:
             day_dict=day_df.to_dict()
@@ -102,10 +105,6 @@ def hsgt_get_day_item_from_json(file_path):
             shgt_low=day_dict['low'][0]
             shgt_volume=day_dict['volume'][0]
 
-            '''
-            print("line_num:%d, shgt_date:%s, shgt_code:%s, shgt_holding:%s, shgt_percent:%s,shgt_ename:%s, shgt_cname:%s"% \
-                 (line_num, shgt_date, shgt_code, shgt_holding, shgt_percent, shgt_ename, shgt_cname))
-            '''
 
             list_tmp.append([shgt_date, shgt_code, shgt_cname, shgt_holding, shgt_percent, shgt_open, shgt_close, shgt_high, shgt_low, shgt_volume])
 

@@ -11,9 +11,19 @@ from time import clock
 
 from common import Log
 
+
+import pandas as pd
+
 import sys
 import os
     
+token='21dddafc47513ea46b89057b2c4edf7b44882b3e92274b431f199552'
+pro = ts.pro_api(token)
+
+
+debug=0
+
+
 log = Log(__name__).getlog()
 log.info("I am main_day.py")
 
@@ -104,14 +114,17 @@ for i in range(0,length):
         del today_data['mktcap']
         del today_data['nmc']
         del today_data['turnoverratio']
-        today_data.head(1)
+        
+        if debug:
+            print(today_data.head(1))
         # curr_day=datetime.datetime.now().strftime("%Y-%m-%d")
         curr_day=datetime.datetime.now().date()
         today_data['record_date']=curr_day
         cols=['record_date', 'code', 'open', 'trade', 'high', 'low', 'volume', 'amount', 'changepercent']
         today_data=today_data.ix[:,cols]
         today_data=today_data.set_index('record_date')
-        today_data.head(1)
+        if debug:
+            print(today_data.head(1))
         
         hdata_day.insert_allstock_hdatadate(nowcode, today_data)
         break
@@ -124,22 +137,56 @@ for i in range(0,length):
         #hist_data = ts.get_k_data(nowcode, '2018-06-01', str(nowdate), 'D', 'qfq', False, 3, 0.001)
         #hist_data = ts.get_k_data(nowcode, '2018-06-01', str(nowdate), 'D', 'qfq', False, 3, 0.001)
         
-        hist_data=ts.bar(nowcode, conn=cons, freq='D', adj='qfq', start_date='2018-06-01', end_date=str(nowdate))
+        #hist_data=ts.bar(nowcode, conn=cons, freq='D', adj='qfq', start_date='2015-01-01', end_date=str(nowdate))
         #hist_data=ts.bar(nowcode, conn=cons, freq='D', adj='qfq', start_date='2019-08-18', end_date=str(nowdate))
-       
+
+        if nowcode[0:1] == '6':
+            stock_code_new= nowcode + '.SH'
+        else:
+            stock_code_new= nowcode + '.SZ'
+
+        '''
+        df = ts.pro_bar(ts_code='603699.SH', start_date='20180101', end_date='20200205', adj='qfq', freq='D')
+        hist_data=df.head(10)
+        '''
+        hist_data = ts.pro_bar(ts_code=stock_code_new, start_date='20150101', end_date=str(nowdate), adj='qfq', freq='D')
+
         if hist_data is None:
-            # print("hist_data is None: %d, %s, %s" % (i,nowcode,codestock_local[i][1]))
+            if debug:
+                print("hist_data is None: %d, %s, %s" % (i,nowcode,codestock_local[i][1]))
             continue
 
         if(len(hist_data) == 0):
-            # print("hist_data length is 0: i=%d, nowcode:%s, nowname:%s " %(i,nowcode,codestock_local[i][1]))
+            if debug:
+                print("hist_data length is 0: i=%d, nowcode:%s, nowname:%s " %(i,nowcode,codestock_local[i][1]))
             continue
 
         hist_data=hist_data.fillna(0)
-        #hist_data = hist_data.set_index('date')
-        #print(hist_data.head(10))
+
+
+        #handle hist_data
+        new_data =  pd.DataFrame()
+        new_data['datetime'] = hist_data['trade_date']
+        new_data['code']     = nowcode
+        new_data['open']     = hist_data['open']
+        new_data['close']    = hist_data['close']    
+        new_data['high']     = hist_data['high']     
+        new_data['low']      = hist_data['low']      
+        new_data['vol']      = hist_data['vol']      
+        new_data['amount']   = hist_data['amount']   
+        new_data['p_change'] = hist_data['pct_chg'] 
+
+        new_data['datetime']=new_data['datetime'].apply(lambda x: datetime.datetime.strptime(x,'%Y%m%d'))
+        
+        hist_data = new_data.set_index('datetime')
+
+        if debug:
+            print(hist_data.head(10))
+
         hdata_day.insert_allstock_hdatadate(nowcode, hist_data)
-        #print("2", maxdate, nowdate, hist_data)
+
+        if debug:
+            print("2", maxdate, nowdate, hist_data)
 
 
 t2 = clock()
