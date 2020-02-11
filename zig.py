@@ -8,11 +8,45 @@ import numpy as np
 import tushare as ts
 
 import matplotlib.pyplot as plt
+
+debug = 0
  
 ZIG_STATE_START = 0
 ZIG_STATE_RISE = 1
 ZIG_STATE_FALL = 2
 
+def recurse_set_state(buy_state, pos, state):
+    if debug:
+        print("recurse_set_state")
+    if pos is 0:
+        pass
+    else:
+        buy_state[pos] = state;
+        if state is 1:
+            state = 0
+        else:
+            state = 1
+        recurse_set_state(buy_state, pos - 1, state)
+    pass
+
+def get_buy_state(peers, dates, prices):
+    length = len(peers)
+    print('length is %s' % length)
+    buy_state = [];
+    for i in range(0, length):
+        buy_state.append(0)
+
+    if length < 3:
+        return buy_state
+
+    if prices[length - 2] < prices[length - 1]:
+        recurse_set_state(buy_state, length - 2, 1)
+    else:
+        recurse_set_state(buy_state, length - 2, 0)
+
+    if debug:
+        print("buy_state:%s" % buy_state)
+    return buy_state
 
 def zig(df):
     x = 0.35
@@ -94,12 +128,56 @@ def zig(df):
     # print(u'...转向点的阀值、个数、位置和日期...')        
     print(x, len(peers))
     print("peers:%s" % peers)
-    dates = [d[i] for i in peers]
+    dates = [d[i] for i in peers]  #时间
     print("dates:%s" % dates)
-    print([k[i] for i in peers])
-    #print(list(k))
-    #print(list(z))
+    prices=[k[i] for i in peers]
+    print("prices:%s" % prices)
+    if debug:
+        print(list(k))
+        print(list(z))
+
+    buy_state = get_buy_state(peers, dates, prices)
+    print("buy_state:%s" % buy_state)
+
     
-    return z, peers, d, k
+    return z, peers, d, k, buy_state
 
 
+    '''
+    import tushare as ts
+    import  datetime
+    import pandas as pd
+    import sys
+    import os
+
+    token='21dddafc47513ea46b89057b2c4edf7b44882b3e92274b431f199552'
+    pro = ts.pro_api(token)
+
+
+    hist_data = ts.pro_bar(ts_code='000413.SZ', start_date='20180101', end_date='20200205', adj='qfq', freq='D')
+    new_data =  pd.DataFrame()
+    new_data['datetime'] = hist_data['trade_date']
+    new_data['code']     = '000413'
+    new_data['open']     = hist_data['open']
+    new_data['close']    = hist_data['close']
+    new_data['high']     = hist_data['high']
+    new_data['low']      = hist_data['low']
+    new_data['vol']      = hist_data['vol']
+    new_data['amount']   = hist_data['amount']
+    new_data['p_change'] = hist_data['pct_chg']
+
+    new_data['datetime']=new_data['datetime'].apply(lambda x: datetime.datetime.strptime(x,'%Y%m%d'))
+
+    hist_data = new_data.set_index('datetime')
+
+
+
+
+    #>>> z, peers, d, k=zig(hist_data)
+    0.35 5
+    peers:[0, 175, 226, 488, 490]
+    dates:[Timestamp('2020-02-05 00:00:00'), Timestamp('2019-04-22 00:00:00'), Timestamp('2019-01-31 00:00:00'), Timestamp('2018-01-04 00:00:00'), Timestamp('2018-01-02 00:00:00')]
+    [2.75, 7.14, 4.04, 9.45, 9.28]
+
+
+    '''
