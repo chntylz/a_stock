@@ -123,7 +123,7 @@ def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name
     ax05.set_xticklabels(detail_info.index[::10])
 
     #add label and vlines for zig
-    z_df, z_peers, z_d, z_k =zig(detail_info)
+    z_df, z_peers, z_d, z_k, z_buy_state=zig(detail_info)
     ax05.plot(z_df)
     z_len = len(z_peers)
     for i in range(z_len): 
@@ -139,7 +139,12 @@ def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name
             continue
 
         print("y1:%s" % y1)
-        ax05.vlines(x1, 0, y1, colors='blue')
+        if z_buy_state[i] is 1:
+            ax05.vlines(x1, 0, y1, colors='red')
+        else:
+            ax05.vlines(x1, 0, y1, colors='green')
+
+
         
 
     
