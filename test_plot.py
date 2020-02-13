@@ -144,9 +144,13 @@ def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name
         else:
             ax05.vlines(x1, 0, y1, colors='green')
 
-
-        
-
+    #calculate buy or sell
+    buy_flag = ''
+    if z_len >= 3:  # it should have one valid zig data at least
+        if z_peers[-1] - z_peers[-2] < 10: #delta days  < 10 from today
+            if z_buy_state[-2] is 1:  #valid zig must 1, that means valley
+                print('gold node, buy it!!')
+                buy_flag = '-buy'
     
 
     #boll, candles
@@ -202,12 +206,16 @@ def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name
     ax02.legend();
     ax01.legend();
     save_name = nowdate.strftime("%Y-%m-%d-%w")
-    figure_name = save_name + '-' +  nowcode + '-' + nowname + \
+    figure_name = save_name + \
+                    '-' +  nowcode + \
+                    '-' + nowname + \
                     '-' + str(int(round(O.value *100, 4))) + \
                     '-' + str(int(round(C.value *100, 4))) + \
                     '-' + str(int(round(H.value *100, 4))) + \
                     '-' + str(int(round(L.value *100, 4))) + \
-                    '-' + str(int(today_p * 10000)) + '.png'
+                    '-' + str(int(today_p * 10000)) + \
+                     buy_flag + '.png'
+
     fig.savefig(figure_name)
 
     exec_command = "mkdir -p " + save_dir
