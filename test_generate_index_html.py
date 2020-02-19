@@ -87,6 +87,9 @@ def showImageInHTML(imageTypes,savedir):
         f.write('<td>\n')
         f.write('     <a href="macd-index.html"  target="_blank">macd strategy </a>\n')
         f.write('</td>\n')
+        f.write('<td>\n')
+        f.write('     <a href="zig-index.html"  target="_blank"> zig </a>\n')
+        f.write('</td>\n')
         f.write('</h2>\n')
 
 
@@ -138,7 +141,7 @@ def getAllFiles(directory):
     for dirpath, dirnames,filenames in os.walk(directory):
         if filenames!=[]:
             for file in filenames:
-                if ('index' in file) or ('zheli' in file) or ('macd' in file) or ('hsgt' in file ) or ('test' in file ):
+                if ('index' in file) or ('zheli' in file)  or ('macd' in file)  or ('zig' in file) or ('hsgt' in file ) or ('test' in file ):
                     continue
                 files.append(dirpath+'/'+file)
     # files.sort(key=len)
