@@ -125,8 +125,12 @@ for i in range(0,length):
         today_data=today_data.set_index('record_date')
         if debug:
             print(today_data.head(1))
-        
+    
+        #insert datafram
         hdata_day.insert_allstock_hdatadate(nowcode, today_data)
+        
+        #delete closed stock data according amount=0
+        hdata_day.delete_amount_is_zero()
         break
 
 
