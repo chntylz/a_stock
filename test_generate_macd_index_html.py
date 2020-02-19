@@ -8,7 +8,8 @@ nowdate=datetime.datetime.now().date()
 #nowdate=nowdate-datetime.timedelta(1)
 src_dir=nowdate.strftime("%Y-%m-%d")
 stock_data_dir="stock_data"
-target_html='macd-index.html'
+file_name='macd'
+target_html=file_name + '-index.html'
 
 def showImageInHTML(imageTypes,savedir):
     files=getAllFiles(savedir)
@@ -24,7 +25,7 @@ def showImageInHTML(imageTypes,savedir):
         f.write('<html>\n')
         f.write('<head>\n')
         f.write('<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n')
-        f.write('<title> macd-index </title>\n')
+        f.write('<title> %s-index </title>\n' % file_name)
         f.write('\n')
         f.write('\n')
         f.write('<style type="text/css">a {text-decoration: none}\n')
@@ -122,9 +123,9 @@ def getAllFiles(directory):
     for dirpath, dirnames,filenames in os.walk(directory):
         if filenames!=[]:
             for file in filenames:
-                if 'macd-index' in file:
+                if (file_name + '-index') in file:
                     continue;
-                if 'macd' in file:
+                if file_name in file:
                     files.append(dirpath+'/'+file)
     # files.sort(key=len)
     files=sorted(files, reverse=True)
