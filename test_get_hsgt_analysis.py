@@ -207,7 +207,9 @@ def hsgt_write_to_file(f, k, df):
                 if (j == k + 5):
                     f.write('           <a style="color: #FF0000"> %s</a>\n'%(element_value))
                 else:
-                    if(j == 1): 
+                    if(j == 0): 
+                        f.write('           <a href="%s" target="_blank"> %s[fina]</a>\n'%(fina_url, element_value))
+                    elif(j == 1): 
                         f.write('           <a href="%s" target="_blank"> %s[hsgt]</a>\n'%(hsgt_url, element_value))
                     elif(j == 2):
                         f.write('           <a href="%s" target="_blank"> %s</a>\n'%(xueqiu_url, element_value))
