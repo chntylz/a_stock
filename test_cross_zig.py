@@ -159,7 +159,7 @@ for i in range(0,stock_len):
     z_len = len(z_peers)
     #calculate buy or sell
     if z_len >= 3:  # it should have one valid zig data at least
-        if z_peers[-1] - z_peers[-2] < 5: #delta days  < 10 from today
+        if z_peers[-1] - z_peers[-2] < 3: #delta days  < 10 from today
             if z_buy_state[-2] is 1:  #valid zig must 1, that means valley
                 print('gold node, buy it!!')
                 draw_flag = True
