@@ -6,10 +6,21 @@ import psycopg2 #使用的是PostgreSQL数据库
 import tushare as ts
 from HData_select import *
 from HData_day import *
+from HData_hsgt import *
 import  datetime
+
+#funcat
+from funcat import *
+from funcat.data.aaron_backend import AaronDataBackend
+set_data_backend(AaronDataBackend())
 
 hdata=HData_day("usr","usr")
 sdata=HData_select("usr","usr")
+hsgtdata=HData_hsgt("usr","usr")
+
+daily_df=ts.get_stock_basics()
+dict_industry={}
+
 
 from sys import argv
 # 如果执行的方式错误输出使用方法
@@ -38,6 +49,71 @@ print("curr_day:%s, last_day:%s"%(curr_day, last_day))
 
 stock_data_dir="stock_data"
 curr_dir=curr_day_w+'-zig'
+def insert_industry(dict_name, key):
+    if dict_name.get(key) is None :
+       dict_name.setdefault(key, 1)
+    else:
+        dict_name[key]=dict_name[key] + 1
+
+
+
+def generate_head_html(file_f, day):
+    f = file_f
+    curr_day = day
+    f.write('<!DOCTYPE html>\n')
+    f.write('<html>\n')
+    f.write('<head>\n')
+    f.write('<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n')
+    f.write('<title> %s </title>\n'%(curr_day))
+    f.write('\n')
+    f.write('\n')
+    f.write('<style type="text/css">a {text-decoration: none}</style>\n')
+    f.write('\n')
+
+    f.write('</head>\n')
+    f.write('<body>\n')
+    f.write('\n')
+    f.write('\n')
+    f.write('\n')
+    f.write('\n')
+    f.write('<p> 日期 %s </p>\n' %(curr_day))
+
+    df = get_today_item(curr_day)
+
+    # 找出上涨的股票
+    df_up = df[df['p_change'] > 0.00]
+    # 走平股数
+    df_even = df[df['p_change'] == 0.00]
+    # 找出下跌的股票
+    df_down = df[df['p_change'] < 0.00]
+
+    # 找出涨停的股票
+    limit_up = df[df['p_change'] >= 9.70]
+    limit_down = df[df['p_change'] <= -9.70]
+
+    s_debug= ('<p> A股上涨个数： %d,  A股下跌个数： %d,  A股走平个数:  %d</p>' % (df_up.shape[0], df_down.shape[0], df_even.shape[0]))
+    print(s_debug)
+    f.write('%s\n'%(s_debug))
+
+    s_debug=('<p> 涨停数量：%d 个</p>' % (limit_up.shape[0]))
+    print(s_debug)
+    f.write('%s\n'%(s_debug))
+
+    s_debug=('<p> 跌停数量：%d 个</p>' % (limit_down.shape[0]))
+    print(s_debug)
+    f.write('%s\n'%(s_debug))
+
+    f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
+    '''
+    #f.write('<p>蓝色：连续两天涨幅3个点以上   红色:连续三天涨幅3个点以上    绿色: 连续两天涨幅3个点以上，并且当天跳空高开2个点以上 /p>\n')
+    f.write('<p  style="color:blue;">蓝色: 连续两天涨幅3个点以上   </p>')
+    f.write('<p  style="color:red;">红色: 连续三天涨幅3个点以上   </p>')
+    f.write('<p  style="color:green;">绿色: 连续两天涨幅3个点以上，并且当天跳空高开2个点以上 </p>')
+    '''
+    f.write('<p  style="color:green;">绿色: 当天跳空高开2个点以上 </p>')
+    f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
+    f.write('\n')
+
 
 def showImageInHTML(imageTypes,savedir):
     files=getAllFiles(savedir+'/' + curr_dir)
@@ -61,52 +137,7 @@ def showImageInHTML(imageTypes,savedir):
     
     with open(newfile,'w') as f:
 
-        f.write('<!DOCTYPE html>\n')
-        f.write('<html>\n')
-        f.write('<head>\n')
-        f.write('<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n')
-        f.write('<title> %s </title>\n'%(curr_day))
-        f.write('\n')
-        f.write('\n')
-        f.write('<style type="text/css">a {text-decoration: none}</style>\n')
-        f.write('\n')
-
-        f.write('</head>\n')
-        f.write('<body>\n')
-        f.write('\n')
-        f.write('\n')
-        f.write('\n')
-        f.write('\n')
-        f.write('<p> 日期 %s </p>\n' %(curr_day))
-
-        df = get_today_item(curr_day)
-
-        # 找出上涨的股票
-        df_up = df[df['p_change'] > 0.00]
-        # 走平股数
-        df_even = df[df['p_change'] == 0.00]
-        # 找出下跌的股票
-        df_down = df[df['p_change'] < 0.00]
-
-        # 找出涨停的股票
-        limit_up = df[df['p_change'] >= 9.70]
-        limit_down = df[df['p_change'] <= -9.70]
-
-        s_debug= ('<p> A股上涨个数： %d,  A股下跌个数： %d,  A股走平个数:  %d</p>' % (df_up.shape[0], df_down.shape[0], df_even.shape[0]))
-        print(s_debug)
-        f.write('%s\n'%(s_debug))
-
-        s_debug=('<p> 涨停数量：%d 个</p>' % (limit_up.shape[0]))
-        print(s_debug)
-        f.write('%s\n'%(s_debug))
-
-        s_debug=('<p> 跌停数量：%d 个</p>' % (limit_down.shape[0]))
-        print(s_debug)
-        f.write('%s\n'%(s_debug))
-
-        f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
-        f.write('\n')
-
+        generate_head_html(f, curr_day)
 
         for image in images:
 
@@ -115,6 +146,16 @@ def showImageInHTML(imageTypes,savedir):
             print('%s' % (tmp_image))
             
             stock_code=image[13:19]
+
+            #funcat call
+            T(curr_day)
+            S(stock_code)
+            open_p = ((O - REF(C, 1))/REF(C, 1)) 
+            open_p = round (open_p.value, 4)
+            open_jump=open_p - 0.02
+            print(str(nowdate), stock_code, O, H, L, C, open_p)
+
+
             print('%s' % (stock_code))
             
             print('%s' % (stock_code[0:2]))
@@ -125,12 +166,23 @@ def showImageInHTML(imageTypes,savedir):
 
             print('%s' % (stock_code_new))
             xueqiu_url='https://xueqiu.com/S/' + stock_code_new
+            hsgt_url='../../cgi-bin/hsgt-search.cgi?name=' + stock_code
+            hsgt_df = hsgtdata.get_all_hdata_of_stock_code(stock_code)
 
             f.write('<p>\n')
-            f.write('<a href="%s" target="_blank"> %s </a>' % (image, tmp_image))
+            if open_jump > 0 :
+                f.write('<a href="%s" target="_blank" style="color: #32CD32"> %s </a>' % (image, tmp_image))
+            else:
+                f.write('<a href="%s" target="_blank"> %s </a>' % (image, tmp_image))
             f.write('---->')
-            f.write('<a href="%s" target="_blank">(%s) </a>\n' % (xueqiu_url , 'xueqiu:' + stock_code_new))
+            f.write('<a href="%s" target="_blank"> %s </a>\n' % (xueqiu_url , 'xueqiu:' + stock_code_new))
+            if (len(hsgt_df) > 0):
+                f.write('---->')
+                f.write('<a href="%s" target="_blank"> %s</a>\n'%(hsgt_url, 'hsgt:' + stock_code_new))
+            industry_name = daily_df.loc[stock_code]['industry']
+            f.write('[%s]' % (industry_name))
             f.write('</p>\n')
+            insert_industry(dict_industry, industry_name)
             
             
         f.write('\n')
@@ -138,6 +190,10 @@ def showImageInHTML(imageTypes,savedir):
         f.write('\n')
         f.write('\n')
         f.write('\n')
+        f.write('\n')
+        f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
+        f.write('\n')
+        f.write('<p>industry %s</p>\n' % (sorted(dict_industry.items(),key=lambda x:x[1],reverse=True)))
         f.write('\n')
         f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
         f.write('</body>\n')
