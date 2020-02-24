@@ -148,6 +148,16 @@ def fina_handle_html_head(filename):
         f.write('\n')
  
         f.write('<body>\n')
+        f.write('\n')
+        f.write('\n')
+        f.write('\n')
+        f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
+        f.write('<p  style="color:blue;"> or_yoy:        营业收入同比增长</p>')
+        f.write('<p  style="color:blue;"> netprofit_yoy: 净利润同比增长</p>')
+        f.write('<p  style="color:blue;"> p_count:       连续增长次数，并且or_yoy不低于上一次 </p>')
+        f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
+        f.write('\n')
+        f.write('\n')
     pass
 
 def fina_write_headline_column(f, df):
@@ -237,8 +247,8 @@ def fina_handle_html_end(filename):
         f.write('\n')
 
     #copy to /var/www/html/fina
-    os.system('mkdir -p /var/www/html/fina')
-    exec_command = 'cp -f ' + filename + ' /var/www/html/fina/'
+    os.system('mkdir -p /var/www/html/stock_data/finance')
+    exec_command = 'cp -f ' + filename + ' /var/www/html/stock_data/finance/'
     os.system(exec_command)
 
     pass

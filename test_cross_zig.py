@@ -130,7 +130,7 @@ for i in range(0,stock_len):
 
     #skip ST
     #if ('ST' in nowname or '300' in nowcode):
-    if ('ST' in nowname) or (nowcode is '300028'): #300028-金亚科技
+    if ('ST' in nowname) or  ('300028' in nowname): #300028-金亚科技
         #log.debug("ST: code:%s, name:%s" % (nowcode, nowname ))
         if debug:
             print("skip code: code:%s, name:%s" % (nowcode, nowname ))
