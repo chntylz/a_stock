@@ -11,20 +11,20 @@ import pandas as pd
 
 
 def show_realdata():
-    my_list=['300750','300552', '000401', '300458','300014']
-    my_list_cn=['ndsd','wjkj', 'jdsn', 'qzkj', 'ywld']
-    my_price=[]
-    for code in my_list:
-        df = ts.get_realtime_quotes(code)
-        my_price.append(df['price'][0])
-        #print(i, my_price)
-    ret_df=pd.DataFrame(my_price, index=my_list_cn)
+    my_list=['300750','300552', '000401', '300458','300014', '601958', '601117', '600588', '002230']
+    my_list_cn=['ningdeshidai','wanjikeji', 'jidongshuini', 'quanzhikeji', 'yiweilidian', 'jinmugufen', 'zhongguohuaxue', 'yongyouwangluo', 'kedaxunfei']
+    data_list = []
+    for i in range(len(my_list)):
+        df = ts.get_realtime_quotes(my_list[i])
+        data_list.append([my_list_cn[i], df['pre_close'][0], df['price'][0] ])
+
+    data_column = ['name', 'pre_price', 'price']
+    ret_df=pd.DataFrame(data_list, columns=data_column)
     return ret_df
 
 
 
 df=show_realdata()
-
 
 print """Content-type: text/html\r\n\r\n
 
@@ -39,4 +39,3 @@ print """Content-type: text/html\r\n\r\n
   </body>
 </html>
 """ % (df.to_html())
-
