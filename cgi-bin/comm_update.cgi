@@ -145,6 +145,7 @@ def cgi_handle_html_head():
     print('<html>\n')
     print('<head>\n')
     print('<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n')
+    print('<meta http-equiv="refresh" content="5">\n')
     print('<title> fina-%s </title>\n' % (datetime.datetime.now().date()))
     print('\n')
     print('\n')
@@ -254,8 +255,8 @@ def cgi_write_to_file( df):
                 print('           <a href="%s" target="_blank"> %s[hsgt]</a>\n'%(hsgt_url, element_value))
             elif(j == 2):
                 print('           <a href="%s" target="_blank"> %s</a>\n'%(xueqiu_url, element_value))
-            elif(j == 7 or j == 8):
-                print('           <a> %.2f%s</a>\n'%(element_value, '%'))
+            elif(j == col_len - 1):
+                print('           <a> %.2f</a>\n'%(element_value))
             else:
                 print('           <a> %s</a>\n'%(element_value))
                      
