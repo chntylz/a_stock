@@ -96,7 +96,7 @@ if debug:
     print(df)
 
 
-
+'''
 print """Content-type: text/html\r\n\r\n
 
 
@@ -111,8 +111,30 @@ print """Content-type: text/html\r\n\r\n
   </body>
 </html>
 """ % (df.to_html())
+'''
 
 
+
+
+
+
+print("Content-type: text/html")
+print("")
+
+
+print("<html lang='zh'> ")
+print("  <head>")
+print("    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>")
+print("    <meta http-equiv='refresh' content='5'>")
+print("    <title>comm_update</title>")
+print("  </head>")
+print("  <body>")
+
+print("  <h2> I am agi </h2>")
+print("  %s " % df.to_html())
+print("  </body>")
+print("</html>")
+print("")
 
 
 
