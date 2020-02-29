@@ -9,4 +9,6 @@ cp -rf ../zig.py            .
 #rm    HData_hsgt.py    
 #rm    zig.py           
 
-cp -rf * /var/www/cgi-bin/
+cp -rf *.py /var/www/cgi-bin/
+cp -rf *.cgi /var/www/cgi-bin/
+cp -rf *.txt /var/www/cgi-bin/
