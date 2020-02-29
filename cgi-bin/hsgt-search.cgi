@@ -66,7 +66,7 @@ def plot_stock_picture(nowcode, nowname):
     plt.style.use('bmh')
     fig = plt.figure(figsize=(24, 30),dpi=80)
 
-    detail_info = hdata_day.get_limit_hdata_of_stock(nowcode, nowdate.strftime("%Y-%m-%d"), 500)
+    detail_info = hdata_day.get_limit_hdata_of_stock(nowcode, nowdate.strftime("%Y-%m-%d"), 600)
     #print(detail_info)
     save_dir = 'stock_data'
     sub_name = ''

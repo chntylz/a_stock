@@ -20,10 +20,14 @@ def get_stock_info(file_name):
     stock_list = []
     with open(file_name) as f:
         for line in f:
-                #do something with data
-            print (line)
+            if debug:
+                print (line, len(line))
+            if len(line) < 6 or '#' in line:
+                if debug:
+                    print('unvalid line data, skip!')
+                continue
             space_pos = line.rfind(' ')
-            stock_list.append([line[0:space_pos], line[space_pos+1: ]])
+            stock_list.append([line[0:space_pos], line[space_pos+1: -1]])
 
     return stock_list
 
@@ -35,15 +39,20 @@ def show_realdata():
 
     data_list = []
 
-    file_name = 'test.txt'
+    file_name = 'my_optional.txt'
     my_list = get_stock_info(file_name)
-    print(stock_list)
+    if debug:
+        print(my_list)
 
     for i in range(len(my_list)):
-        df = ts.get_realtime_quotes(my_list[i][0])
+
         new_date        = str_date
         new_code        = my_list[i][0]
         new_name        = my_list[i][1]
+        if debug:
+            print("new_code:%s" % new_code)
+        
+        df = ts.get_realtime_quotes(new_code)
         new_pre_price   = df['pre_close'][0]
         new_price       = df['price'][0]
        
@@ -87,7 +96,9 @@ if debug:
     print(df)
 
 
+
 print """Content-type: text/html\r\n\r\n
+
 
 <html lang="zh">
   <head>
