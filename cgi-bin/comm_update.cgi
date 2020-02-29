@@ -89,52 +89,217 @@ def show_realdata():
  
     return ret_df
 
+def cgi_generate_html_1(df):
+    '''
+    print """Content-type: text/html\r\n\r\n
 
 
-df=show_realdata()
-if debug:
-    print(df)
-
-
-'''
-print """Content-type: text/html\r\n\r\n
-
-
-<html lang="zh">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta http-equiv="refresh" content="5">
-    <title>comm_update</title>
-  </head>
-  <body>
-   %s 
-  </body>
-</html>
-""" % (df.to_html())
-'''
+    <html lang="zh">
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="refresh" content="5">
+        <title>comm_update</title>
+      </head>
+      <body>
+       %s 
+      </body>
+    </html>
+    """ % (df.to_html())
+    '''
 
 
 
 
 
 
-print("Content-type: text/html")
-print("")
+    print("Content-type: text/html")
+    print("")
 
 
-print("<html lang='zh'> ")
-print("  <head>")
-print("    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>")
-print("    <meta http-equiv='refresh' content='5'>")
-print("    <title>comm_update</title>")
-print("  </head>")
-print("  <body>")
+    print("<html lang='zh'> ")
+    print("  <head>")
+    print("    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>")
+    print("    <meta http-equiv='refresh' content='5'>")
+    print("    <title>comm_update</title>")
+    print("  </head>")
+    print("  <body>")
 
-print("  <h2> I am agi </h2>")
-print("  %s " % df.to_html())
-print("  </body>")
-print("</html>")
-print("")
+    print("  <h2> I am cgi </h2>")
+    print("  %s " % df.to_html())
+    print("  </body>")
+    print("</html>")
+    print("")
 
 
 
+
+
+
+   
+   
+def cgi_handle_html_head():
+    print("Content-type: text/html")
+    print("")
+
+    print('<!DOCTYPE html>\n')
+    print('<html>\n')
+    print('<head>\n')
+    print('<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n')
+    print('<title> fina-%s </title>\n' % (datetime.datetime.now().date()))
+    print('\n')
+    print('\n')
+    print('<style type="text/css">a {text-decoration: none}\n')
+    print('\n')
+    print('\n')
+
+    print('/* gridtable */\n')
+    print('table.gridtable {\n')
+    print('    font-size:15px;\n')
+    print('    color:#000;\n')
+    print('    border-width: 1px;\n')
+    print('    border-color: #333333;\n')
+    print('    border-collapse: collapse;\n')
+    print('}\n')
+    print('table.gridtable th {\n')
+    print('    border-width: 1px;\n')
+    print('    padding: 8px;\n')
+    print('    border-style: solid;\n')
+    print('    border-color: #333333;\n')
+    print('    background-color: #dedede;\n')
+    print('}\n')
+    print('table.gridtable td {\n')
+    print('    border-width: 1px;\n')
+    print('    padding: 8px;\n')
+    print('    border-style: solid;\n')
+    print('    border-color: #333333;\n')
+    print('    background-color: #ffffff;\n')
+    print('}\n')
+    print('/* /gridtable */\n')
+
+    print('\n')
+    print('\n')
+    print('</style>\n')
+
+    print('</head>\n')
+    print('\n')
+    print('\n')
+
+    print('<body>\n')
+    print('\n')
+    print('\n')
+    print('\n')
+    '''
+    print('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
+    print('<p  style="color:blue;"> or_yoy:        营业收入同比增长</p>')
+    print('<p  style="color:blue;"> netprofit_yoy: 净利润同比增长</p>')
+    print('<p  style="color:blue;"> p_count:       连续增长次数，并且or_yoy不低于上一次 </p>')
+    print('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
+    '''
+    print('<p>----------------------------------------------------------------------</p>\n')
+    print('<p>----------------------------------------------------------------------</p>\n')
+    print('\n')
+    print('\n')
+
+def cgi_write_headline_column(df):
+
+    print('    <tr>\n')
+    #headline
+    col_len=len(list(df))
+    for j in range(0, col_len): 
+        print('        <td>\n')
+        print('        <a> %s</a>\n'%(list(df)[j]))
+        print('        </td>\n')
+
+    print('    </tr>\n')
+
+
+def cgi_handle_link(stock_code):
+
+    tmp_stock_code=stock_code
+    if tmp_stock_code[0:1] == '6':
+        stock_code_new='SH'+tmp_stock_code
+    else:
+        stock_code_new='SZ'+tmp_stock_code
+        
+    xueqiu_url='https://xueqiu.com/S/' + stock_code_new
+    hsgt_url='../../cgi-bin/hsgt-search.cgi?name=' + tmp_stock_code
+    cgi_url = xueqiu_url + '/detail#/ZYCWZB'    
+    return xueqiu_url, hsgt_url, cgi_url
+    
+    
+def cgi_write_to_file( df):
+    print('<table class="gridtable">\n')
+
+    #headline
+    cgi_write_headline_column(df)
+
+    #dataline
+    #print('%s\n'%(list(df)))
+    df_len=len(df)
+    for i in range(0, df_len): #loop line
+
+        print('    <tr>\n')
+        a_array=df[i:i+1].values  #get line of df
+        tmp_stock_code=a_array[0][1] 
+        xueqiu_url, hsgt_url, cgi_url = cgi_handle_link(tmp_stock_code)
+
+        col_len=len(list(df))
+        for j in range(0, col_len): #loop column
+            print('        <td>\n')
+            element_value = a_array[0][j] #get a[i][j] element
+            #df_cgi_column=['record_date', 'stock_code', 'stock_name', 'or_yoy', 'netprofit_yoy', 'p_count']
+            if(j == 0): 
+                print('           <a href="%s" target="_blank"> %s[fina]</a>\n'%(cgi_url, element_value))
+            elif(j == 1): 
+                print('           <a href="%s" target="_blank"> %s[hsgt]</a>\n'%(hsgt_url, element_value))
+            elif(j == 2):
+                print('           <a href="%s" target="_blank"> %s</a>\n'%(xueqiu_url, element_value))
+            elif(j == 7 or j == 8):
+                print('           <a> %.2f%s</a>\n'%(element_value, '%'))
+            else:
+                print('           <a> %s</a>\n'%(element_value))
+                     
+                                
+            print('        </td>\n')
+        print('    </tr>\n')
+
+    print('</table>\n')
+
+    pass
+    
+    
+def cgi_handle_html_body(df):
+    #select condition
+    cgi_write_to_file(df)
+    pass
+
+def cgi_handle_html_end():
+    print('        <td>\n')
+    print('        </td>\n')
+    print('</body>\n')
+    print('\n')
+    print('\n')
+    print('</html>\n')
+    print('\n')
+
+    pass
+
+
+    
+    
+    
+def cgi_generate_html(df):
+    cgi_handle_html_head()
+    cgi_handle_html_body(df)
+    cgi_handle_html_end()
+    
+    
+    
+
+if __name__ == '__main__':
+
+    df=show_realdata()
+    if debug:
+        print(df)
+
+    cgi_generate_html(df)
