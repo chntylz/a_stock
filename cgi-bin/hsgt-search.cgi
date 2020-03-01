@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 
 import  datetime
 
+from comm_generate_html import *
 
 
 
@@ -31,8 +32,6 @@ hdata_day.db_connect()
 hdata_hsgt=HData_hsgt("usr","usr")
 hdata_hsgt.db_connect()
 
-form = cgi.FieldStorage()
-name = form.getvalue('name', '000401')
 
 
 
@@ -147,36 +146,28 @@ def get_html_data(all_df):
 
         del all_df['stock_cname']
 
-        var = all_df.to_html()
-    return var
+        #var = all_df.to_html()
+    return all_df
 
-all_df, stock_code_tmp = gete_df_and_stock_code(name)
-xueqiu_url, finance_url=get_xueqiu_url(stock_code_tmp)
-var = get_html_data(all_df)
+def cgi_generate_html(df):
+    cgi_handle_html_head('hsgt_serch')
+    cgi_handle_html_body(df, form=1)
+    cgi_handle_html_end()
 
-#print(df['stock_cname'].head(10))
 
 
-print ("Content-type: text/html")
-print()
+if __name__ == '__main__':
+    
+    form = cgi.FieldStorage()
+    name = form.getvalue('name', '000401')
 
-print ('<html lang="zh">')
-print (' <head>')
-print ('   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">')
-print ('   <title>hsgt search</title>')
-print (' </head>')
-print (' <body>')
-print ('   <form action="hsgt-search.cgi">')
-print ('   code or name <input type="text" name="name" />')
-print ('   <input type="submit" />')
-print ('   </form>')
-print ('   <a href="%s" target="_blank"> %s[xueqiu]</a>' % (xueqiu_url, stock_code_tmp))
-print ('   <a href="%s" target="_blank"> [finance]</a>' % (finance_url))
-print ('   <a href="%s" target="_blank"> picture</a>' % ('../html/test.png'))
-print ('   <p></p>')
-print ('   %s'% var)
-print (' </body>')
-print ('</html>')
-# print ('(xueqiu_url, stock_code_tmp, var)
-   
-plot_stock_picture(stock_code_tmp, name)
+    all_df, stock_code_tmp = gete_df_and_stock_code(name)
+    xueqiu_url, finance_url=get_xueqiu_url(stock_code_tmp)
+    df = get_html_data(all_df)
+
+    if debug:
+        print(df['stock_cname'].head(10))
+
+    cgi_generate_html(df)
+      
+    plot_stock_picture(stock_code_tmp, name)
