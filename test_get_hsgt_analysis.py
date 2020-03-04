@@ -323,8 +323,15 @@ def hsgt_handle_html_head(filename):
         f.write('\n')
  
         f.write('<body>\n')
+        f.write('<p style="color: #FF0000"> 《内地与香港股票市场交易互联互通机制若干规定》规定： </p>\n')
+        f.write('<p style="color: #FF0000">     单个境外投资者对单个上市公司的持股比例，不得超过该上市公司股份总数的10% </p>\n')
+        f.write('<p style="color: #FF0000">     所有境外投资者对单个上市公司A股的持股比例总和，不得超过该上市公司股份总数的30% </p>\n')
+        f.write('<p style="color: #FF0000"> ----------------------------------------------------------------------------------------</p>\n')
+
         f.write('<p style="color: #FF0000"> delta1: delta percent of 1 day </p>\n')
         f.write('<p style="color: #FF0000"> delta1_m: delta money of 1 day, delta share_holding * close </p>\n')
+        
+
     pass
 
 def hsgt_handle_html_body(filename, all_df, select='topy10'):
