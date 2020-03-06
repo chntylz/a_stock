@@ -71,6 +71,10 @@ def hsgt_handle_all_data(df):
     del all_df['low']
     del all_df['volume']
     
+    all_df['delta_close']  = all_df.groupby('stock_code')['close'].apply(lambda i:i.diff(-1))    
+    all_df['delta_c'] = all_df['delta_close'] * 100 / (all_df['close'] - all_df['delta_close']) 
+    del all_df['delta_close'] 
+    
     all_df['percent_tmp'] = all_df['percent']
     del all_df['percent']
     all_df['percent'] = all_df['percent_tmp']
@@ -202,9 +206,9 @@ def hsgt_write_to_file(f, k, df):
                     f.write('           <a> %s</a>\n'%(element_value))
             
             else:
-                #set color to delta column, 5 is the position of percent
-                #record_date,  stock_code,  stock_cname, share_holding,   close,  percent,  delta1,  delta2,  delta3,  delta4,  delta5,  delta10, delta21, delta120,    delta1_m,    delta2_m,  delta3_m, delta4_m, delta5_m,    delta10_m,   delta21_m
-                if (j == k + 5):
+                #set color to delta column, 6 is the position of percent
+                #record_date,  stock_code,  stock_cname, share_holding,   close, delta_c,  percent,  delta1,  delta2,  delta3,  delta4,  delta5,  delta10, delta21, delta120,    delta1_m,    delta2_m,  delta3_m, delta4_m, delta5_m,    delta10_m,   delta21_m
+                if (j == k + 6):
                     f.write('           <a style="color: #FF0000"> %s</a>\n'%(element_value))
                 else:
                     if(j == 0): 
@@ -237,13 +241,14 @@ def hsgt_get_continuous_info(df, select):
             print(stock_code)
             print(group_df.head(1))
         
-        group_df=group_df.reset_index(drop=True) #reset index
-        max_date=group_df.loc[0, 'record_date']
-        stock_cname=group_df.loc[0, 'stock_cname']
-        percent=group_df.loc[0, 'percent']
-        delta1=group_df.loc[0, 'delta1']
-        delta1_m=group_df.loc[0, 'delta1_m']
-        close=group_df.loc[0, 'close']
+        group_df    = group_df.reset_index(drop=True) #reset index
+        max_date    = group_df.loc[0, 'record_date']
+        stock_cname = group_df.loc[0, 'stock_cname']
+        percent     = group_df.loc[0, 'percent']
+        delta1      = group_df.loc[0, 'delta1']
+        delta1_m    = group_df.loc[0, 'delta1_m']
+        close       = group_df.loc[0, 'close']
+        delta_c     = group_df.loc[0, 'delta_c']
 
         length=len(group_df)
         money_flag = 0
@@ -259,11 +264,11 @@ def hsgt_get_continuous_info(df, select):
 
         money_flag = round(money_flag,2)
         if debug:
-            print(max_date, stock_code, stock_cname, percent, close, delta1, i, money_flag)
+            print(max_date, stock_code, stock_cname, percent, close, delta_c, delta1, i, money_flag)
 
-        data_list.append([max_date, stock_code, stock_cname, percent, close, delta1, delta1_m, i, money_flag])  #i  is p_count
+        data_list.append([max_date, stock_code, stock_cname, percent, close, delta_c, delta1, delta1_m, i, money_flag])  #i  is p_count
 
-    data_column=['record_date', 'stock_code', 'stock_cname', 'percent', 'close', 'delta1', 'delta1_m', 'p_count', 'money_flag']
+    data_column=['record_date', 'stock_code', 'stock_cname', 'percent', 'close', 'delta_c', 'delta1', 'delta1_m', 'p_count', 'money_flag']
 
     ret_df = pd.DataFrame(data_list, columns=data_column)
     ret_df['m_per_day'] = ret_df.money_flag / ret_df.p_count
