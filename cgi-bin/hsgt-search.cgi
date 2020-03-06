@@ -107,6 +107,11 @@ def get_html_data(all_df):
         del all_df['low']
         del all_df['volume']
 
+        all_df['delta_close']  = all_df.groupby('stock_code')['close'].apply(lambda i:i.diff(-1))
+        all_df['delta_c'] = all_df['delta_close'] * 100 / (all_df['close'] - all_df['delta_close'])
+        del all_df['delta_close']
+
+
         all_df['delta1']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-1))
         all_df['delta1_share'] = all_df.groupby('stock_code')['share_holding'].apply(lambda i:i.diff(-1))
         all_df['delta1_m'] = all_df['close'] * all_df['delta1_share'] / 10000;
