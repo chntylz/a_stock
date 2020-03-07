@@ -142,7 +142,8 @@ def quadrilateral_algorythm(codestock_local, nowdate, para1):
         #fix NaN bug
         # if len(detail_info) == 0 or (detail_info is None):
         if len(detail_info) < (int(para1) + 60)  or (detail_info is None):
-            print('NaN: code:%s, name:%s' % (nowcode, nowname ))
+            if debug:
+                print('NaN: code:%s, name:%s' % (nowcode, nowname ))
             continue
         
         #funcat call
