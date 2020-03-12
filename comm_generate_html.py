@@ -66,27 +66,40 @@ def cgi_handle_html_head(title_name, refresh=0):
     print('\n')
 
     print('/* gridtable */\n')
-    print('table.gridtable {\n')
+    print('table {\n')
     print('    font-size:15px;\n')
     print('    color:#000;\n')
     print('    border-width: 1px;\n')
     print('    border-color: #333333;\n')
     print('    border-collapse: collapse;\n')
     print('}\n')
-    print('table.gridtable th {\n')
+
+    print('table tr {\n')
     print('    border-width: 1px;\n')
     print('    padding: 8px;\n')
     print('    border-style: solid;\n')
     print('    border-color: #333333;\n')
-    print('    background-color: #dedede;\n')
     print('}\n')
-    print('table.gridtable td {\n')
+
+
+    print('table th {\n')
     print('    border-width: 1px;\n')
     print('    padding: 8px;\n')
     print('    border-style: solid;\n')
     print('    border-color: #333333;\n')
-    print('    background-color: #ffffff;\n')
     print('}\n')
+
+    print('table td {\n')
+    print('    border-width: 1px;\n')
+    print('    padding: 8px;\n')
+    print('    border-style: solid;\n')
+    print('    border-color: #333333;\n')
+    print('}\n')
+
+    print('    table tr:nth-child(odd){\n')
+    print('    background-color: #eeeeee;\n')
+    print('    }\n')
+
     print('/* /gridtable */\n')
 
     print('\n')
@@ -103,9 +116,9 @@ def cgi_write_headline_column(df):
     #headline
     col_len=len(list(df))
     for j in range(0, col_len): 
-        print('        <td>\n')
+        print('        <th>\n')
         print('        <a> %s</a>\n'%(list(df)[j]))
-        print('        </td>\n')
+        print('        </th>\n')
 
     print('    </tr>\n')
 
@@ -125,7 +138,7 @@ def cgi_handle_link(stock_code):
     
     
 def cgi_write_to_file( df):
-    print('<table class="gridtable">\n')
+    print('<table >\n')
 
     #headline
     cgi_write_headline_column(df)
