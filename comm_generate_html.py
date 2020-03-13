@@ -67,7 +67,7 @@ def cgi_handle_html_head(title_name, refresh=0):
 
     print('/* gridtable */\n')
     print('table {\n')
-    print('    font-size:15px;\n')
+    print('    font-size:18px;\n')
     print('    color:#000;\n')
     print('    border-width: 1px;\n')
     print('    border-color: #333333;\n')
@@ -96,9 +96,11 @@ def cgi_handle_html_head(title_name, refresh=0):
     print('    border-color: #333333;\n')
     print('}\n')
 
+    '''
     print('    table tr:nth-child(odd){\n')
     print('    background-color: #eeeeee;\n')
     print('    }\n')
+    '''
 
     print('/* /gridtable */\n')
 

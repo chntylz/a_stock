@@ -188,19 +188,6 @@ def showImageInHTML(imageTypes,savedir):
         close_p = (C - pre_close)/pre_close
         close_p = round (close_p.value, 4) * 100
 
-        if debug:
-            print('%s' % (stock_code))
-            print('%s' % (stock_code[0:2]))
-            
-        if stock_code[0:1] == '6':
-            stock_code_new='SH'+stock_code
-        else:
-            stock_code_new='SZ'+stock_code
-
-        if debug:
-            print('%s' % (stock_code_new))
-        xueqiu_url='https://xueqiu.com/S/' + stock_code_new
-        hsgt_url='../../cgi-bin/hsgt-search.cgi?name=' + stock_code
         hsgt_df = hsgtdata.get_limit_hdata_of_stock_code(stock_code, curr_day, 2)
         if debug:
             print(hsgt_df)

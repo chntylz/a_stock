@@ -194,7 +194,7 @@ def comm_handle_html_head(filename, title, latest_date):
 
         f.write('/* gridtable */\n')
         f.write('table {\n')
-        f.write('    font-size:15px;\n')
+        f.write('    font-size:18px;\n')
         f.write('    color:#000;\n')
         f.write('    border-width: 1px;\n')
         f.write('    border-color: #333333;\n')
@@ -219,9 +219,15 @@ def comm_handle_html_head(filename, title, latest_date):
         f.write('    border-color: #333333;\n')
         f.write('}\n')
 		
+        '''
         f.write('    table tr:nth-child(odd){\n')
         f.write('    background-color: #eeeeee;\n')
         f.write('    }\n')
+
+        f.write('    table tr:nth-child(even){\n')
+        f.write('    background-color: #cccccc;\n')
+        f.write('    }\n')
+        '''
 
         f.write('/* /gridtable */\n')
 
