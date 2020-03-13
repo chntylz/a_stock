@@ -186,7 +186,7 @@ def showImageInHTML(imageTypes,savedir):
             print(str(nowdate), stock_code, O, H, L, C, open_p)
 
         close_p = (C - pre_close)/pre_close
-        close_p = round (close_p.value, 4)
+        close_p = round (close_p.value, 4) * 100
 
         if debug:
             print('%s' % (stock_code))
@@ -232,9 +232,9 @@ def showImageInHTML(imageTypes,savedir):
         insert_industry(dict_industry, industry_name)
 
 
-        data_list.append([curr_day, stock_code, stock_name, C.value, close_p, image, hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam])
+        data_list.append([curr_day, stock_code, stock_name, close_p, C.value, image, hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam])
 
-    data_column = ['date', 'code', 'name', 'close', 'percent', 'image_url', 'hsgt_date', 'hsgt_share', 'hsgt_percent', 'hsgt_delta1', 'hsgt_deltam' ]    
+    data_column = ['date', 'code', 'name', 'percent', 'close', 'image_url', 'hsgt_date', 'hsgt_share', 'hsgt_percent', 'hsgt_delta1', 'hsgt_deltam' ]    
     ret_df=pd.DataFrame(data_list, columns=data_column)
     if debug:
         print(ret_df)
