@@ -238,34 +238,37 @@ def comm_handle_html_head(filename, title, latest_date):
 
     pass
 
+#filename includes hsgt or fina
 def comm_handle_html_body(filename, all_df, select='topy10'):
     with open(filename,'a') as f:
-        daily_df  = hsgt_get_daily_data(all_df)
-        daily_net = daily_df['delta1_m'].sum()
-        f.write('<p style="color: #FF0000"> delta1_m sum is: %.2fw rmb </p>\n'%(daily_net))
-        if select is 'top10':
+        if 'hsgt' in filename:
+            daily_df  = hsgt_get_daily_data(all_df)
+            daily_net = daily_df['delta1_m'].sum()
+            f.write('<p style="color: #FF0000"> delta1_m sum is: %.2fw rmb </p>\n'%(daily_net))
+            if select is 'top10':
 
-            delta_list = ['percent', 'delta1', 'delta1_m', 'delta2', 'delta3', 'delta4',  'delta5', 'delta10', 'delta21', 'delta120', 'delta2_m',    'delta3_m',   'delta4_m', 'delta5_m', 'delta10_m', 'delta21_m']
-            lst_len = len(delta_list)
-            for k in range(0, lst_len):
-                f.write('           <p style="color: #FF0000">------------------------------------top10 order by %s desc---------------------------------------------- </p>\n'%(delta_list[k]))
-                delta_tmp = hsgt_daily_sort(daily_df, delta_list[k])
-                delta_tmp = delta_tmp.head(10)
-                comm_write_to_file(f, k, delta_tmp)
+                delta_list = ['percent', 'delta1', 'delta1_m', 'delta2', 'delta3', 'delta4',  'delta5', 'delta10', 'delta21', 'delta120', 'delta2_m',    'delta3_m',   'delta4_m', 'delta5_m', 'delta10_m', 'delta21_m']
+                lst_len = len(delta_list)
+                for k in range(0, lst_len):
+                    f.write('           <p style="color: #FF0000">------------------------------------top10 order by %s desc---------------------------------------------- </p>\n'%(delta_list[k]))
+                    delta_tmp = hsgt_daily_sort(daily_df, delta_list[k])
+                    delta_tmp = delta_tmp.head(10)
+                    comm_write_to_file(f, k, delta_tmp)
 
-        elif select is 'p_money':
-            conti_df = hsgt_get_continuous_info(all_df, 'p_money')
-            #select condition
-            conti_df = conti_df[ (conti_df.money_flag / conti_df.p_count > 1000) & (conti_df.money_flag > 2000) &(conti_df.delta1_m > 1000)] 
-            comm_write_to_file(f, -1, conti_df)
+            elif select is 'p_money':
+                conti_df = hsgt_get_continuous_info(all_df, 'p_money')
+                #select condition
+                conti_df = conti_df[ (conti_df.money_flag / conti_df.p_count > 1000) & (conti_df.money_flag > 2000) &(conti_df.delta1_m > 1000)] 
+                comm_write_to_file(f, -1, conti_df)
 
-        elif select is 'p_continous_day':
-            conti_df = hsgt_get_continuous_info(all_df, 'p_continous_day')
-            #select condition
-            #conti_df = conti_df[ (conti_df.money_flag / conti_df.p_count > 1000) & (conti_df.money_flag > 2000) &(conti_df.delta1_m > 1000)] 
-            conti_df = conti_df[conti_df.money_flag > 2000] 
-            comm_write_to_file(f, -1, conti_df)
-        
+            elif select is 'p_continous_day':
+                conti_df = hsgt_get_continuous_info(all_df, 'p_continous_day')
+                #select condition
+                #conti_df = conti_df[ (conti_df.money_flag / conti_df.p_count > 1000) & (conti_df.money_flag > 2000) &(conti_df.delta1_m > 1000)] 
+                conti_df = conti_df[conti_df.money_flag > 2000] 
+                comm_write_to_file(f, -1, conti_df)
+        elif 'fina' in filename:
+            comm_write_to_file(f, -1, all_df)
     pass
 
 def comm_handle_html_end(filename):
@@ -278,9 +281,15 @@ def comm_handle_html_end(filename):
         f.write('</html>\n')
         f.write('\n')
 
-    #copy to /var/www/html/hsgt
-    exec_command = 'cp -f ' + filename + ' /var/www/html/hsgt/'
-    os.system(exec_command)
+    if 'hsgt' in filename:
+        #copy to /var/www/html/hsgt
+        exec_command = 'cp -f ' + filename + ' /var/www/html/hsgt/'
+        os.system(exec_command)
+    elif 'fina' in filename:
+        #copy to /var/www/html/fina
+        os.system('mkdir -p /var/www/html/stock_data/finance')
+        exec_command = 'cp -f ' + filename + ' /var/www/html/stock_data/finance/'
+        os.system(exec_command)
 
     pass
 
