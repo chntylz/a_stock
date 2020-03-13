@@ -267,11 +267,11 @@ def comm_handle_html_body(filename, all_df, select='topy10'):
                 #conti_df = conti_df[ (conti_df.money_flag / conti_df.p_count > 1000) & (conti_df.money_flag > 2000) &(conti_df.delta1_m > 1000)] 
                 conti_df = conti_df[conti_df.money_flag > 2000] 
                 comm_write_to_file(f, -1, conti_df)
-        elif 'fina' in filename:
+        else:
             comm_write_to_file(f, -1, all_df)
     pass
 
-def comm_handle_html_end(filename):
+def comm_handle_html_end(filename, target_dir=''):
     with open(filename,'a') as f:
         f.write('        <td>\n')
         f.write('        </td>\n')
@@ -283,6 +283,7 @@ def comm_handle_html_end(filename):
 
     if 'hsgt' in filename:
         #copy to /var/www/html/hsgt
+        os.system('mkdir -p /var/www/html/hsgt')
         exec_command = 'cp -f ' + filename + ' /var/www/html/hsgt/'
         os.system(exec_command)
     elif 'fina' in filename:
@@ -290,7 +291,9 @@ def comm_handle_html_end(filename):
         os.system('mkdir -p /var/www/html/stock_data/finance')
         exec_command = 'cp -f ' + filename + ' /var/www/html/stock_data/finance/'
         os.system(exec_command)
-
+    else:
+        exec_command = 'cp -f ' + filename + ' /var/www/html/stock_data/' + target_dir
+        os.system(exec_command)
     pass
 
     

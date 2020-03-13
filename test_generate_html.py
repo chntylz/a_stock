@@ -9,6 +9,14 @@ from HData_day import *
 from HData_hsgt import *
 import  datetime
 
+from comm_generate_web_html import *
+
+import numpy as np
+import pandas as pd
+#keep 0.01 accrucy
+pd.set_option('display.float_format',lambda x : '%.2f' % x)
+
+
 #funcat
 from funcat import *
 from funcat.data.aaron_backend import AaronDataBackend
@@ -18,9 +26,13 @@ hdata=HData_day("usr","usr")
 sdata=HData_select("usr","usr")
 hsgtdata=HData_hsgt("usr","usr")
 
+
 daily_df=ts.get_stock_basics()
 dict_industry={}
 
+
+debug=0
+#debug=1
 
 from sys import argv
 # 如果执行的方式错误输出使用方法
@@ -48,6 +60,7 @@ last_day=lastdate.strftime("%Y-%m-%d")
 print("curr_day:%s, last_day:%s"%(curr_day, last_day))
 
 stock_data_dir="stock_data"
+curr_dir=curr_day_w
 
 def insert_industry(dict_name, key):
     if dict_name.get(key) is None :
@@ -57,139 +70,52 @@ def insert_industry(dict_name, key):
 
 
 
-def generate_head_html(file_f, day):
-    f = file_f
-    curr_day = day
-    f.write('<!DOCTYPE html>\n')
-    f.write('<html>\n')
-    f.write('<head>\n')
-    f.write('<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n')
-    f.write('<title> %s </title>\n'%(curr_day))
-    f.write('\n')
-    f.write('\n')
-    f.write('<style type="text/css">a {text-decoration: none}</style>\n')
-    f.write('\n')
-
-    f.write('</head>\n')
-    f.write('<body>\n')
-    f.write('\n')
-    f.write('\n')
-    f.write('\n')
-    f.write('\n')
-    f.write('<p> 日期 %s </p>\n' %(curr_day))
-
-    df = get_today_item(curr_day)
-
-    # 找出上涨的股票
-    df_up = df[df['p_change'] > 0.00]
-    # 走平股数
-    df_even = df[df['p_change'] == 0.00]
-    # 找出下跌的股票
-    df_down = df[df['p_change'] < 0.00]
-
-    # 找出涨停的股票
-    limit_up = df[df['p_change'] >= 9.70]
-    limit_down = df[df['p_change'] <= -9.70]
-
-    s_debug= ('<p> A股上涨个数： %d,  A股下跌个数： %d,  A股走平个数:  %d</p>' % (df_up.shape[0], df_down.shape[0], df_even.shape[0]))
-    print(s_debug)
-    f.write('%s\n'%(s_debug))
-
-    s_debug=('<p> 涨停数量：%d 个</p>' % (limit_up.shape[0]))
-    print(s_debug)
-    f.write('%s\n'%(s_debug))
-
-    s_debug=('<p> 跌停数量：%d 个</p>' % (limit_down.shape[0]))
-    print(s_debug)
-    f.write('%s\n'%(s_debug))
-
-    f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
-    #f.write('<p>蓝色：连续两天涨幅3个点以上   红色:连续三天涨幅3个点以上    绿色: 连续两天涨幅3个点以上，并且当天跳空高开2个点以上 /p>\n')
-    f.write('<p  style="color:blue;">蓝色: 连续两天涨幅3个点以上   </p>')
-    f.write('<p  style="color:red;">红色: 连续三天涨幅3个点以上   </p>')
-    f.write('<p  style="color:green;">绿色: 连续两天涨幅3个点以上，并且当天跳空高开2个点以上 </p>')
-    f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
-    f.write('\n')
-
-
-def showImageInHTML(imageTypes,savedir):
-    files=getAllFiles(savedir+'/' + curr_day_w)
-    #print("file:%s" % (files))
-    images=[f for f in files if f[f.rfind('.')+1:] in imageTypes]
-    #print("%s"%(images))
-    images=[item for item in images if os.path.getsize(item)>5*1024]
-    #print("%s"%(images))
-    #images=[curr_day_w+item[item.rfind('/'):] for item in images]
-    images=[item[item.rfind('/')+1:] for item in images]
-    print("%s"%(images))
-    newfile='%s/%s'%(savedir, curr_day_w + '/' + curr_day_w + '.html')
-    
-    #get continuous stock_code
-    last_day = get_valid_last_day(nowdate)
-    conti_df = get_continuous_item(last_day, curr_day)
-    conti_list = list(conti_df['stock_code'])
-    print("last_day:%s, curr_day:%s conti_list:%s" % (last_day, curr_day, conti_list))
-    
-    if os.path.exists(savedir + '/' + curr_day_w ) == False:
-        print("%s not exist!!! return" % (savedir + '/' + curr_day_w))
-        return
-    
-    with open(newfile,'w') as f:
-
-        generate_head_html(f, curr_day)
-
-        for image in images:
-
-            #'2019-07-09-600095-哈高科-873-960-960-873-997.png' 
-            #2019-09-23-1-002436-兴森科技-814-878-891-796-840.png
-            tmp_image=image[0:image.rfind('.')]
-            print('%s' % (tmp_image))
-            
-            #stock_code=image[11:17]
-            stock_code=image[13:19]
-
-            #funcat call
-            T(curr_day)
-            S(stock_code)
-            open_p = ((O - REF(C, 1))/REF(C, 1)) 
-            open_p = round (open_p.value, 4)
-            open_jump=open_p - 0.02
-            print(str(nowdate), stock_code, O, H, L, C, open_p)
-
-
-            print('%s' % (stock_code))
-            
-            print('%s' % (stock_code[0:2]))
-            if stock_code[0:1] == '6':
-                stock_code_new='SH'+stock_code
-            else:
-                stock_code_new='SZ'+stock_code
-
-            print('%s' % (stock_code_new))
-            xueqiu_url='https://xueqiu.com/S/' + stock_code_new
-            hsgt_url='../../cgi-bin/hsgt-search.cgi?name=' + stock_code
-            hsgt_df = hsgtdata.get_all_hdata_of_stock_code(stock_code)
-
-            f.write('<p>\n')
-            if stock_code in conti_list:
-                f.write('<a href="%s" target="_blank" style="color: #FF0000"> %s </a>' % (image, tmp_image))
-            elif open_jump > 0 :
-                f.write('<a href="%s" target="_blank" style="color: #32CD32"> %s </a>' % (image, tmp_image))
-            else:
-                f.write('<a href="%s" target="_blank"> %s </a>' % (image, tmp_image))
-            f.write('---->')
-            f.write('<a href="%s" target="_blank"> %s </a>\n' % (xueqiu_url , 'xueqiu:' + stock_code_new))
-            if (len(hsgt_df) > 0):
-                f.write('---->')
-                f.write('<a href="%s" target="_blank"> %s</a>\n'%(hsgt_url, 'hsgt:' + stock_code_new))
-            industry_name = daily_df.loc[stock_code]['industry']
-            f.write('[%s]' % (industry_name))
-            f.write('</p>\n')
-            insert_industry(dict_industry, industry_name)
-            
-            
+def day_continue_handle_html_body_special(newfile, date):
+    f = newfile
+    curr_day = date
+    with open(newfile,'a') as f:
         f.write('\n')
         f.write('\n')
+        f.write('\n')
+        f.write('\n')
+        f.write('<p> 日期 %s </p>\n' %(curr_day))
+
+        df = get_today_item(curr_day)
+
+        # 找出上涨的股票
+        df_up = df[df['p_change'] > 0.00]
+        # 走平股数
+        df_even = df[df['p_change'] == 0.00]
+        # 找出下跌的股票
+        df_down = df[df['p_change'] < 0.00]
+
+        # 找出涨停的股票
+        limit_up = df[df['p_change'] >= 9.70]
+        limit_down = df[df['p_change'] <= -9.70]
+
+        s_debug= ('<p> A股上涨个数： %d,  A股下跌个数： %d,  A股走平个数:  %d</p>' % (df_up.shape[0], df_down.shape[0], df_even.shape[0]))
+        print(s_debug)
+        f.write('%s\n'%(s_debug))
+
+        s_debug=('<p> 涨停数量：%d 个</p>' % (limit_up.shape[0]))
+        print(s_debug)
+        f.write('%s\n'%(s_debug))
+
+        s_debug=('<p> 跌停数量：%d 个</p>' % (limit_down.shape[0]))
+        print(s_debug)
+        f.write('%s\n'%(s_debug))
+
+        f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
+        #f.write('<p>蓝色：连续两天涨幅3个点以上   红色:连续三天涨幅3个点以上    绿色: 连续两天涨幅3个点以上，并且当天跳空高开2个点以上 /p>\n')
+        f.write('<p  style="color:blue;">蓝色: 连续两天涨幅3个点以上   </p>')
+        f.write('<p  style="color:red;">红色: 连续三天涨幅3个点以上   </p>')
+        f.write('<p  style="color:green;">绿色: 连续两天涨幅3个点以上，并且当天跳空高开2个点以上 </p>')
+        f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
+        f.write('\n')
+    pass
+
+def day_continue_handle_html_end_special(newfile, dict_industry):
+    with open(newfile,'a') as f:
         f.write('\n')
         f.write('\n')
         f.write('\n')
@@ -199,14 +125,127 @@ def showImageInHTML(imageTypes,savedir):
         f.write('<p>industry %s</p>\n' % (sorted(dict_industry.items(),key=lambda x:x[1],reverse=True)))
         f.write('\n')
         f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
-        f.write('</body>\n')
-        f.write('</html>\n')
-        f.write('\n')
+
+    pass
+
+
+def showImageInHTML(imageTypes,savedir):
+    files=getAllFiles(savedir+'/' + curr_dir)
+    if debug:
+        print("file:%s" % (files))
+    images=[f for f in files if f[f.rfind('.')+1:] in imageTypes]
+    if debug:
+        print("%s"%(images))
+    images=[item for item in images if os.path.getsize(item)>5*1024]
+    if debug:
+        print("%s"%(images))
+    #images=[curr_dir+item[item.rfind('/'):] for item in images]
+    images=[item[item.rfind('/')+1:] for item in images]
+    if debug:
+        print("%s"%(images))
+    newfile='%s/%s'%(savedir, curr_dir + '/' + curr_dir + '.html')
+    if debug:
+        print("%s"% newfile)
     
+    #get continuous stock_code
+    last_day = get_valid_last_day(nowdate)
+    conti_df = get_continuous_item(last_day, curr_day)
+    conti_list = list(conti_df['stock_code'])
+    if debug:
+        print("last_day:%s, curr_day:%s conti_list:%s" % (last_day, curr_day, conti_list))
     
-    shell_cmd2='cp -rf ' + stock_data_dir + '/' + curr_day_w + ' /var/www/html/'+stock_data_dir+'/'
-    os.system(shell_cmd2)
-    print ('success,images are wrapped up in %s' % (newfile))
+    if os.path.exists(savedir + '/' + curr_dir ) == False:
+        print("%s not exist!!! return" % (savedir + '/' + curr_dir))
+        return
+    
+    data_list = []
+    for image in images:
+
+        #'2019-07-09-600095-哈高科-873-960-960-873-997.png' 
+        #2019-09-23-1-002436-兴森科技-814-878-891-796-840.png
+        tmp_image=image[0:image.rfind('.')]
+        if debug:
+            print('tmp_image: %s' % (tmp_image))
+        
+        #stock_code=image[11:17]
+        stock_code=image[13:19]
+        stock_name = symbol(stock_code)
+        pos_s=stock_name.rfind('[')
+        pos_e=stock_name.rfind(']')
+        stock_name=stock_name[pos_s+1: pos_e]
+
+
+        #funcat call
+        T(curr_day)
+        S(stock_code)
+        pre_close = REF(C, 1)
+        open_p = (O - pre_close)/pre_close 
+        open_p = round (open_p.value, 4)
+        open_jump=open_p - 0.02
+        if debug:
+            print(str(nowdate), stock_code, O, H, L, C, open_p)
+
+        close_p = (C - pre_close)/pre_close
+        close_p = round (close_p.value, 4)
+
+        if debug:
+            print('%s' % (stock_code))
+            print('%s' % (stock_code[0:2]))
+            
+        if stock_code[0:1] == '6':
+            stock_code_new='SH'+stock_code
+        else:
+            stock_code_new='SZ'+stock_code
+
+        if debug:
+            print('%s' % (stock_code_new))
+        xueqiu_url='https://xueqiu.com/S/' + stock_code_new
+        hsgt_url='../../cgi-bin/hsgt-search.cgi?name=' + stock_code
+        hsgt_df = hsgtdata.get_limit_hdata_of_stock_code(stock_code, curr_day, 2)
+        if debug:
+            print(hsgt_df)
+
+        hsgt_df_len = len(hsgt_df)
+        if hsgt_df_len > 1:
+            hsgt_date           = hsgt_df['record_date'][1]
+            hsgt_share          = hsgt_df['share_holding'][1]
+            hsgt_percent        = hsgt_df['percent'][1]
+            hsgt_delta1         = hsgt_df['percent'][1] - hsgt_df['percent'][0]
+            hsgt_delta1         = round(hsgt_delta1, 2)
+            hsgt_deltam         = (hsgt_df['share_holding'][1] - hsgt_df['share_holding'][0]) * float(C.value) /10000.0
+            hsgt_deltam         = round(hsgt_deltam, 2)
+        elif hsgt_df_len > 0:
+            hsgt_date           = hsgt_df['record_date'][0]
+            hsgt_share          = hsgt_df['share_holding'][0]
+            hsgt_percent        = hsgt_df['percent'][0]
+            hsgt_delta1         = hsgt_df['percent'][0]
+            hsgt_deltam         = hsgt_df['share_holding'][0] * float(pre_close.value)/10000.0
+        else:
+            hsgt_date           = ''
+            hsgt_share          = 0
+            hsgt_percent        = 0
+            hsgt_delta1         = 0
+            hsgt_deltam         = 0
+
+
+        industry_name = daily_df.loc[stock_code]['industry']
+        insert_industry(dict_industry, industry_name)
+
+
+        data_list.append([curr_day, stock_code, stock_name, C.value, close_p, image, hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam])
+
+    data_column = ['date', 'code', 'name', 'close', 'percent', 'image_url', 'hsgt_date', 'hsgt_share', 'hsgt_percent', 'hsgt_delta1', 'hsgt_deltam' ]    
+    ret_df=pd.DataFrame(data_list, columns=data_column)
+    if debug:
+        print(ret_df)
+    
+
+
+    comm_handle_html_head(newfile, stock_data_dir, curr_day )
+    day_continue_handle_html_body_special(newfile, curr_day)
+    comm_handle_html_body(newfile, ret_df)
+    day_continue_handle_html_end_special(newfile, dict_industry)
+    comm_handle_html_end(newfile, curr_dir)
 
 def getAllFiles(directory):
     files=[]
