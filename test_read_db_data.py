@@ -250,7 +250,7 @@ for i in range(0,stock_len):
     ################################################################
 
 
-shell_cmd='cp -rf stock_data/' + nowdate +'*'  + ' /var/www/html/stock_data' +'/'
+shell_cmd='cp -rf stock_data/' + nowdate.strftime("%Y-%m-%d") +'*'  + ' /var/www/html/stock_data' +'/'
 if debug:
     print('shell_cmd: %s' % shell_cmd)
 os.system(shell_cmd)

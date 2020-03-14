@@ -109,7 +109,7 @@ print("start_time: %s, end_time: %s" % (start_time, end_time))
 
 
 #debug switch
-debug = False;
+debug = 0
 
 #define canvas out of loop
 plt.style.use('bmh')
@@ -139,7 +139,7 @@ for i in range(0,stock_len):
 
     #skip ST
     #if ('ST' in nowname or '300' in nowcode):
-    if ('ST' in nowname):
+    if ('ST' in nowname or '68' in nowcode):
         #log.debug("ST: code:%s, name:%s" % (nowcode, nowname ))
         if debug:
             print("skip code: code:%s, name:%s" % (nowcode, nowname ))
@@ -253,6 +253,10 @@ for i in range(0,stock_len):
     ################################################################
 
 
+shell_cmd='cp -rf stock_data/' + nowdate.strftime("%Y-%m-%d") +'*'  + ' /var/www/html/stock_data' +'/'
+if debug:
+    print('shell_cmd: %s' % shell_cmd)
+os.system(shell_cmd)
 
 plt.close('all')
 
