@@ -12,7 +12,7 @@ import pandas as pd
 basic_df=ts.get_stock_basics()
 
 debug=0
-#debug=1
+debug=1
 
   
 ############################################################################################################
@@ -116,7 +116,7 @@ def comm_handle_link(stock_code):
     return xueqiu_url, hsgt_url, fina_url
     
     
-def comm_write_to_file(f, k, df):
+def comm_write_to_file(f, k, df, filename):
     f.write('<table class="gridtable">\n')
 
     #headline
@@ -136,7 +136,10 @@ def comm_write_to_file(f, k, df):
         for j in range(0, col_len): #loop column
             f.write('        <td>\n')
             element_value = a_array[0][j] #get a[i][j] element
-            if k is -1: #
+            if debug:
+                print('element_value: %s' % element_value)
+                                     
+            if k is -1: # normal case
                 #data_column=['record_date', 'stock_code', 'stock_cname', 'percent', 'close', 'delta1', 'delta1_m', 'p_count', 'money_flag']
                 if(j == 0): 
                     f.write('           <a href="%s" target="_blank"> %s[fina]</a>\n'%(fina_url, element_value))
@@ -149,9 +152,12 @@ def comm_write_to_file(f, k, df):
                 elif(j == 8):
                     f.write('           <a> %.2f</a>\n'%(element_value))
                 else:
-                    f.write('           <a> %s</a>\n'%(element_value))
+                    if 'png' in str(element_value):
+                        f.write('           <a href="%s" target="_blank"> %s</a>\n'%( element_value, 'image'))
+                    else:
+                        f.write('           <a> %s</a>\n'%(element_value))
             
-            else:
+            else: #special case for get red color column
                 #set color to delta column, 6 is the position of percent
                 #record_date,  stock_code,  stock_cname, share_holding,   close, delta_c,  percent,  delta1,  delta2,  delta3,  delta4,  delta5,  delta10, delta21, delta120,    delta1_m,    delta2_m,  delta3_m, delta4_m, delta5_m,    delta10_m,   delta21_m
                 if (j == k + 6):
@@ -246,6 +252,8 @@ def comm_handle_html_head(filename, title, latest_date):
 
 #filename includes hsgt or fina
 def comm_handle_html_body(filename, all_df, select='topy10'):
+    if debug:
+        print('filename: %s' % filename)
     with open(filename,'a') as f:
         if 'hsgt' in filename:
             daily_df  = hsgt_get_daily_data(all_df)
@@ -259,22 +267,22 @@ def comm_handle_html_body(filename, all_df, select='topy10'):
                     f.write('           <p style="color: #FF0000">------------------------------------top10 order by %s desc---------------------------------------------- </p>\n'%(delta_list[k]))
                     delta_tmp = hsgt_daily_sort(daily_df, delta_list[k])
                     delta_tmp = delta_tmp.head(10)
-                    comm_write_to_file(f, k, delta_tmp)
+                    comm_write_to_file(f, k, delta_tmp, filename)
 
             elif select is 'p_money':
                 conti_df = hsgt_get_continuous_info(all_df, 'p_money')
                 #select condition
                 conti_df = conti_df[ (conti_df.money_flag / conti_df.p_count > 1000) & (conti_df.money_flag > 2000) &(conti_df.delta1_m > 1000)] 
-                comm_write_to_file(f, -1, conti_df)
+                comm_write_to_file(f, -1, conti_df, filename)
 
             elif select is 'p_continous_day':
                 conti_df = hsgt_get_continuous_info(all_df, 'p_continous_day')
                 #select condition
                 #conti_df = conti_df[ (conti_df.money_flag / conti_df.p_count > 1000) & (conti_df.money_flag > 2000) &(conti_df.delta1_m > 1000)] 
                 conti_df = conti_df[conti_df.money_flag > 2000] 
-                comm_write_to_file(f, -1, conti_df)
+                comm_write_to_file(f, -1, conti_df, filename)
         else:
-            comm_write_to_file(f, -1, all_df)
+            comm_write_to_file(f, -1, all_df, filename)
     pass
 
 def comm_handle_html_end(filename, target_dir=''):
