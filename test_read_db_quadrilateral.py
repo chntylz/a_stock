@@ -76,11 +76,12 @@ sdata=HData_select("usr","usr")
 ######################################################################
 
 #debug switch
-debug = 0;
+debug = 0
+within_days = 8
 
 def get_cross_info(P):
     
-    for j in range(0, 10):
+    for j in range(0, within_days):
         cross = REF(P, j)
         if debug:
             print('P%d=%s type(cross)=%s' % (j, cross, type(cross)))
