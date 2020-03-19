@@ -69,7 +69,7 @@ def show_realdata():
             new_hsgt_share_holding  = hsgt_df['share_holding'][1]
             new_hsgt_percent        = hsgt_df['percent'][1]
             new_hsgt_delta1         = hsgt_df['percent'][1] - hsgt_df['percent'][0]
-            new_hsgt_deltam         = (hsgt_df['share_holding'][1] - hsgt_df['share_holding'][0]) * float(new_price)/10000.0
+            new_hsgt_deltam         = (hsgt_df['share_holding'][1] - hsgt_df['share_holding'][0]) * float(new_pre_price)/10000.0
         elif hsgt_df_len > 0: 
             new_hsgt_date           = hsgt_df['record_date'][0]
             new_hsgt_share_holding  = hsgt_df['share_holding'][0]
