@@ -20,9 +20,6 @@ from funcat import *
 from funcat.data.aaron_backend import AaronDataBackend
 set_data_backend(AaronDataBackend())
 
-
-
-stocks=Stocks("usr","usr")
 hdata_fina=HData_fina("usr","usr")
 debug = False
    

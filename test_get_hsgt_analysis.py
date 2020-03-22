@@ -30,9 +30,6 @@ debug=0
 hdata_hsgt=HData_hsgt("usr","usr")
 hdata_hsgt.db_connect()
 
-#get basic stock info
-basic_df=ts.get_stock_basics()
-
 ###################################################################################
 
 def hsgt_get_stock_list():

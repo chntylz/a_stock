@@ -27,3 +27,6 @@
 
 300249 yimikang
 600487 hengtongguangdian
+
+600309 wanhuahuaxue
+002241 geergufen
