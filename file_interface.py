@@ -6,6 +6,7 @@ import time
 import datetime
 
 import os,sys
+from sys import argv
 
 #把时间戳转化为时间: 1479264792 to 2016-11-16 10:53:12
 def TimeStampToTime(timestamp):
@@ -69,5 +70,30 @@ def compare_time(time1,time2):
     t1 = time.strptime(time1, "%Y%m%d")
     t2 = time.strptime(time2, "%Y%m%d")
     return (t1 <= t2)
+
+
+
+def get_work_day(curr_date):
+    weekday=curr_date.strftime("%w")
+    if weekday in ['6', '0']:
+        return 0
+    else: 
+        return 1
+
+
+def check_input_parameter():
+# 如果执行的方式错误输出使用方法
+    USAGE = '''
+        用法错误，正确方式如下：
+        python demo.py 1
+        '''
+    if len(argv) > 2:
+        print(USAGE)  # 如果传入的参数不足，输出正确用法
+        exit(1) # 异常退出(下面的代码将不会被执行)
+
+    script_name, para1 = argv  # 将传入的参数赋值进行使用
+    print("%s, %d"%(script_name, int(para1)))
+
+    return script_name, para1
 
 
