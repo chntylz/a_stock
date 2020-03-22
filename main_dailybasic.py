@@ -70,3 +70,42 @@ if __name__ == '__main__':
 
     t2 = clock()
     print("t1:%s, t2:%s, delta=%s"%(t1, t2, t2-t1))
+
+
+
+#######################################
+#test
+'''
+
+算法： 
+选出市值小于50亿
+
+select A.record_date, A.stock_code, A.close, A.pe, A.pb, A.total_mv, A.circ_mv from hdata_dailybasic as A where A.record_date='2020-03-20' and A.total_mv < 500000;
+
+select B.cns_name, B.area, B.industry, B.list_date from stocks as B;
+
+select A.record_date, A.stock_code, A.close, A.pe, A.pb, A.total_mv, A.circ_mv, B.cns_name, B.area, B.industry, B.list_date from hdata_dailybasic as A,  stocks as B where A.stock_code = B.stock_code and  A.record_date='2020-03-20' and A.total_mv < 500000 limit 10; 
+
+两个表连起来：
+select * from (
+            select A.record_date as date, A.stock_code, A.close, A.pe, A.pb, A.total_mv, A.circ_mv, B.cns_name, B.area, B.industry, B.list_date from hdata_dailybasic as A,  stocks as B where A.stock_code = B.stock_code and A.record_date='2020-03-20') as tbl;
+
+查行业信息
+select industry, count(*) from stocks group by industry  order by count desc;
+
+select * from (
+    select industry, count(*) from stocks group by industry  order by count desc ) as tlb  
+    where industry = ' 软件服务' or industry = '通信设备' or industry = '元器件' or industry='通信设备' or industry='半导体' or industry='生物制药';
+
+
+final:
+select * from ( 
+        select A.record_date as date, A.stock_code, A.close, A.pe, A.pb, A.total_mv, A.circ_mv, B.cns_name, B.area, B.industry, B.list_date from hdata_dailybasic as A,  stocks as B where A.stock_code = B.stock_code and A.record_date='2020-03-20') as tbl
+        where total_mv < 500000 and (
+        industry = ' 软件服务' or 
+        industry = '通信设备' or 
+        /* industry = '元器件' or */
+        industry = '通信设备' or 
+        industry = '半导体' or 
+        industry = '生物制药');
+'''
