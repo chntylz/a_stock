@@ -87,7 +87,7 @@ class HData_day(object):
         #print(stock_code+" insert_perstock_hdatadate finish")
 
 
-    def insert_allstock_hdatadate(self,stock_code,data):#插入一支股票的所有历史数据到数据库#如果有code和index相同的不重复插入
+    def insert_allstock_hdatadate(self, data):#插入一支股票的所有历史数据到数据库#如果有code和index相同的不重复插入
 
         #data format: record_date , stock_code , open , close , high , low  , volume ,  amount  , p_change 
         t1=clock()
