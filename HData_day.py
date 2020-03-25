@@ -6,6 +6,8 @@ import tushare as ts
 import pandas as pd
 from time import clock
 
+debug = 0
+
 class HData_day(object):
     def __init__(self,user,password):
         # self.aaa = aaa
@@ -100,7 +102,8 @@ class HData_day(object):
             sql_cmd = ""
             each_num = 1000
             for i in range(0,length):
-                # print (i)
+                if debug:
+                    print (i)
 
                 str_temp=""
                 #str_temp+="\'"+stock_code+"\'"+","
@@ -117,13 +120,15 @@ class HData_day(object):
                     sql_cmd = sql_cmd+","
 
                 if i % each_num == 0:
-                    #print(sql_cmd)
+                    if debug:
+                        print(sql_cmd)
                     if(sql_cmd != ""):
                         self.cur.execute("insert into hdata_d_table (record_date , stock_code , open , close , high , low  , volume ,  amount  , p_change ) values "+sql_cmd+";")
                         self.conn.commit()
                         sql_cmd = ""
 
-            #print(sql_cmd)
+            if debug:
+                print(sql_cmd)
             if(sql_cmd != ""):
                 self.cur.execute("insert into hdata_d_table (record_date , stock_code , open , close , high , low  , volume ,  amount  , p_change ) values "+sql_cmd+";")
                 self.conn.commit()

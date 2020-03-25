@@ -56,6 +56,37 @@ for i in range(0,length):
         print('maxdate:%s, nowdate:%s' % (maxdate, nowdate))
     if(maxdate):
 
+        today_data=ts.get_today_all()
+        today_data=today_data.drop_duplicates('code')
+        if debug:
+            today_data.head(1)
+        del today_data['name']
+        del today_data['settlement']
+        del today_data['per']
+        del today_data['pb']
+        del today_data['mktcap']
+        del today_data['nmc']
+        del today_data['turnoverratio']
+
+        if debug:
+            print(today_data.head(1))
+
+        #curr_day=datetime.datetime.now().strftime("%Y-%m-%d")
+        curr_day=datetime.datetime.now().date()
+        today_data['record_date']=curr_day
+        cols=['record_date', 'code', 'open', 'trade', 'high', 'low', 'volume', 'amount', 'changepercent']
+        today_data=today_data.ix[:,cols]
+        today_data=today_data.set_index('record_date')
+        if debug:
+            print(today_data.head(1))
+        #insert dataform
+        hdata_day.insert_allstock_hdatadate(today_data)
+        
+        #delete closed stock data according amount=0
+        hdata_day.delete_amount_is_zero()
+        break
+
+        '''
         curr_day=datetime.datetime.now().date()
         today_data = pro.daily(trade_date=curr_day.strftime("%Y%m%d"))
         del today_data['change']
@@ -76,6 +107,7 @@ for i in range(0,length):
         
         #delete closed stock data according amount=0
         hdata_day.delete_amount_is_zero()
+        '''
 
         break #only 1 time, then exit for loop
 
