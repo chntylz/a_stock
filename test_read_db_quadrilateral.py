@@ -79,6 +79,8 @@ sdata=HData_select("usr","usr")
 debug = 0
 within_days = 8
 
+
+#return the day(j) and cross_flag(true or false) if P is true during with_days, P is cross(5, 30), etc
 def get_cross_info(P):
     
     for j in range(0, within_days):
@@ -120,10 +122,9 @@ def quadrilateral_algorythm(codestock_local, nowdate, para1):
         draw_flag = False
         nowcode=codestock_local[i][0]
         nowname=codestock_local[i][1]
-        log.debug("code:%s, name:%s" % (nowcode, nowname ))
+
         if debug:
             print("code:%s, name:%s" % (nowcode, nowname ))
-
 
         #skip ST
         #if ('ST' in nowname or '300' in nowcode):
@@ -132,6 +133,7 @@ def quadrilateral_algorythm(codestock_local, nowdate, para1):
             if debug:
                 print("skip code: code:%s, name:%s" % (nowcode, nowname ))
             continue
+
 
         detail_info = hdata.get_limit_hdata_of_stock(nowcode, nowdate.strftime("%Y-%m-%d"), 600)
         #detail_info = hdata.get_limit_hdata_of_stock('000029',100) # test 'Exception: inputs are all NaN'
@@ -179,28 +181,29 @@ def quadrilateral_algorythm(codestock_local, nowdate, para1):
             print('p3_pos:%s, p3_cross:%s' %(p3_pos, p3_cross))
             print('p4_pos:%s, p4_cross:%s' %(p4_pos, p4_cross))
 
+        # P1 P2 P3 P4 all are true during withdays
         if p1_cross and  p2_cross and  p3_cross and  p4_cross :
             if debug:
                 print('!!! %s, %s, %s' %(str(nowdate), nowcode, nowname))
 
-            c_less_ma30 = False
-            for ps in range(p1_pos, p2_pos):
-                #if REF(C, ps) >= REF(MA5, p1_pos):
-                if REF(L, ps) >= REF(MA5, p1_pos):
-                    c_less_ma30 = True
+            c_less_ma5 = False
+            for ps in range(min(p1_pos, p2_pos), max(p1_pos, p2_pos)):
+                #if REF(L, ps) >= REF(MA5, p1_pos):
+                if REF(C, ps) >= REF(MA5, p1_pos):
+                    c_less_ma5 = True
                     if debug:
                        print('MA5 condition ok')
                 else:
-                    c_less_ma30 = False
+                    c_less_ma5 = False
                     if debug:
                         print('MA5 condition not ok')
                     break
 
                 
             c_less_ma60 = False
-            for ps in range(p3_pos, p4_pos):
-                #if REF(C, ps) >= REF(MA60, p1_pos):
-                if REF(L, ps) >= REF(MA60, p1_pos):
+            for ps in range(min(p3_pos, p4_pos), max(p3_pos, p4_pos)):
+                #if REF(L, ps) >= REF(MA60, p1_pos):
+                if REF(C, ps) >= REF(MA60, p1_pos):
                     c_less_ma60 = True
                     if debug:
                         print('MA60 condition ok')
@@ -210,7 +213,7 @@ def quadrilateral_algorythm(codestock_local, nowdate, para1):
                         print('MA60 condition not ok')
                     break
                 
-            if c_less_ma30 and c_less_ma60:
+            if c_less_ma5 and c_less_ma60:
                 print('### %s, %s, %s' %(str(nowdate), nowcode, nowname))
 
 
