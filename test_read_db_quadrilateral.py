@@ -187,9 +187,11 @@ def quadrilateral_algorythm(codestock_local, nowdate, para1):
                 print('!!! %s, %s, %s' %(str(nowdate), nowcode, nowname))
 
             c_less_ma5 = False
-            for ps in range(min(p1_pos, p2_pos), max(p1_pos, p2_pos)):
-                #if REF(L, ps) >= REF(MA5, p1_pos):
-                if REF(C, ps) >= REF(MA5, p1_pos):
+            s_day = min(p1_pos, p2_pos)
+            e_day = max(p1_pos, p2_pos)
+            for ps in range(s_day, e_day):
+                if REF(L, ps) >= REF(MA5, ps):
+                #if REF(C, ps) >= REF(MA5, ps):
                     c_less_ma5 = True
                     if debug:
                        print('MA5 condition ok')
@@ -201,9 +203,11 @@ def quadrilateral_algorythm(codestock_local, nowdate, para1):
 
                 
             c_less_ma60 = False
-            for ps in range(min(p3_pos, p4_pos), max(p3_pos, p4_pos)):
-                #if REF(L, ps) >= REF(MA60, p1_pos):
-                if REF(C, ps) >= REF(MA60, p1_pos):
+            s_day = min(p3_pos, p4_pos)
+            e_day = max(p3_pos, p4_pos)
+            for ps in range(s_day, e_day):
+                if REF(L, ps) >= REF(MA60, ps):
+                #if REF(C, ps) >= REF(MA60, ps):
                     c_less_ma60 = True
                     if debug:
                         print('MA60 condition ok')
