@@ -308,6 +308,9 @@ def comm_handle_html_end(filename, target_dir=''):
     else:
         exec_command = 'cp -f ' + filename + ' /var/www/html/stock_data/' + target_dir
         os.system(exec_command)
+
+    if debug:
+        print(exec_command)
     pass
 
     

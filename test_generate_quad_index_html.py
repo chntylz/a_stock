@@ -7,8 +7,9 @@ import datetime
 nowdate=datetime.datetime.now().date()
 #nowdate=nowdate-datetime.timedelta(1)
 src_dir=nowdate.strftime("%Y-%m-%d")
-target_html='index.html'
 stock_data_dir="stock_data"
+file_name='quad'
+target_html=file_name + '-index.html'
 
 def showImageInHTML(imageTypes,savedir):
     files=getAllFiles(savedir)
@@ -24,7 +25,7 @@ def showImageInHTML(imageTypes,savedir):
         f.write('<html>\n')
         f.write('<head>\n')
         f.write('<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n')
-        f.write('<title> index </title>\n')
+        f.write('<title> %s-index </title>\n' % file_name)
         f.write('\n')
         f.write('\n')
         f.write('<style type="text/css">a {text-decoration: none}\n')
@@ -72,29 +73,9 @@ def showImageInHTML(imageTypes,savedir):
 
 
         #f.write('<h2  align="center" style="color:blue ; font-size:34px">别人贪婪时我恐惧 别人恐惧时我贪婪</h2>\n')
-
-
         f.write('<table class="gridtable">\n')
         
-
-        f.write('<h2  align="left" style="color:blue ; font-size:34px">\n')
-        f.write('<td>\n')
-        f.write('     <a href="hsgt/hsgt-index.html"  target="_blank">hsgt </a>\n')
-        f.write('</td>\n')
-        f.write('<td>\n')
-        f.write('     <a href="../cgi-bin/hsgt-search.cgi"  target="_blank">hsgt-search\n')
-        f.write('</td>\n')
-        f.write('<td>\n')
-        f.write('     <a href="macd-index.html"  target="_blank">macd strategy </a>\n')
-        f.write('</td>\n')
-        f.write('<td>\n')
-        f.write('     <a href="zig-index.html"  target="_blank"> zig </a>\n')
-        f.write('</td>\n')
-        f.write('<td>\n')
-        f.write('     <a href="quad-index.html"  target="_blank"> quad </a>\n')
-        f.write('</td>\n')
-        f.write('</h2>\n')
-
+       
 
 
         i=0
@@ -125,9 +106,7 @@ def showImageInHTML(imageTypes,savedir):
                 f.write('    </tr>\n')
 
             f.write('\n')
-
-
-
+            
         f.write('</table>\n')
         f.write('</body>\n')
         f.write('\n')
@@ -144,9 +123,10 @@ def getAllFiles(directory):
     for dirpath, dirnames,filenames in os.walk(directory):
         if filenames!=[]:
             for file in filenames:
-                if ('index' in file) or ('zheli' in file)  or ('macd' in file)  or ('zig' in file) or ('hsgt' in file ) or ('test' in file ) or ('quad' in file):
-                    continue
-                files.append(dirpath+'/'+file)
+                if (file_name + '-index') in file:
+                    continue;
+                if file_name in file:
+                    files.append(dirpath+'/'+file)
     # files.sort(key=len)
     files=sorted(files, reverse=True)
     return files
@@ -164,5 +144,4 @@ def cur_file_dir():
         
 if __name__ == '__main__':
     savedir=cur_file_dir()#获取当前.py脚本文件的文件路径
-    #savedir= savedir + '/' + stock_data_dir
     showImageInHTML(('html'), savedir)#浏览所有jpg,png,gif文件

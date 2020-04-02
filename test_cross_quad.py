@@ -240,7 +240,7 @@ def quadrilateral_algorythm(codestock_local, nowdate, para1):
         
 
         ################################################################
-        continue
+        #continue
         
         #check need to generate png 
         if draw_flag == False:
