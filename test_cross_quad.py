@@ -126,6 +126,14 @@ def quadrilateral_algorythm(codestock_local, nowdate, para1):
         if debug:
             print("code:%s, name:%s" % (nowcode, nowname ))
 
+        '''
+        if '002307' in nowcode:
+            pass
+        else:
+            continue
+        '''
+
+
         #skip ST
         #if ('ST' in nowname or '300' in nowcode):
         if ('ST' in nowname or '68' in nowcode):
@@ -186,40 +194,56 @@ def quadrilateral_algorythm(codestock_local, nowdate, para1):
             if debug:
                 print('!!! %s, %s, %s' %(str(nowdate), nowcode, nowname))
 
+            #cond-1
             c_less_ma5 = False
             s_day = min(p1_pos, p2_pos)
             e_day = max(p1_pos, p2_pos)
-            for ps in range(s_day, e_day):
-                if REF(L, ps) >= REF(MA5, ps):
-                #if REF(C, ps) >= REF(MA5, ps):
+            if s_day == e_day:
+                if REF(L, s_day) >= REF(MA5, s_day):
                     c_less_ma5 = True
                     if debug:
-                       print('MA5 condition ok')
-                else:
-                    c_less_ma5 = False
-                    if debug:
-                        print('MA5 condition not ok')
-                    break
+                        print("ma5: s_day(%d) is equal e_day(%d)" %( s_day, e_day))
+            else:
+                for ps in range(s_day, e_day + 1):
+                    if REF(L, ps) >= REF(MA5, ps):
+                    #if REF(C, ps) >= REF(MA5, ps):
+                        c_less_ma5 = True
+                        if debug:
+                           print('MA5 condition ok')
+                    else:
+                        c_less_ma5 = False
+                        if debug:
+                            print('MA5 condition not ok')
+                        break
 
                 
+            #cond-2
             c_less_ma60 = False
             s_day = min(p3_pos, p4_pos)
-            e_day = max(p3_pos, p4_pos)
-            for ps in range(s_day, e_day):
-                if REF(L, ps) >= REF(MA60, ps):
-                #if REF(C, ps) >= REF(MA60, ps):
+            e_day = max(p1_pos, p2_pos)
+            if s_day == e_day:
+                if REF(L, s_day) >= REF(MA60, s_day):
                     c_less_ma60 = True
                     if debug:
-                        print('MA60 condition ok')
-                else:
-                    c_less_ma60 = False
-                    if debug:
-                        print('MA60 condition not ok')
-                    break
+                        print("ma60: s_day(%d) is equal e_day(%d)" %( s_day, e_day))
+            else:
+                for ps in range(s_day, e_day + 1):
+                    if REF(L, ps) >= max(REF(MA60, ps), REF(MA30, ps)):  #L can not be allowed to enter the quadrilateral
+                    #if REF(C, ps) >= REF(MA60, ps):
+                        c_less_ma60 = True
+                        if debug:
+                            print('MA60 condition ok')
+                    else:
+                        c_less_ma60 = False
+                        if debug:
+                            print('MA60 condition not ok')
+                        break
                 
             if c_less_ma5 and c_less_ma60:
                 print('### %s, %s, %s' %(str(nowdate), nowcode, nowname))
                 draw_flag = True
+
+
 
 
         '''
