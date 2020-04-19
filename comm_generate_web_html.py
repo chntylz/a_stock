@@ -48,16 +48,27 @@ def hsgt_get_continuous_info(df, select):
 
         length=len(group_df)
         money_total = 0
+        flag_m = group_df.ix[0]['delta1_m']
+        if flag_m > 0:
+            conti_flag = 1
+        else:
+            conti_flag = 0
+        
         for i in range(length):
             delta_m = group_df.ix[i]['delta1_m']
             if debug:
                 print('delta_m=%f'%(delta_m))
 
             if delta_m >= 0:
+                tmp_flag = 1
+            else:
+                tmp_flag = 0
+
+            if conti_flag == tmp_flag:
                 money_total = money_total + delta_m
             else:
                 break
-
+                
         money_total = round(money_total,2)
         if debug:
             print(max_date, stock_code, stock_cname, percent, close, delta_c, delta1, i, money_total)

@@ -33,7 +33,7 @@ dict_industry={}
 from test_get_hsgt_analysis import hsgt_get_all_data, hsgt_handle_all_data
 
 debug=0
-debug=1
+#debug=1
 
 from sys import argv
 # 如果执行的方式错误输出使用方法
