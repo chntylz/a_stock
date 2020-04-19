@@ -39,7 +39,7 @@ def hsgt_get_stock_list():
     
     return df
 
-
+#get all hsgt data from hdata_hsgt_table order by record_date desc
 def hsgt_get_all_data():
     df=hdata_hsgt.get_all_hdata_of_stock()
     if debug:
@@ -47,6 +47,8 @@ def hsgt_get_all_data():
     
     return df
 
+
+#get hsgt sum of days
 def hsgt_get_delta_m_of_day(df, days):
     delta_dict={2:'delta2_m',  3:'delta3_m', 4:'delta4_m', 5:'delta5_m', 10:'delta10_m', 21:'delta21_m', 120:'delta120_m'}
     target_column=delta_dict[days]
@@ -70,6 +72,7 @@ def hsgt_handle_all_data(df):
     del all_df['low']
     del all_df['volume']
     
+    #the_first_line - the_second_line
     all_df['delta_close']  = all_df.groupby('stock_code')['close'].apply(lambda i:i.diff(-1))    
     all_df['delta_c'] = all_df['delta_close'] * 100 / (all_df['close'] - all_df['delta_close']) 
     del all_df['delta_close'] 
@@ -84,7 +87,7 @@ def hsgt_handle_all_data(df):
     all_df['delta1_m'] = all_df['close'] * all_df['delta1_share'] / 10000;
     del all_df['delta1_share']
 
-    all_df['delta2']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-2))
+    all_df['delta2']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-2))                                                                                                                  
     all_df['delta3']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-3))
     all_df['delta4']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-4))
     all_df['delta5']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-5))
@@ -109,7 +112,7 @@ def hsgt_handle_all_data(df):
     all_df=hsgt_get_delta_m_of_day(all_df, 21)
     #all_df=hsgt_get_delta_m_of_day(all_df, 120)
 
-    all_df=all_df.round(2)
+    #all_df=all_df.round(2)
 
     #temp column delete
     for index in range(1, max_number):
