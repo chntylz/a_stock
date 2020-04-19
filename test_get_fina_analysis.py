@@ -62,7 +62,6 @@ def fina_get_continuous_info(df, select='or_yoy', net_percent=20):
         netprofit_yoy=group_df.loc[0, 'netprofit_yoy']
 
         length=len(group_df)
-        money_flag = 0
         for i in range(length):
             or_item = group_df.ix[i]['or_yoy']
             netprofit_item = group_df.ix[i]['netprofit_yoy']

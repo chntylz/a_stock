@@ -47,29 +47,29 @@ def hsgt_get_continuous_info(df, select):
         delta_c     = group_df.loc[0, 'delta_c']
 
         length=len(group_df)
-        money_flag = 0
+        money_total = 0
         for i in range(length):
             delta_m = group_df.ix[i]['delta1_m']
             if debug:
                 print('delta_m=%f'%(delta_m))
 
             if delta_m >= 0:
-                money_flag = money_flag + delta_m
+                money_total = money_total + delta_m
             else:
                 break
 
-        money_flag = round(money_flag,2)
+        money_total = round(money_total,2)
         if debug:
-            print(max_date, stock_code, stock_cname, percent, close, delta_c, delta1, i, money_flag)
+            print(max_date, stock_code, stock_cname, percent, close, delta_c, delta1, i, money_total)
 
-        data_list.append([max_date, stock_code, stock_cname, percent, close, delta_c, delta1, delta1_m, i, money_flag])  #i  is p_count
+        data_list.append([max_date, stock_code, stock_cname, percent, close, delta_c, delta1, delta1_m, i, money_total])  #i  is p_count
 
-    data_column=['record_date', 'stock_code', 'stock_cname', 'percent', 'close', 'delta_c', 'delta1', 'delta1_m', 'p_count', 'money_flag']
+    data_column=['record_date', 'stock_code', 'stock_cname', 'percent', 'close', 'delta_c', 'delta1', 'delta1_m', 'p_count', 'money_total']
 
     ret_df = pd.DataFrame(data_list, columns=data_column)
-    ret_df['m_per_day'] = ret_df.money_flag / ret_df.p_count
+    ret_df['m_per_day'] = ret_df.money_total / ret_df.p_count
     ret_df=ret_df.round(2)
-    #ret_df = ret_df.sort_values('money_flag', ascending=0)
+    #ret_df = ret_df.sort_values('money_total', ascending=0)
     #ret_df = ret_df.sort_values('p_count', ascending=0)
     if select is 'p_money':
         ret_df = ret_df.sort_values('m_per_day', ascending=0)
@@ -140,7 +140,7 @@ def comm_write_to_file(f, k, df, filename):
                 print('element_value: %s' % element_value)
                                      
             if k is -1: # normal case
-                #data_column=['record_date', 'stock_code', 'stock_cname', 'percent', 'close', 'delta1', 'delta1_m', 'p_count', 'money_flag']
+                #data_column=['record_date', 'stock_code', 'stock_cname', 'percent', 'close', 'delta1', 'delta1_m', 'p_count', 'money_total']
                 if(j == 0): 
                     f.write('           <a href="%s" target="_blank"> %s[fina]</a>\n'%(fina_url, element_value))
                 elif(j == 1): 
@@ -272,14 +272,14 @@ def comm_handle_html_body(filename, all_df, select='topy10'):
             elif select is 'p_money':
                 conti_df = hsgt_get_continuous_info(all_df, 'p_money')
                 #select condition
-                conti_df = conti_df[ (conti_df.money_flag / conti_df.p_count > 1000) & (conti_df.money_flag > 2000) &(conti_df.delta1_m > 1000)] 
+                conti_df = conti_df[ (conti_df.money_total / conti_df.p_count > 1000) & (conti_df.money_total > 2000) &(conti_df.delta1_m > 1000)] 
                 comm_write_to_file(f, -1, conti_df, filename)
 
             elif select is 'p_continous_day':
                 conti_df = hsgt_get_continuous_info(all_df, 'p_continous_day')
                 #select condition
-                #conti_df = conti_df[ (conti_df.money_flag / conti_df.p_count > 1000) & (conti_df.money_flag > 2000) &(conti_df.delta1_m > 1000)] 
-                conti_df = conti_df[conti_df.money_flag > 2000] 
+                #conti_df = conti_df[ (conti_df.money_total / conti_df.p_count > 1000) & (conti_df.money_total > 2000) &(conti_df.delta1_m > 1000)] 
+                conti_df = conti_df[conti_df.money_total > 2000] 
                 comm_write_to_file(f, -1, conti_df, filename)
         else:
             comm_write_to_file(f, -1, all_df, filename)
