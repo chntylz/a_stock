@@ -1,28 +1,39 @@
 #There must be 1 space after stock code!!!
 
-000401 jidongshuini
-002332 xianjuzhiyao
+300638 guanghetong
+002271 dongfangyuhong
+002304 yanghegufen
 002230 kedaxunfei
+002475 lixunjingmi
+002049 ziguangguohui
+
+600438 tongweigufen
+000401 jidongshuini
+600585 hailuoshuini
 000877 tianshangufen
+002332 xianjuzhiyao
+603229 aoxiangyaoye
+601601 zhongguotaibao
+002910 zhuangyuangufen
+
+
+
 300750 ningdeshidai
 300552 wanjikeji
 300458 quanzhikeji
 300014 yiweilineng
 601958 jinmugufen
-601117 zhongguohuaxue
 600588 yongyouwangluo
 
 603713 mierkewei
 300406 jiuqiangshengwu
 600201 shengwugufen
-600585 hailuoshuini
 601117 zhongguohuaxue
 002568 bairungufen
 600298 anqijiaomu
 
 
 300676 huadajiyin
-
 002463 hudiankeji
 
 300249 yimikang
@@ -30,3 +41,5 @@
 
 600309 wanhuahuaxue
 002241 geergufen
+
+002123 mengwangjituan

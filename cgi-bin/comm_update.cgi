@@ -60,35 +60,17 @@ def show_realdata():
         new_percent     = ((float(new_price) - float(new_pre_price)) / float(new_pre_price)) * 100
         new_percent     = round (new_percent, 2)
        
-        hsgt_df = hdata_hsgt.get_limit_hdata_of_stock_code(new_code, new_date, 2)
-        if debug:
-            print(hsgt_df)
-        hsgt_df_len = len(hsgt_df)
-        if hsgt_df_len > 1: 
-            new_hsgt_date           = hsgt_df['record_date'][1]
-            new_hsgt_share_holding  = hsgt_df['share_holding'][1]
-            new_hsgt_percent        = hsgt_df['percent'][1]
-            new_hsgt_delta1         = hsgt_df['percent'][1] - hsgt_df['percent'][0]
-            new_hsgt_deltam         = (hsgt_df['share_holding'][1] - hsgt_df['share_holding'][0]) * float(new_pre_price)/10000.0
-        elif hsgt_df_len > 0: 
-            new_hsgt_date           = hsgt_df['record_date'][0]
-            new_hsgt_share_holding  = hsgt_df['share_holding'][0]
-            new_hsgt_percent        = hsgt_df['percent'][0]
-            new_hsgt_delta1         = hsgt_df['percent'][0] 
-            new_hsgt_deltam         = hsgt_df['share_holding'][0] * float(new_pre_price)/10000.0
-        else:
-            new_hsgt_date           = ''
-            new_hsgt_share_holding  = 0
-            new_hsgt_percent        = 0
-            new_hsgt_delta1         = 0
-            new_hsgt_deltam         = 0
+        hsgt_df = hdata_hsgt.get_data_from_hdata(stock_code=new_code, limit=60)
         
-        data_list.append([new_date, new_code, new_name, new_pre_price, new_price, new_percent, new_hsgt_date, new_hsgt_share_holding, new_hsgt_percent, new_hsgt_delta1, new_hsgt_deltam])
+
+        new_hsgt_date, new_hsgt_share_holding, new_hsgt_percent, new_hsgt_delta1, new_hsgt_deltam, p_count, money_total = comm_handle_hsgt_data(hsgt_df)
+        
+        data_list.append([new_date, new_code, new_name, new_pre_price, new_price, new_percent, new_hsgt_date, new_hsgt_share_holding, new_hsgt_percent, new_hsgt_delta1, new_hsgt_deltam, p_count, money_total])
 
 
         #data_list.append([str_date, my_list[i], my_list_cn[i], df['pre_close'][0], df['price'][0] ])
 
-    data_column = ['date', 'code', 'name', 'pre_price', 'price', 'percent', 'hsgt_date', 'hsgt_share_holding', 'hsgt_percent', 'hsgt_delta1', 'hsgt_deltam' ]
+    data_column = ['date', 'code', 'name', 'pre_price', 'price', 'percent', 'hsgt_date', 'hsgt_share_holding', 'hsgt_percent', 'hsgt_delta1', 'hsgt_deltam', 'p_count', 'money_total' ]
     ret_df=pd.DataFrame(data_list, columns=data_column)
  
     return ret_df
