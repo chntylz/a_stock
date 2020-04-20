@@ -351,8 +351,11 @@ def comm_get_hsgt_continous_info(df):
             money_total = money_total + delta_m
         else:
             break
-
+    
+    money_total = round(money_total, 2)
+    
     return i, money_total
+
  
 
 def comm_handle_hsgt_data(df):
@@ -395,6 +398,7 @@ def comm_handle_hsgt_data(df):
 		hsgt_percent        = hsgt_df['percent'][0]
 		hsgt_delta1         = hsgt_df['percent'][0]
 		hsgt_deltam         = hsgt_df['share_holding'][0] * hsgt_df['close'][0]/10000.0
+		hsgt_deltam         = round(hsgt_deltam, 2)
 		p_count             = 1
 		money_total         = hsgt_deltam
 	else:
