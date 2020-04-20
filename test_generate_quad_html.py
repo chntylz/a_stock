@@ -30,7 +30,6 @@ daily_df=ts.get_stock_basics()
 dict_industry={}
 
 
-from test_get_hsgt_analysis import hsgt_get_all_data, hsgt_handle_all_data
 
 debug=0
 #debug=1
@@ -128,33 +127,7 @@ def quad_continue_handle_html_end_special(newfile, dict_industry):
 
     pass
     
-def quad_get_hsgt_continous_info(df):
-    hsgt_df = df
-    hsgt_df_len = len(hsgt_df)
-    money_total = 0
-    flag_m = hsgt_df.ix[0]['delta1_m']
-    if flag_m > 0:
-        conti_flag = 1
-    else:
-        conti_flag = 0
-    
-    for i in range(hsgt_df_len):
-        delta_m = hsgt_df.ix[i]['delta1_m']           
-        if debug:
-            print('delta_m=%f'%(delta_m))
-            
-        if delta_m >= 0:
-            tmp_flag = 1
-        else:
-            tmp_flag = 0
-
-        if conti_flag == tmp_flag:
-            money_total = money_total + delta_m
-        else:
-            break
-    
-    return i, money_total
-    
+   
     
     
 def showImageInHTML(imageTypes,savedir):
@@ -185,10 +158,6 @@ def showImageInHTML(imageTypes,savedir):
         return
     
     data_list = []
-    all_df=hsgt_get_all_data()
-    all_df=all_df.head(2000*60)
-    all_df, latest_date = hsgt_handle_all_data(all_df)
-    
     for image in images:
 
         #'2019-07-09-600095-哈高科-873-960-960-873-997.png' 
@@ -217,42 +186,9 @@ def showImageInHTML(imageTypes,savedir):
 
         close_p = (C - pre_close)/pre_close
         close_p = round (close_p.value, 4) * 100
-        
-        hsgt_df = all_df[all_df['stock_code'] == stock_code]
-        hsgt_df = hsgt_df.reset_index(drop=True) #reset index
-
-        #hsgt_df = hsgtdata.get_limit_hdata_of_stock_code(stock_code, curr_day, 2)
-        
-        if debug:
-            print(hsgt_df.head(2))
-
-        hsgt_df_len = len(hsgt_df)
-        if hsgt_df_len > 1:
-            hsgt_date           = hsgt_df['record_date'][0]
-            hsgt_share          = hsgt_df['share_holding'][0]
-            hsgt_percent        = hsgt_df['percent'][0]
-            hsgt_delta1         = hsgt_df['percent'][0] - hsgt_df['percent'][1]
-            hsgt_delta1         = round(hsgt_delta1, 2)
-            hsgt_deltam         = (hsgt_df['share_holding'][0] - hsgt_df['share_holding'][1]) * float(C.value) /10000.0
-            hsgt_deltam         = round(hsgt_deltam, 2)
-            p_count, money_total= quad_get_hsgt_continous_info(hsgt_df)
-            
-        elif hsgt_df_len > 0:
-            hsgt_date           = hsgt_df['record_date'][0]
-            hsgt_share          = hsgt_df['share_holding'][0]
-            hsgt_percent        = hsgt_df['percent'][0]
-            hsgt_delta1         = hsgt_df['percent'][0]
-            hsgt_deltam         = hsgt_df['share_holding'][0] * float(pre_close.value)/10000.0
-            p_count             = 1
-            money_total         = hsgt_deltam
-        else:
-            hsgt_date           = ''
-            hsgt_share          = 0
-            hsgt_percent        = 0
-            hsgt_delta1         = 0
-            hsgt_deltam         = 0
-            p_count             = 0
-            money_total         = 0
+       
+        all_df = hsgtdata.get_data_from_hdata(stock_code=stock_code, limit=60)
+        hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, p_count, money_total = comm_handle_hsgt_data(all_df)
 
 
         industry_name = daily_df.loc[stock_code]['industry']
