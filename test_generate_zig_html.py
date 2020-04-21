@@ -197,9 +197,9 @@ def showImageInHTML(imageTypes,savedir):
 
         data_list.append([curr_day, stock_code, stock_name, close_p, C.value, image, hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, p_count, money_total ])
 
-    data_column = ['date', 'code', 'name', 'percent', 'close', 'image_url', 'hsgt_date', 'hsgt_share', 'hsgt_percent', 'hsgt_delta1', 'hsgt_deltam', 'p_count', 'money_total']    
+    data_column = ['cur_date', 'code', 'name', 'a_pct', 'close', 'image_url', 'hk_date', 'hk_share', 'hk_pct', 'hk_delta1', 'hk_deltam', 'conti_day', 'hk_m_total']    
     ret_df=pd.DataFrame(data_list, columns=data_column)
-    ret_df['m_per_day'] = ret_df.money_total / ret_df.p_count
+    ret_df['m_per_day'] = ret_df.hk_m_total / ret_df.conti_day
     ret_df = ret_df.fillna(0)
     ret_df=ret_df.round(2)    
     if debug:
