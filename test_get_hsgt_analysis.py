@@ -112,7 +112,7 @@ def hsgt_handle_all_data(df):
     all_df=hsgt_get_delta_m_of_day(all_df, 21)
     #all_df=hsgt_get_delta_m_of_day(all_df, 120)
 
-    #all_df=all_df.round(2)
+    all_df=all_df.round(2)
 
     #temp column delete
     for index in range(1, max_number):
