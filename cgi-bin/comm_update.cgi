@@ -70,8 +70,12 @@ def show_realdata():
 
         #data_list.append([str_date, my_list[i], my_list_cn[i], df['pre_close'][0], df['price'][0] ])
 
-    data_column = ['date', 'code', 'name', 'pre_price', 'price', 'percent', 'hsgt_date', 'hsgt_share_holding', 'hsgt_percent', 'hsgt_delta1', 'hsgt_deltam', 'p_count', 'money_total' ]
+    data_column = ['curr_date', 'code', 'name', 'pre_price', 'price', 'a_pct', 'hk_date', 'hk_share_holding', 'hk_pct', 'hk_delta1', 'hk_deltam', 'conti_day', 'hk_m_total' ]
     ret_df=pd.DataFrame(data_list, columns=data_column)
+    ret_df['m_per_day'] = ret_df.hk_m_total / ret_df.conti_day
+    ret_df = ret_df.fillna(0)
+    ret_df=ret_df.round(2)
+
  
     return ret_df
 
