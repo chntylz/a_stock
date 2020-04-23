@@ -144,6 +144,12 @@ for i in range(0,stock_len):
     if debug:
         print(detail_info)
 
+    #fix NaN bug
+    # if len(detail_info) == 0 or (detail_info is None):
+    if len(detail_info) < 6  or (detail_info is None):
+        # print('NaN: code:%s, name:%s' % (nowcode, nowname ))
+        continue
+    
 
     db_max_date = detail_info['record_date'][len(detail_info)-1].strftime("%Y%m%d")
 
@@ -156,12 +162,6 @@ for i in range(0,stock_len):
         continue
 
     
-    
-    #fix NaN bug
-    # if len(detail_info) == 0 or (detail_info is None):
-    if len(detail_info) < 6  or (detail_info is None):
-        # print('NaN: code:%s, name:%s' % (nowcode, nowname ))
-        continue
     
     #funcat call
     T(str(nowdate))

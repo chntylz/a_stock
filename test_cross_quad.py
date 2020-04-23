@@ -151,6 +151,14 @@ def quadrilateral_algorythm(codestock_local, nowdate, para1):
             print(detail_info)
 
 
+                
+        #fix NaN bug
+        # if len(detail_info) == 0 or (detail_info is None):
+        if len(detail_info) < (int(para1) + 60)  or (detail_info is None):
+            if debug:
+                print('NaN: code:%s, name:%s' % (nowcode, nowname ))
+            continue
+        
 
         db_max_date = detail_info['record_date'][len(detail_info)-1].strftime("%Y%m%d")
 
@@ -161,14 +169,7 @@ def quadrilateral_algorythm(codestock_local, nowdate, para1):
             #invalid data, skip this
             print('###error###: nowcode:%s, database max date:%s, nowdate:%s' % (nowcode, db_max_date, nowdate.strftime("%Y%m%d")))
             continue
-                
-        #fix NaN bug
-        # if len(detail_info) == 0 or (detail_info is None):
-        if len(detail_info) < (int(para1) + 60)  or (detail_info is None):
-            if debug:
-                print('NaN: code:%s, name:%s' % (nowcode, nowname ))
-            continue
-        
+
         #funcat call
         T(str(nowdate))
         S(nowcode)
