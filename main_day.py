@@ -56,6 +56,7 @@ for i in range(0,length):
         print('maxdate:%s, nowdate:%s' % (maxdate, nowdate))
     if(maxdate):
 
+        '''
         today_data=ts.get_today_all()
         today_data=today_data.drop_duplicates('code')
         if debug:
@@ -92,6 +93,7 @@ for i in range(0,length):
         del today_data['change']
         del today_data['pre_close']
 
+        #df=df.ix[:,cols]语句表示，DataFrame的行索引不变，列索引是cols中给定的索引。
         today_data=today_data.fillna(0)
         cols=['trade_date', 'ts_code', 'open', 'close', 'high', 'low', 'vol', 'amount', 'pct_chg']
         today_data=today_data.ix[:,cols]
@@ -107,7 +109,6 @@ for i in range(0,length):
         
         #delete closed stock data according amount=0
         hdata_day.delete_amount_is_zero()
-        '''
 
         break #only 1 time, then exit for loop
 
