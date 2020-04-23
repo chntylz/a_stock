@@ -21,7 +21,7 @@ token='21dddafc47513ea46b89057b2c4edf7b44882b3e92274b431f199552'
 pro = ts.pro_api(token)
 
 
-debug=1
+debug=0
 
 
 
@@ -123,6 +123,7 @@ for i in range(0,length):
         df = ts.pro_bar(ts_code='603699.SH', start_date='20180101', end_date='20200205', adj='qfq', freq='D')
         hist_data=df.head(10)
         '''
+        #hist_data = ts.pro_bar(ts_code=stock_code_new, start_date='20200422', end_date=str(nowdate), adj='qfq', freq='D')
         hist_data = ts.pro_bar(ts_code=stock_code_new, start_date='20150101', end_date=str(nowdate), adj='qfq', freq='D')
 
         if hist_data is None:

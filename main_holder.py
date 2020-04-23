@@ -20,7 +20,8 @@ token='21dddafc47513ea46b89057b2c4edf7b44882b3e92274b431f199552'
 pro = ts.pro_api(token)
 
 
-debug=1
+debug=0
+#debug=1
 
 
 def update_holder(nowdate):

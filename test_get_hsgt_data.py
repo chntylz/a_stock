@@ -23,6 +23,7 @@ set_data_backend(AaronDataBackend())
 
 
 debug=0
+#debug=1
 
 #file_path='/home/ubuntu/tmp/a_stock/hkexnews_scrapy/hkexnews_scrapy/json/20190823.json.gz'
 hdata_day=HData_day("usr","usr")
@@ -94,7 +95,7 @@ def hsgt_get_day_item_from_json(file_path):
         if debug:
             print("line_num:%d, shgt_date:%s, shgt_code:%s, shgt_holding:%s, shgt_percent:%s,shgt_ename:%s, shgt_cname:%s"% \
                  (line_num, shgt_date, shgt_code, shgt_holding, shgt_percent, shgt_ename, shgt_cname))
-            print('print day_df')
+            print('print day_df:')
             print(day_df)
         if len(day_df) > 0:
             day_dict=day_df.to_dict()
