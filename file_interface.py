@@ -71,6 +71,13 @@ def compare_time(time1,time2):
     t2 = time.strptime(time2, "%Y%m%d")
     return (t1 <= t2)
 
+#compare 2 string date
+def time_is_equal(time1,time2):
+    t1 = time.strptime(time1, "%Y%m%d")
+    t2 = time.strptime(time2, "%Y%m%d")
+    return (t1 == t2)
+
+
 
 
 def get_work_day(curr_date):

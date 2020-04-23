@@ -15,7 +15,7 @@ import  datetime
 from zig import *
 from test_plot import *
 
-
+from file_interface import *
 
 
 # basic
@@ -111,6 +111,7 @@ print("start_time: %s, end_time: %s" % (start_time, end_time))
 
 #debug switch
 debug = 0
+#debug = 1
 
 #define canvas out of loop
 plt.style.use('bmh')
@@ -152,7 +153,17 @@ for i in range(0,stock_len):
     #detail_info = detail_info.tail(100)
     if debug:
         print(detail_info)
+
+    db_max_date = detail_info['record_date'][len(detail_info)-1].strftime("%Y%m%d")
     
+    if time_is_equal(db_max_date, nowdate.strftime("%Y%m%d")):
+        if debug:
+            print('date is ok')
+    else: 
+        #invalid data, skip this
+        print('###error###: nowcode:%s, database max date:%s, nowdate:%s' % (nowcode, db_max_date, nowdate.strftime("%Y%m%d")))
+        continue
+
     #fix NaN bug
     # if len(detail_info) == 0 or (detail_info is None):
     if len(detail_info) < 3  or (detail_info is None):

@@ -14,6 +14,7 @@ import  datetime
 
 from zig import *
 from test_plot import *
+from file_interface import *
 
 
 
@@ -148,7 +149,19 @@ def quadrilateral_algorythm(codestock_local, nowdate, para1):
         #detail_info = detail_info.tail(100)
         if debug:
             print(detail_info)
-        
+
+
+
+        db_max_date = detail_info['record_date'][len(detail_info)-1].strftime("%Y%m%d")
+
+        if time_is_equal(db_max_date, nowdate.strftime("%Y%m%d")):
+            if debug:
+                print('date is ok')
+        else:
+            #invalid data, skip this
+            print('###error###: nowcode:%s, database max date:%s, nowdate:%s' % (nowcode, db_max_date, nowdate.strftime("%Y%m%d")))
+            continue
+                
         #fix NaN bug
         # if len(detail_info) == 0 or (detail_info is None):
         if len(detail_info) < (int(para1) + 60)  or (detail_info is None):
