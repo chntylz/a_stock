@@ -63,8 +63,8 @@ def fina_get_continuous_info(df, select='or_yoy', net_percent=20):
 
         length=len(group_df)
         for i in range(length):
-            or_item = group_df.ix[i]['or_yoy']
-            netprofit_item = group_df.ix[i]['netprofit_yoy']
+            or_item = group_df.loc[i]['or_yoy']
+            netprofit_item = group_df.loc[i]['netprofit_yoy']
             if debug:
                 print('netprofit_item =%f'%(netprofit_item))
 
@@ -75,7 +75,7 @@ def fina_get_continuous_info(df, select='or_yoy', net_percent=20):
 
         #algorithm
         if(i > 1):
-             if group_df.ix[0]['or_yoy'] < group_df.ix[1]['or_yoy']:  #decline, skip
+             if group_df.loc[0]['or_yoy'] < group_df.loc[1]['or_yoy']:  #decline, skip
                 continue
         else:
              continue

@@ -12,6 +12,11 @@ from HData_select import *
 from HData_60m import *
 import  datetime
 
+
+import matplotlib
+matplotlib.use('Agg')
+
+
 from zig import *
 from test_plot import *
 from file_interface import *
@@ -23,14 +28,11 @@ from file_interface import *
 import numpy as np
 import pandas as pd
 
-# get data
-import pandas_datareader as pdr
 
 # visual
 import matplotlib.pyplot as plt
-import mpl_finance as mpf
+import mplfinance as mpf
 #%matplotlib inline
-import seaborn as sns
 
 #time
 import datetime as datetime

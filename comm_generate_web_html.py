@@ -48,14 +48,14 @@ def hsgt_get_continuous_info(df, select):
 
         length=len(group_df)
         money_total = 0
-        flag_m = group_df.ix[0]['delta1_m']
+        flag_m = group_df.loc[0]['delta1_m']
         if flag_m > 0:
             conti_flag = 1
         else:
             conti_flag = 0
         
         for i in range(length):
-            delta_m = group_df.ix[i]['delta1_m']
+            delta_m = group_df.loc[i]['delta1_m']
             if debug:
                 print('delta_m=%f'%(delta_m))
 
@@ -334,14 +334,14 @@ def comm_get_hsgt_continous_info(df):
     hsgt_df = df
     hsgt_df_len = len(hsgt_df)
     money_total = 0
-    flag_m = hsgt_df.ix[0]['delta1_m']
+    flag_m = hsgt_df.loc[0]['delta1_m']
     if flag_m > 0:
         conti_flag = 1
     else:
         conti_flag = 0
 
     for i in range(hsgt_df_len):
-        delta_m = hsgt_df.ix[i]['delta1_m']
+        delta_m = hsgt_df.loc[i]['delta1_m']
         if debug:
             print('delta_m=%f'%(delta_m))
 
