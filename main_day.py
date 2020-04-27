@@ -96,7 +96,8 @@ for i in range(0,length):
         #df=df.ix[:,cols]语句表示，DataFrame的行索引不变，列索引是cols中给定的索引。
         today_data=today_data.fillna(0)
         cols=['trade_date', 'ts_code', 'open', 'close', 'high', 'low', 'vol', 'amount', 'pct_chg']
-        today_data=today_data.ix[:,cols]
+        #today_data=today_data.ix[:,cols]
+        today_data=today_data.loc[:,cols]
         today_data['trade_date']=today_data['trade_date'].apply(lambda x: datetime.datetime.strptime(x,'%Y%m%d'))
         today_data['ts_code'] = today_data['ts_code'].apply(lambda x: x[0:6])
         today_data = today_data.set_index('trade_date')
