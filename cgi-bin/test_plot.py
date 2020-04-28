@@ -6,6 +6,10 @@
 import tushare as ts
 import  datetime
 
+import matplotlib
+matplotlib.use('Agg')
+
+
 from zig import *
 
 
@@ -13,13 +17,14 @@ from zig import *
 import numpy as np
 import pandas as pd
 
-# get data
-import pandas_datareader as pdr
 
 # visual
 import matplotlib.pyplot as plt
-import mpl_finance as mpf
+import mplfinance as mpf
 #%matplotlib inline
+
+from mplfinance.original_flavor import candlestick_ohlc, candlestick2_ochl, volume_overlay
+
 
 #time
 import datetime as datetime
@@ -146,7 +151,7 @@ def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name
     ax04.set_title(nowcode + '-' + nowname)
     ax04.set_xticks(range(0, len(detail_info.index), 10))
     ax04.set_xticklabels(detail_info.index[::10])
-    mpf.candlestick2_ochl(ax04, detail_info['open'], detail_info['close'], detail_info['high'],
+    candlestick2_ochl(ax04, detail_info['open'], detail_info['close'], detail_info['high'],
                                   detail_info['low'], width=0.6, colorup='r', colordown='g', alpha=0.75)
     #boll
     upperband, middleband, lowerband = talib.BBANDS(np.array(detail_info['close']),timeperiod=20, nbdevdn=2, nbdevup=2)
@@ -157,7 +162,7 @@ def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name
     #candles
     ax03.set_xticks(range(0, len(detail_info.index), 10))
     ax03.set_xticklabels(detail_info.index[::10])
-    mpf.candlestick2_ochl(ax03, detail_info['open'], detail_info['close'], detail_info['high'],
+    candlestick2_ochl(ax03, detail_info['open'], detail_info['close'], detail_info['high'],
                                   detail_info['low'], width=0.6, colorup='r', colordown='g', alpha=0.75)
     #plt.rcParams['font.sans-serif']=['Microsoft JhengHei'] 
 
@@ -186,7 +191,7 @@ def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name
 
 
     #volume
-    mpf.volume_overlay(ax00, detail_info['open'], detail_info['close'], detail_info['volume'], colorup='r', colordown='g', width=0.5, alpha=0.8)
+    volume_overlay(ax00, detail_info['open'], detail_info['close'], detail_info['volume'], colorup='r', colordown='g', width=0.5, alpha=0.8)
     ax00.set_xticks(range(0, len(detail_info.index), 10))
     ax00.set_xticklabels(detail_info.index[::10])
     ax00.plot(ma_vol_50, label='MA50')

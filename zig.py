@@ -7,7 +7,6 @@ http://www.pianshen.com/article/363258879/
 import numpy as np
 import tushare as ts
 
-import matplotlib.pyplot as plt
 
 debug = 0
  

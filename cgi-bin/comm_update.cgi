@@ -1,9 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*- 
 import os,sys,time, datetime
 import cgi
 
-import psycopg2 #使用的是PostgreSQL数据库
+import psycopg2 
 import tushare as ts
 import numpy as np
 import pandas as pd
