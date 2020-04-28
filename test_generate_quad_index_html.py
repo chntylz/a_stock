@@ -144,4 +144,6 @@ def cur_file_dir():
         
 if __name__ == '__main__':
     savedir=cur_file_dir()#获取当前.py脚本文件的文件路径
+    print('savedir:%s' % savedir)
     showImageInHTML(('html'), savedir)#浏览所有jpg,png,gif文件
+
