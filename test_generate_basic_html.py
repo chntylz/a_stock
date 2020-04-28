@@ -7,10 +7,17 @@ import datetime
 nowdate=datetime.datetime.now().date()
 #nowdate=nowdate-datetime.timedelta(1)
 src_dir=nowdate.strftime("%Y-%m-%d")
-target_html='index.html'
 stock_data_dir="stock_data"
+file_name='basic'
+target_html=file_name + '-index.html'
 
 def showImageInHTML(imageTypes,savedir):
+    files=getAllFiles(savedir)
+    # print("p0 :%s" % (files))
+    images=[f for f in files if f[f.rfind('.')+1:] in imageTypes]
+    print("p1 :%s"%(images))
+    images=[item[item.rfind('/')+1:] for item in images]
+    print("p3 :%s"%(images))
     newfile='%s/%s'%(savedir, target_html)
     with open(newfile,'w') as f:
 
@@ -18,7 +25,7 @@ def showImageInHTML(imageTypes,savedir):
         f.write('<html>\n')
         f.write('<head>\n')
         f.write('<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n')
-        f.write('<title> index </title>\n')
+        f.write('<title> %s-index </title>\n' % file_name)
         f.write('\n')
         f.write('\n')
         f.write('<style type="text/css">a {text-decoration: none}\n')
@@ -66,38 +73,40 @@ def showImageInHTML(imageTypes,savedir):
 
 
         #f.write('<h2  align="center" style="color:blue ; font-size:34px">别人贪婪时我恐惧 别人恐惧时我贪婪</h2>\n')
-
-
         f.write('<table class="gridtable">\n')
         
-
-        f.write('<h2  align="left" style="color:blue ; font-size:34px">\n')
-        f.write('<td>\n')
-        f.write('     <a href="basic-index.html"  target="_blank"> basic </a>\n')
-        f.write('</td>\n')
-        f.write('<td>\n')
-        f.write('     <a href="hsgt/hsgt-index.html"  target="_blank">hsgt </a>\n')
-        f.write('</td>\n')
-        f.write('<td>\n')
-        f.write('     <a href="../cgi-bin/hsgt-search.cgi"  target="_blank">hsgt-search\n')
-        f.write('</td>\n')
-        f.write('<td>\n')
-        f.write('     <a href="macd-index.html"  target="_blank">macd strategy </a>\n')
-        f.write('</td>\n')
-        f.write('<td>\n')
-        f.write('     <a href="zig-index.html"  target="_blank"> zig </a>\n')
-        f.write('</td>\n')
-        f.write('<td>\n')
-        f.write('     <a href="quad-index.html"  target="_blank"> quad </a>\n')
-        f.write('</td>\n')
-        f.write('<td>\n')
-        f.write('     <a href="./stock_data/finance/finance.html"  target="_blank"> finance</a>\n')
-        f.write('</td>\n')
-        f.write('</h2>\n')
+       
 
 
+        i=0
+        column=5
+        length=len(images)
+        mod_number=length % column
+        for add in range(0, column - mod_number):
+            # images.append('')
+            images.insert(mod_number, '')
+
+        for image in images:
+            # '2019-07-10.html' -> '2019-07-10' 
+            tmp_image=image[0:image.rfind('.')]
+            print("%s" % (tmp_image))
+            image = stock_data_dir + '/' + tmp_image + '/' + image
 
 
+            if i % column == 0:
+                f.write('    <tr>\n')
+
+            f.write('        <td>\n')
+            f.write('            <a href="%s"  target="_blank"> %s </a>\n' % (image, tmp_image))
+            f.write('        </td>\n')
+            
+            i=i+1
+
+            if i % column  == 0:
+                f.write('    </tr>\n')
+
+            f.write('\n')
+            
         f.write('</table>\n')
         f.write('</body>\n')
         f.write('\n')
@@ -108,6 +117,19 @@ def showImageInHTML(imageTypes,savedir):
     
     print ('success,images are wrapped up in %s' % (newfile))
 
+
+def getAllFiles(directory):
+    files=[]
+    for dirpath, dirnames,filenames in os.walk(directory):
+        if filenames!=[]:
+            for file in filenames:
+                if ('index' in file) or ('zheli' in file)  or ('macd' in file)  or ('zig' in file) or ('hsgt' in file ) or ('test' in file ) or ('quad' in file) or ('finance' in file):
+                    continue;
+                else:
+                    files.append(dirpath+'/'+file)
+    # files.sort(key=len)
+    files=sorted(files, reverse=True)
+    return files
 
 #获取脚本文件的当前路径
 def cur_file_dir():
@@ -122,5 +144,4 @@ def cur_file_dir():
         
 if __name__ == '__main__':
     savedir=cur_file_dir()#获取当前.py脚本文件的文件路径
-    #savedir= savedir + '/' + stock_data_dir
     showImageInHTML(('html'), savedir)#浏览所有jpg,png,gif文件
