@@ -188,14 +188,14 @@ def showImageInHTML(imageTypes,savedir):
         close_p = round (close_p.value, 4) * 100
        
         all_df = hsgtdata.get_data_from_hdata(stock_code=stock_code, end_date=curr_day, limit=60)
-        hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, p_count, money_total = comm_handle_hsgt_data(all_df)
+        hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total = comm_handle_hsgt_data(all_df)
 
 
         industry_name = daily_df.loc[stock_code]['industry']
         insert_industry(dict_industry, industry_name)
 
 
-        data_list.append([curr_day, stock_code, stock_name, close_p, C.value, image, hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, p_count, money_total ])
+        data_list.append([curr_day, stock_code, stock_name, close_p, C.value, image, hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total ])
 
     data_column = ['cur_date', 'code', 'name', 'a_pct', 'close', 'image_url', 'hk_date', 'hk_share', 'hk_pct', 'hk_delta1', 'hk_deltam', 'conti_day', 'hk_m_total']    
     ret_df=pd.DataFrame(data_list, columns=data_column)

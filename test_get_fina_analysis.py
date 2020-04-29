@@ -84,9 +84,9 @@ def fina_get_continuous_info(df, select='or_yoy', net_percent=20):
         if debug:
             print(max_date, stock_code, stock_name, or_yoy,  netprofit_yoy, i)
 
-        data_list.append([max_date, stock_code, stock_name, or_yoy, netprofit_yoy,  i])  #i  is p_count
+        data_list.append([max_date, stock_code, stock_name, or_yoy, netprofit_yoy,  i])  #i  is conti_day
 
-    data_column=['record_date', 'stock_code', 'stock_name', 'or_yoy', 'netprofit_yoy', 'p_count']
+    data_column=['record_date', 'stock_code', 'stock_name', 'or_yoy', 'netprofit_yoy', 'conti_day']
 
     ret_df = pd.DataFrame(data_list, columns=data_column)
     if select is 'or_yoy':
@@ -103,7 +103,7 @@ def fina_handle_html_special(newfile):
         f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
         f.write('<p  style="color:blue;"> or_yoy:        营业收入同比增长</p>')
         f.write('<p  style="color:blue;"> netprofit_yoy: 净利润同比增长</p>')
-        f.write('<p  style="color:blue;"> p_count:       连续增长次数，并且or_yoy不低于上一次 </p>')
+        f.write('<p  style="color:blue;"> conti_day:       连续增长次数，并且or_yoy不低于上一次 </p>')
         f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
         f.write('\n')
         f.write('\n')

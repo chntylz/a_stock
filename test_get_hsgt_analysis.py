@@ -74,7 +74,7 @@ def hsgt_handle_all_data(df):
     
     #the_first_line - the_second_line
     all_df['delta_close']  = all_df.groupby('stock_code')['close'].apply(lambda i:i.diff(-1))    
-    all_df['delta_c'] = all_df['delta_close'] * 100 / (all_df['close'] - all_df['delta_close']) 
+    all_df['a_pct'] = all_df['delta_close'] * 100 / (all_df['close'] - all_df['delta_close']) 
     del all_df['delta_close'] 
     
     all_df['percent_tmp'] = all_df['percent']

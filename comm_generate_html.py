@@ -159,7 +159,7 @@ def cgi_write_to_file( df):
         for j in range(0, col_len): #loop column
             print('        <td>\n')
             element_value = a_array[0][j] #get a[i][j] element
-            #df_cgi_column=['record_date', 'stock_code', 'stock_name', 'or_yoy', 'netprofit_yoy', 'p_count']
+            #df_cgi_column=['record_date', 'stock_code', 'stock_name', 'or_yoy', 'netprofit_yoy', 'conti_day']
             if(j == 0): 
                 print('           <a href="%s" target="_blank"> %s[fina]</a>\n'%(cgi_url, element_value))
             elif(j == 1): 
@@ -275,7 +275,7 @@ def comm_handle_hsgt_data(df):
 		hsgt_delta1         = round(hsgt_delta1, 2)
 		hsgt_deltam         = (hsgt_df['share_holding'][0] - hsgt_df['share_holding'][1]) * hsgt_df['close'][0] /10000.0
 		hsgt_deltam         = round(hsgt_deltam, 2)
-		p_count, money_total= comm_get_hsgt_continous_info(hsgt_df)
+		conti_day, money_total= comm_get_hsgt_continous_info(hsgt_df)
 	elif hsgt_df_len > 0:
 		hsgt_date           = hsgt_df['record_date'][0]
 		hsgt_share          = hsgt_df['share_holding'][0]
@@ -283,7 +283,7 @@ def comm_handle_hsgt_data(df):
 		hsgt_delta1         = hsgt_df['percent'][0]
 		hsgt_deltam         = hsgt_df['share_holding'][0] * hsgt_df['close'][0]/10000.0
 		hsgt_deltam         = round(hsgt_deltam, 2)
-		p_count             = 1
+		conti_day             = 1
 		money_total         = hsgt_deltam
 	else:
 		hsgt_date           = ''
@@ -291,9 +291,9 @@ def comm_handle_hsgt_data(df):
 		hsgt_percent        = 0
 		hsgt_delta1         = 0
 		hsgt_deltam         = 0
-		p_count             = 0
+		conti_day             = 0
 		money_total         = 0
 
 
-	return hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, p_count, money_total   
+	return hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total   
     

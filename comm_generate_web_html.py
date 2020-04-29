@@ -44,7 +44,7 @@ def hsgt_get_continuous_info(df, select):
         delta1      = group_df.loc[0, 'delta1']
         delta1_m    = group_df.loc[0, 'delta1_m']
         close       = group_df.loc[0, 'close']
-        delta_c     = group_df.loc[0, 'delta_c']
+        a_pct     = group_df.loc[0, 'a_pct']
 
         length=len(group_df)
         money_total = 0
@@ -71,21 +71,21 @@ def hsgt_get_continuous_info(df, select):
                 
         money_total = round(money_total,2)
         if debug:
-            print(max_date, stock_code, stock_cname, percent, close, delta_c, delta1, i, money_total)
+            print(max_date, stock_code, stock_cname, percent, close, a_pct, delta1, i, money_total)
 
-        data_list.append([max_date, stock_code, stock_cname, percent, close, delta_c, delta1, delta1_m, i, money_total])  #i  is p_count
+        data_list.append([max_date, stock_code, stock_cname, percent, close, a_pct, delta1, delta1_m, i, money_total])  #i  is conti_day
 
-    data_column=['record_date', 'stock_code', 'stock_cname', 'percent', 'close', 'delta_c', 'delta1', 'delta1_m', 'p_count', 'money_total']
+    data_column=['record_date', 'stock_code', 'stock_cname', 'percent', 'close', 'a_pct', 'delta1', 'delta1_m', 'conti_day', 'money_total']
 
     ret_df = pd.DataFrame(data_list, columns=data_column)
-    ret_df['m_per_day'] = ret_df.money_total / ret_df.p_count
+    ret_df['m_per_day'] = ret_df.money_total / ret_df.conti_day
     ret_df=ret_df.round(2)
     #ret_df = ret_df.sort_values('money_total', ascending=0)
-    #ret_df = ret_df.sort_values('p_count', ascending=0)
+    #ret_df = ret_df.sort_values('conti_day', ascending=0)
     if select is 'p_money':
         ret_df = ret_df.sort_values('m_per_day', ascending=0)
     elif select is 'p_continous_day':
-        ret_df = ret_df.sort_values('p_count', ascending=0)
+        ret_df = ret_df.sort_values('conti_day', ascending=0)
 
     return ret_df
 ############################################################################################################
@@ -151,7 +151,7 @@ def comm_write_to_file(f, k, df, filename):
                 print('element_value: %s' % element_value)
                                      
             if k is -1: # normal case
-                #data_column=['record_date', 'stock_code', 'stock_cname', 'percent', 'close', 'delta1', 'delta1_m', 'p_count', 'money_total']
+                #data_column=['record_date', 'stock_code', 'stock_cname', 'percent', 'close', 'delta1', 'delta1_m', 'conti_day', 'money_total']
                 if(j == 0): 
                     f.write('           <a href="%s" target="_blank"> %s[fina]</a>\n'%(fina_url, element_value))
                 elif(j == 1): 
@@ -173,7 +173,7 @@ def comm_write_to_file(f, k, df, filename):
             
             else: #special case for get red color column
                 #set color to delta column, 6 is the position of percent
-                #record_date,  stock_code,  stock_cname, share_holding,   close, delta_c,  percent,  delta1,  delta2,  delta3,  delta4,  delta5,  delta10, delta21, delta120,    delta1_m,    delta2_m,  delta3_m, delta4_m, delta5_m,    delta10_m,   delta21_m
+                #record_date,  stock_code,  stock_cname, share_holding,   close, a_pct,  percent,  delta1,  delta2,  delta3,  delta4,  delta5,  delta10, delta21, delta120,    delta1_m,    delta2_m,  delta3_m, delta4_m, delta5_m,    delta10_m,   delta21_m
                 if (j == k + 6):
                     f.write('           <a style="color: #FF0000"> %s</a>\n'%(element_value))
                 else:
@@ -286,13 +286,13 @@ def comm_handle_html_body(filename, all_df, select='topy10'):
             elif select is 'p_money':
                 conti_df = hsgt_get_continuous_info(all_df, 'p_money')
                 #select condition
-                conti_df = conti_df[ (conti_df.money_total / conti_df.p_count > 1000) & (conti_df.money_total > 2000) &(conti_df.delta1_m > 1000)] 
+                conti_df = conti_df[ (conti_df.money_total / conti_df.conti_day > 1000) & (conti_df.money_total > 2000) &(conti_df.delta1_m > 1000)] 
                 comm_write_to_file(f, -1, conti_df, filename)
 
             elif select is 'p_continous_day':
                 conti_df = hsgt_get_continuous_info(all_df, 'p_continous_day')
                 #select condition
-                #conti_df = conti_df[ (conti_df.money_total / conti_df.p_count > 1000) & (conti_df.money_total > 2000) &(conti_df.delta1_m > 1000)] 
+                #conti_df = conti_df[ (conti_df.money_total / conti_df.conti_day > 1000) & (conti_df.money_total > 2000) &(conti_df.delta1_m > 1000)] 
                 conti_df = conti_df[conti_df.money_total > 2000] 
                 comm_write_to_file(f, -1, conti_df, filename)
         else:
@@ -393,7 +393,7 @@ def comm_handle_hsgt_data(df):
 		hsgt_delta1         = round(hsgt_delta1, 2)
 		hsgt_deltam         = (hsgt_df['share_holding'][0] - hsgt_df['share_holding'][1]) * hsgt_df['close'][0] /10000.0
 		hsgt_deltam         = round(hsgt_deltam, 2)
-		p_count, money_total= comm_get_hsgt_continous_info(hsgt_df)
+		conti_day, money_total= comm_get_hsgt_continous_info(hsgt_df)
 
 	elif hsgt_df_len > 0:
 		hsgt_date           = hsgt_df['record_date'][0]
@@ -402,7 +402,7 @@ def comm_handle_hsgt_data(df):
 		hsgt_delta1         = hsgt_df['percent'][0]
 		hsgt_deltam         = hsgt_df['share_holding'][0] * hsgt_df['close'][0]/10000.0
 		hsgt_deltam         = round(hsgt_deltam, 2)
-		p_count             = 1
+		conti_day             = 1
 		money_total         = hsgt_deltam
 	else:
 		hsgt_date           = ''
@@ -410,7 +410,7 @@ def comm_handle_hsgt_data(df):
 		hsgt_percent        = 0
 		hsgt_delta1         = 0
 		hsgt_deltam         = 0
-		p_count             = 0
+		conti_day             = 0
 		money_total         = 0
 
-	return hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, p_count, money_total   
+	return hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total   

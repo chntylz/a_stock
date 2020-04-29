@@ -63,9 +63,9 @@ def show_realdata():
         hsgt_df = hdata_hsgt.get_data_from_hdata(stock_code=new_code, limit=60)
         
 
-        new_hsgt_date, new_hsgt_share_holding, new_hsgt_percent, new_hsgt_delta1, new_hsgt_deltam, p_count, money_total = comm_handle_hsgt_data(hsgt_df)
+        new_hsgt_date, new_hsgt_share_holding, new_hsgt_percent, new_hsgt_delta1, new_hsgt_deltam, conti_day, money_total = comm_handle_hsgt_data(hsgt_df)
         
-        data_list.append([new_date, new_code, new_name, new_pre_price, new_price, new_percent, new_hsgt_date, new_hsgt_share_holding, new_hsgt_percent, new_hsgt_delta1, new_hsgt_deltam, p_count, money_total])
+        data_list.append([new_date, new_code, new_name, new_pre_price, new_price, new_percent, new_hsgt_date, new_hsgt_share_holding, new_hsgt_percent, new_hsgt_delta1, new_hsgt_deltam, conti_day, money_total])
 
 
         #data_list.append([str_date, my_list[i], my_list_cn[i], df['pre_close'][0], df['price'][0] ])
