@@ -205,6 +205,8 @@ def showImageInHTML(imageTypes,savedir):
     if debug:
         print(ret_df)
     
+    ret_df = ret_df.sort_values('hk_m_total', ascending=0)
+    
 
 
     comm_handle_html_head(newfile, stock_data_dir, curr_day )
