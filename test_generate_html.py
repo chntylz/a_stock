@@ -191,7 +191,7 @@ def showImageInHTML(imageTypes,savedir):
         close_p = (C - pre_close)/pre_close
         close_p = round (close_p.value, 4) * 100
        
-        all_df = hsgtdata.get_data_from_hdata(stock_code=stock_code, limit=60)
+        all_df = hsgtdata.get_data_from_hdata(stock_code=stock_code, end_date=curr_day, limit=60)
         hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, p_count, money_total = comm_handle_hsgt_data(all_df)
 
 
