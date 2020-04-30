@@ -263,6 +263,10 @@ def comm_handle_hsgt_data(df):
         all_df['delta1_m'] = all_df['close'] * all_df['delta1_share'] / 10000;
         del all_df['delta1_share']
 
+        all_df=all_df[all_df['delta1_m'] != 0]
+        all_df=all_df.reset_index(drop=True)
+
+
 
     hsgt_df = all_df
 

@@ -64,6 +64,7 @@ def hsgt_get_delta_m_of_day(df, days):
 
 def hsgt_handle_all_data(df):
     all_df=df
+
     latest_date=all_df.loc[0,'record_date']
     print(latest_date)
 
@@ -123,7 +124,11 @@ def hsgt_handle_all_data(df):
     if debug:
         print(all_df.head(10))    
 
+    all_df=all_df[all_df['delta1_m'] != 0]
+    all_df=all_df.reset_index(drop=True)
+
     return all_df, latest_date
+
 
     pass
             
