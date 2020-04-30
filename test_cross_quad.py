@@ -292,9 +292,9 @@ def quadrilateral_algorythm(codestock_local, nowdate, para1):
         ################################################################
 
     shell_cmd='cp -rf stock_data/' + nowdate.strftime("%Y-%m-%d") +'*'  + ' /var/www/html/stock_data' +'/'
+    os.system(shell_cmd)
     if debug:
         print('shell_cmd: %s' % shell_cmd)
-        os.system(shell_cmd)
 
 
 

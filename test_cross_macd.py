@@ -167,7 +167,7 @@ for i in range(0,stock_len):
     else:
         #invalid data, skip this
         print('###error###: nowcode:%s, database max date:%s, nowdate:%s' % (nowcode, db_max_date, nowdate.strftime("%Y%m%d")))
-    continue
+        continue
 
    
     #funcat call
