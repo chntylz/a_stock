@@ -377,10 +377,12 @@ def comm_handle_hsgt_data(df):
         all_df['delta1_m'] = all_df['close'] * all_df['delta1_share'] / 10000;
         del all_df['delta1_share']
 
-        if debug:
-         print(type(all_df))
-         print(all_df.head(2))
+        all_df=all_df[all_df['delta1_m'] != 0]
+        all_df=all_df.reset_index(drop=True)
 
+        if debug:
+            print(type(all_df))
+            print(all_df.head(2))
 
     hsgt_df = all_df
 
@@ -402,7 +404,7 @@ def comm_handle_hsgt_data(df):
         hsgt_delta1         = hsgt_df['percent'][0]
         hsgt_deltam         = hsgt_df['share_holding'][0] * hsgt_df['close'][0]/10000.0
         hsgt_deltam         = round(hsgt_deltam, 2)
-        conti_day             = 1
+        conti_day           = 1
         money_total         = hsgt_deltam
     else:
         hsgt_date           = ''
@@ -410,7 +412,7 @@ def comm_handle_hsgt_data(df):
         hsgt_percent        = 0
         hsgt_delta1         = 0
         hsgt_deltam         = 0
-        conti_day             = 0
+        conti_day           = 0
         money_total         = 0
 
     return hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total   
