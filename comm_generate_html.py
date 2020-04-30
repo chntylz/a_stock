@@ -249,51 +249,51 @@ def comm_get_hsgt_continous_info(df):
 
 def comm_handle_hsgt_data(df):
 
-	all_df =df 
+    all_df =df 
 
-	del all_df['open']
-	del all_df['high']
-	del all_df['low']
-	del all_df['volume']
+    del all_df['open']
+    del all_df['high']
+    del all_df['low']
+    del all_df['volume']
 
-	if len(all_df) > 0:
-		#the_first_line - the_second_line
-		all_df['delta1']  = all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-1))
-		all_df['delta1_share'] = all_df.groupby('stock_code')['share_holding'].apply(lambda i:i.diff(-1))
-		all_df['delta1_m'] = all_df['close'] * all_df['delta1_share'] / 10000;
-		del all_df['delta1_share']
-
-
-	hsgt_df = all_df
-
-	hsgt_df_len = len(hsgt_df)
-	if hsgt_df_len > 1:
-		hsgt_date           = hsgt_df['record_date'][0]
-		hsgt_share          = hsgt_df['share_holding'][0]
-		hsgt_percent        = hsgt_df['percent'][0]
-		hsgt_delta1         = hsgt_df['percent'][0] - hsgt_df['percent'][1]
-		hsgt_delta1         = round(hsgt_delta1, 2)
-		hsgt_deltam         = (hsgt_df['share_holding'][0] - hsgt_df['share_holding'][1]) * hsgt_df['close'][0] /10000.0
-		hsgt_deltam         = round(hsgt_deltam, 2)
-		conti_day, money_total= comm_get_hsgt_continous_info(hsgt_df)
-	elif hsgt_df_len > 0:
-		hsgt_date           = hsgt_df['record_date'][0]
-		hsgt_share          = hsgt_df['share_holding'][0]
-		hsgt_percent        = hsgt_df['percent'][0]
-		hsgt_delta1         = hsgt_df['percent'][0]
-		hsgt_deltam         = hsgt_df['share_holding'][0] * hsgt_df['close'][0]/10000.0
-		hsgt_deltam         = round(hsgt_deltam, 2)
-		conti_day             = 1
-		money_total         = hsgt_deltam
-	else:
-		hsgt_date           = ''
-		hsgt_share          = 0
-		hsgt_percent        = 0
-		hsgt_delta1         = 0
-		hsgt_deltam         = 0
-		conti_day             = 0
-		money_total         = 0
+    if len(all_df) > 0:
+        #the_first_line - the_second_line
+        all_df['delta1']  = all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-1))
+        all_df['delta1_share'] = all_df.groupby('stock_code')['share_holding'].apply(lambda i:i.diff(-1))
+        all_df['delta1_m'] = all_df['close'] * all_df['delta1_share'] / 10000;
+        del all_df['delta1_share']
 
 
-	return hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total   
+    hsgt_df = all_df
+
+    hsgt_df_len = len(hsgt_df)
+    if hsgt_df_len > 1:
+        hsgt_date           = hsgt_df['record_date'][0]
+        hsgt_share          = hsgt_df['share_holding'][0]
+        hsgt_percent        = hsgt_df['percent'][0]
+        hsgt_delta1         = hsgt_df['percent'][0] - hsgt_df['percent'][1]
+        hsgt_delta1         = round(hsgt_delta1, 2)
+        hsgt_deltam         = (hsgt_df['share_holding'][0] - hsgt_df['share_holding'][1]) * hsgt_df['close'][0] /10000.0
+        hsgt_deltam         = round(hsgt_deltam, 2)
+        conti_day, money_total= comm_get_hsgt_continous_info(hsgt_df)
+    elif hsgt_df_len > 0:
+        hsgt_date           = hsgt_df['record_date'][0]
+        hsgt_share          = hsgt_df['share_holding'][0]
+        hsgt_percent        = hsgt_df['percent'][0]
+        hsgt_delta1         = hsgt_df['percent'][0]
+        hsgt_deltam         = hsgt_df['share_holding'][0] * hsgt_df['close'][0]/10000.0
+        hsgt_deltam         = round(hsgt_deltam, 2)
+        conti_day             = 1
+        money_total         = hsgt_deltam
+    else:
+        hsgt_date           = ''
+        hsgt_share          = 0
+        hsgt_percent        = 0
+        hsgt_delta1         = 0
+        hsgt_deltam         = 0
+        conti_day             = 0
+        money_total         = 0
+
+
+    return hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total   
     

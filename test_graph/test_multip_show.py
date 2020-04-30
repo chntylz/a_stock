@@ -137,7 +137,7 @@ for pos in np.arange(len(plot_pos)):
     ax = plt.gca()  
     ax.spines['right'].set_color('none') 
     ax.spines['top'].set_color('none')    
-	
+    
 plt.show()  
 
 

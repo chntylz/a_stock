@@ -18,5 +18,5 @@ print '*' * 10, '可用的字体', '*' * 10
 
 for f in available:
     print f
-	
-	
+    
+    

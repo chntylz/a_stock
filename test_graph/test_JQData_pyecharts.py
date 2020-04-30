@@ -84,9 +84,9 @@ class Kshow:
         grid._option['color']=['#145b7d','#e0861a','#ef232a','#14b143'] #DIF，DEA，MACD正，MACD负
         return grid
     
-	
-	
-	
+    
+    
+    
 #股票代码
 stock='000001.XSHG'
 #名称
@@ -108,7 +108,7 @@ chart=Kshow(stock[:6]+' '+stock_name)
 #初始化数据
 chart.chart_init(df)
 #显示图表
-chart.show_chart(height=600,width=1000)	
+chart.show_chart(height=600,width=1000) 
 
 #以下代码可以在研究中生成图表大图 render.html
 chart.show_chart(height=600,width=1000).render()

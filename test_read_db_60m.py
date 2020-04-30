@@ -120,8 +120,8 @@ for i in range(0,len(codestock_local)):
     
     #fix NaN bug
     if(len(detail_info) == 0):
-    	#print('NaN: code:%s, name:%s' % (nowcode, nowname ))
-    	continue
+        #print('NaN: code:%s, name:%s' % (nowcode, nowname ))
+        continue
     
     #continue
     detail_info.index = detail_info.index.format(formatter=lambda x: x.strftime('%Y-%m-%d'))
@@ -154,7 +154,7 @@ for i in range(0,len(codestock_local)):
     dif, dea, macd_hist = talib.MACD(np.array(detail_info['close'], dtype=float), fastperiod=12, slowperiod=26, signalperiod=9)
 
     #print("line number: " + str(sys._getframe().f_lineno) )
-	#cross
+    #cross
     #cond_1 = ma_5[-1] > ma_13[-1]
     #cond_2 = ma_5[-2] < ma_13[-2]
     cond_1 = aaron_cross(ma_5, ma_13) 
@@ -169,9 +169,9 @@ for i in range(0,len(codestock_local)):
     if cond_1 and cond_2 and cond_3 and cond_4:
         print("cross: code:%s, name:%s" % (nowcode, nowname ))
     else: 
-	    continue
-	
-	#################################################################
+        continue
+    
+    #################################################################
     '''
     #ma5 cross
     for i in range(1, ma_21.size):

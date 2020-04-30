@@ -31,7 +31,7 @@ for i in range(0,len(codestock_local)):
     nowcode=codestock_local[i][0]
 
     #print(hdata.get_all_hdata_of_stock(nowcode))
-	
+    
     #print(i,nowcode,codestock_local[i][1])
     #log.warning("i=%d,%s,%s\n",  i,nowcode,codestock_local[i][1])
 
@@ -41,11 +41,11 @@ for i in range(0,len(codestock_local)):
         if(maxdate>=nowdate):#maxdate小的时候说明还有最新的数据没放进去
             continue
         hist_data=ts.get_hist_data(nowcode, str(maxdate+datetime.timedelta(1)),str(nowdate), 'D', 3, 0.001)
-    	#print("1", maxdate, nowdate, hist_data)
+        #print("1", maxdate, nowdate, hist_data)
         hdata.insert_perstock_hdatadate(nowcode, hist_data)
     else:#说明从未获取过这只股票的历史数据
         hist_data = ts.get_hist_data(nowcode, None, str(nowdate), 'D', 3, 0.001)
-    	#print("2", maxdate, nowdate, hist_data)
+        #print("2", maxdate, nowdate, hist_data)
         hdata.insert_perstock_hdatadate(nowcode, hist_data)
 
 hdata.db_disconnect()
