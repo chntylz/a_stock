@@ -12,7 +12,9 @@ from time import clock
 from common import Log
 
 
+
 import pandas as pd
+import numpy as np
 
 import sys
 import os
@@ -25,6 +27,7 @@ pro = ts.pro_api(token)
 
 
 debug=0
+#debug=1
 
 
 
@@ -37,14 +40,12 @@ print(stocks.db_stocks_update())#根据todayall的情况更新stocks表
 #hdata_day.db_hdata_date_create()
 
 
-
-codestock_local=stocks.get_codestock_local()
-#print(codestock_local)
-
-
 def get_daily_data(codestock_local, nowdate):
 
     length=len(codestock_local)
+
+    #create a null dataframe
+    #new_data =  pd.DataFrame()
 
     for i in range(0,length):
         nowcode=codestock_local[i][0]
@@ -54,6 +55,7 @@ def get_daily_data(codestock_local, nowdate):
         maxdate=hdata_day.db_get_maxdate_of_stock(nowcode)
         if debug:
             print('maxdate:%s, nowdate:%s' % (maxdate, nowdate))
+
         if(maxdate):
 
             '''
@@ -87,7 +89,10 @@ def get_daily_data(codestock_local, nowdate):
             hdata_day.delete_amount_is_zero()
             break
 
+
             '''
+            '''
+            #very late, it is about 16:00 to get valid data
             today_data = pro.daily(trade_date=nowdate.strftime("%Y%m%d"))
             del today_data['change']
             del today_data['pre_close']
@@ -111,8 +116,48 @@ def get_daily_data(codestock_local, nowdate):
             hdata_day.delete_amount_is_zero()
 
             break #only 1 time, then exit for loop
+            '''
 
+            df = ts.get_realtime_quotes(nowcode)
+ 
+            if df is None:
+                if debug:
+                    print("df is None: %d, %s, %s" % (i,nowcode,codestock_local[i][1]))
+                continue
 
+            if(len(df) == 0):
+                if debug:
+                    print("df length is 0: i=%d, nowcode:%s, nowname:%s " %(i,nowcode,codestock_local[i][1]))
+                continue
+
+               
+            cols=['date', 'code', 'open', 'price', 'high', 'low', 'volume', 'amount', 'pre_close']
+            #df=df.ix[:,cols]语句表示，DataFrame的行索引不变，列索引是cols中给定的索引。
+            df=df.loc[:,cols]
+            df['volume'] = float(df['volume'][0])/100
+            df['amount'] = float(df['amount'][0])/1000
+
+            df.rename(columns={'price': 'close'}, inplace=True)
+            df['pre_close'] = (float(df['close'][0]) - float( df['pre_close'][0]) ) * 100 / float(df['pre_close'])
+
+            df.rename(columns={'pre_close': 'pct_chg'}, inplace=True)
+            df=df.round(2)
+
+            df['date']=df['date'].apply(lambda x: datetime.datetime.strptime(x,'%Y-%m-%d'))
+            df = df.set_index('date')
+
+            if debug:
+                print(df)
+        
+            #insert datafram
+            hdata_day.insert_allstock_hdatadate(df)
+            
+            
+            '''
+            new_data=pd.concat([new_data, df],ignore_index=True)
+            if debug:
+                print('len(new_data)= %d' % len(new_data))
+            '''
 
         else:#说明从未获取过这只股票的历史数据
             if nowcode[0:1] == '6':
@@ -181,14 +226,15 @@ if __name__ == '__main__':
 
 
     codestock_local=stocks.get_codestock_local()
-    if debug:
-        print(codestock_local)
 
     hdata_day.db_connect()#由于每次连接数据库都要耗时0.0几秒，故获取历史数据时统一连接
     hdata_day.delete_data_of_day_stock(nowdate.strftime("%Y-%m-%d")) #delete first
 
 
     get_daily_data(codestock_local, nowdate)
+
+    #delete closed stock data according amount=0
+    hdata_day.delete_amount_is_zero()
 
     last_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     print("start_time: %s, last_time: %s" % (start_time, last_time))
