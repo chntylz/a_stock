@@ -114,6 +114,7 @@ print("start_time: %s, end_time: %s" % (start_time, end_time))
 
 #debug switch
 debug = 0
+debug = 0
 
 #define canvas out of loop
 plt.style.use('bmh')
@@ -125,6 +126,7 @@ for i in range(0,stock_len):
 #if (True):
     #i = 0
     draw_flag = False
+
     nowcode=codestock_local[i][0]
     nowname=codestock_local[i][1]
     log.debug("code:%s, name:%s" % (nowcode, nowname ))
@@ -176,7 +178,7 @@ for i in range(0,stock_len):
     z_len = len(z_peers)
     #calculate buy or sell
     if z_len >= 3:  # it should have one valid zig data at least
-        if z_peers[-1] - z_peers[-2] < 3: #delta days  < 10 from today
+        if z_peers[-1] - z_peers[-2] < 3: #delta days  < 3 from today
             if z_buy_state[-2] is 1:  #valid zig must 1, that means valley
                 print('%s gold node, buy it!!'% nowcode)
                 draw_flag = True
@@ -188,7 +190,7 @@ for i in range(0,stock_len):
     #check need to generate png 
     if draw_flag == False:
         continue
-    
+   
 
     save_dir = 'stock_data'
     sub_name = '-zig'

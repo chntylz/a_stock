@@ -51,7 +51,47 @@ set_data_backend(AaronDataBackend())
 
 
 #debug switch
-debug = False;
+debug = 0
+#debug = 1
+
+
+def check_is_bottom(nowdate, nowcode, nowname, within):
+    is_bottom = False
+    
+    loop = 0
+    while loop < within:
+        loop = loop + 1
+    
+        nowdate=nowdate-datetime.timedelta(int(loop))
+        #funcat call
+        T(str(nowdate))
+        S(nowcode)
+        if debug:
+            print(' check_is_bottom ')
+            print(str(nowdate), nowcode, nowname, O, H, L, C)
+
+
+        ##############################################################################
+
+        X_11=CLOSE/MA(CLOSE,40)*100<78;
+        X_12=CLOSE/MA(CLOSE,60)*100<74;
+        X_13=HIGH>LOW*1.051;
+        X_14=X_13 and COUNT(X_13,5)>1;
+        X_15=IF(X_14 and (X_11 or X_12),2,0);
+        X_16=CLOSE/REF(CLOSE,25)<=1.1;
+        X_17=SMA(MAX(CLOSE-REF(CLOSE,2),0),7,1)/SMA(ABS(CLOSE-REF(CLOSE,2)),7,1)*100<15;
+        X_18=(CLOSE-LLV(LOW,8))/(HHV(HIGH,8)-LLV(LOW,8))*100;
+        X_19=SMA(X_18,2,1);
+        X_20=SMA(X_19,2,1);
+        X_21=IF(X_19>REF(X_19,1) and REF(X_19,1)<REF(X_19,2) and X_19<23,1.5,0);
+        if X_16 and  X_15 and X_17 and X_21:
+            print('check_is_bottom ### %s, %s, %s' %(str(nowdate), nowcode, nowname))
+            is_bottom = True
+            break
+
+    return is_bottom
+            
+
 
 def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name):
     log.debug("code:%s, name:%s" % (nowcode, nowname ))
@@ -155,6 +195,10 @@ def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name
                 print('%s gold node, buy it!!' % nowcode )
                 buy_flag = '-buy'
     
+    #check whether it is bottom or not, 2020-05-01
+    if check_is_bottom(nowdate, nowcode, nowname, 3):
+        buy_flag = buy_flag + '-bottom'
+
 
     #boll, candles
     ax04.set_title(nowcode + '-' + nowname)
@@ -219,6 +263,11 @@ def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name
                     '-' + str(int(today_p * 10000)) + \
                      buy_flag + '.png'
 
+    
+
+    if debug:
+        print('figure_name:%s' % figure_name)
+    
     fig.savefig(figure_name)
 
     exec_command = "mkdir -p " + save_dir
@@ -229,9 +278,10 @@ def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name
     os.system(exec_command_1)
 
     exec_command_2 = "mv " + save_name + '-' +  nowcode + '*' + " " + save_dir + "/"
-    #print("%s"%(exec_command_2))
+    if debug:
+        print("%s"%(exec_command_2))
     os.system(exec_command_2)
-    
+
     plt.clf()
     plt.cla()
 

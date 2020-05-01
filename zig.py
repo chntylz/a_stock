@@ -30,7 +30,8 @@ def recurse_set_state(buy_state, pos, state):
 
 def get_buy_state(peers, dates, prices):
     length = len(peers)
-    print('length is %s' % length)
+    if debug:
+        print('length is %s' % length)
     buy_state = [];
     for i in range(0, length):
         buy_state.append(0)
@@ -125,18 +126,21 @@ def zig(df):
             z[j + peer_start_i] = start_value + a*j
     
     # print(u'...转向点的阀值、个数、位置和日期...')        
-    print(x, len(peers))
-    print("peers:%s" % peers)
-    dates = [d[i] for i in peers]  #时间
-    print("dates:%s" % dates)
-    prices=[k[i] for i in peers]
-    print("prices:%s" % prices)
     if debug:
+        print('zig: %d, %d' % (x, len(peers)))
+        print("zig peers:%s" % peers)
+    dates = [d[i] for i in peers]  #时间
+    if debug:
+        print("zig: dates:%s" % dates)
+    prices=[k[i] for i in peers]
+    if debug:
+        print("zig prices:%s" % prices)
         print(list(k))
         print(list(z))
 
     buy_state = get_buy_state(peers, dates, prices)
-    print("buy_state:%s" % buy_state)
+    if debug:
+        print("zig buy_state:%s" % buy_state)
 
     
     return z, peers, d, k, buy_state
