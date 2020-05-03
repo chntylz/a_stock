@@ -4,8 +4,21 @@ import os,sys,time, datetime
 import tushare as ts
 import numpy as np
 import pandas as pd
+#keep 0.01 accrucy
+pd.set_option('display.float_format',lambda x : '%.2f' % x)
 
 
+
+#funcat
+from funcat import *
+from funcat.data.aaron_backend import AaronDataBackend
+set_data_backend(AaronDataBackend())
+
+
+import psycopg2
+from HData_hsgt import *
+
+hsgtdata=HData_hsgt("usr","usr")
 
 
 #get basic stock info
@@ -420,3 +433,66 @@ def comm_handle_hsgt_data(df):
         money_total         = 0
 
     return hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total   
+
+
+
+def insert_industry(dict_name, key):
+    if dict_name.get(key) is None :
+       dict_name.setdefault(key, 1)
+    else:
+        dict_name[key]=dict_name[key] + 1
+
+
+def comm_generate_web_dataframe(images, curr_day, dict_industry):
+
+    data_list = []
+    for image in images:
+
+        #'2019-07-09-600095-哈高科-873-960-960-873-997.png'
+        #2019-09-23-1-002436-兴森科技-814-878-891-796-840.png
+        tmp_image=image[0:image.rfind('.')]
+        if debug:
+            print('tmp_image: %s' % (tmp_image))
+
+        #stock_code=image[11:17]
+        stock_code=image[13:19]
+        stock_name = symbol(stock_code)
+        pos_s=stock_name.rfind('[')
+        pos_e=stock_name.rfind(']')
+        stock_name=stock_name[pos_s+1: pos_e]
+
+
+        #funcat call
+        T(curr_day)
+        S(stock_code)
+        pre_close = REF(C, 1)
+        open_p = (O - pre_close)/pre_close
+        open_p = round (open_p.value, 4)
+        open_jump=open_p - 0.02
+        if debug:
+            print(str(nowdate), stock_code, O, H, L, C, open_p)
+
+        close_p = (C - pre_close)/pre_close
+        close_p = round (close_p.value, 4) * 100
+
+        all_df = hsgtdata.get_data_from_hdata(stock_code=stock_code, end_date=curr_day, limit=60)
+        hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total = comm_handle_hsgt_data(all_df)
+
+
+        industry_name = basic_df.loc[stock_code]['industry']
+        insert_industry(dict_industry, industry_name)
+
+
+        data_list.append([curr_day, stock_code, stock_name, close_p, C.value, image, hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total ])
+
+    data_column = ['cur_date', 'code', 'name', 'a_pct', 'close', 'image_url', 'hk_date', 'hk_share', 'hk_pct', 'hk_delta1', 'hk_deltam', 'conti_day', 'hk_m_total']
+    ret_df=pd.DataFrame(data_list, columns=data_column)
+    ret_df['m_per_day'] = ret_df.hk_m_total / ret_df.conti_day
+    ret_df = ret_df.fillna(0)
+    ret_df=ret_df.round(2)
+    if debug:
+        print(ret_df)
+
+    ret_df = ret_df.sort_values('hk_m_total', ascending=0)
+ 
+    return ret_df
