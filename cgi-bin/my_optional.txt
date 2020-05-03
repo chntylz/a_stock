@@ -1,4 +1,7 @@
 #There must be 1 space after stock code!!!
+sh shangzheng
+399001 shenzheng
+399006 chuangyeban
 600048 baolidichan
 300638 guanghetong
 002271 dongfangyuhong

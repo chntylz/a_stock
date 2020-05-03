@@ -164,8 +164,12 @@ def comm_write_to_file(f, k, df, filename):
                     f.write('           <a> %.2f</a>\n'%(element_value))
                 else:
                     if 'png' in str(element_value):
-                        if 'buy' in str(element_value):#zig
-                            f.write('           <a href="%s" target="_blank"> %s</a>\n'%( element_value, '1'))
+                        if 'buy' in str(element_value) and 'bottom' in str(element_value):#zig+bottom
+                            f.write('           <a href="%s" target="_blank"> %s</a>\n'%( element_value, 'zig+b'))
+                        elif 'buy' in str(element_value):#zig
+                            f.write('           <a href="%s" target="_blank"> %s</a>\n'%( element_value, 'zig'))
+                        elif 'bottom' in str(element_value):#bottom
+                            f.write('           <a href="%s" target="_blank"> %s</a>\n'%( element_value, 'bottom'))
                         else:
                             f.write('           <a href="%s" target="_blank"> %s</a>\n'%( element_value, '0'))
                     else:
