@@ -31,7 +31,8 @@ def set_fina_data():
 
     for i in range(0,length):
     #for i in range(0, 1):
-        print("----------------------------------------------------------")
+        if debug:
+            print("----------------------------------------------------------")
         
         
         nowcode=codestock_local[i][0]
@@ -48,25 +49,27 @@ def set_fina_data():
 
         
         maxdate=hdata_fina.db_get_maxdate_of_stock(nowcode)
-        print('maxdate:%s, nowdate:%s' % (maxdate, nowdate))
+        if debug:
+            print('maxdate:%s, nowdate:%s' % (maxdate, nowdate))
 
 
         if(maxdate):
-            continue
-            print("%s: fina is already exist!" % nowcode)
+            if debug:
+                print("%s: fina is already exist!" % nowcode)
             newdate=datetime.datetime.strptime(maxdate,'%Y%m%d')
             newdate=newdate + datetime.timedelta(1)
             fina_data = pro.query('fina_indicator', ts_code=nowcode_new, start_date=newdate.strftime("%Y%m%d"), end_date=nowdate.strftime("%Y%m%d"))
 
-            #add delay for 80/min limitation
-            time.sleep(0.5)
+            #add delay for min/80 limitation
+            time.sleep(0.75)
 
         else:#说明从未获取过这只股票的历史数据
-            print("%s: fina is null" % nowcode)
+            if debug:
+                print("%s: fina is null" % nowcode)
             fina_data= pro.fina_indicator(ts_code=nowcode_new)
 
-            #add delay for 80/min limitation
-            time.sleep(0.5)
+            #add delay for min/80 limitation
+            time.sleep(0.75)
        
         if fina_data is None:
             continue

@@ -5,6 +5,7 @@ import psycopg2 #使用的是PostgreSQL数据库
 import tushare as ts
 from Stocks import *
 from HData_fina import *
+from HData_hsgt import *
 from comm_generate_web_html import *
 import  datetime
 
@@ -21,7 +22,10 @@ from funcat.data.aaron_backend import AaronDataBackend
 set_data_backend(AaronDataBackend())
 
 hdata_fina=HData_fina("usr","usr")
-debug = False
+hsgtdata=HData_hsgt("usr","usr")
+
+debug = 0 
+#debug = 1
    
 
 def get_fina_data():
@@ -33,7 +37,7 @@ def get_fina_data():
     
     return fina_data
 
-def fina_get_continuous_info(df, select='or_yoy', net_percent=20):
+def fina_get_continuous_info(df, curr_day, select='or_yoy', net_percent=20):
     all_df = df
     data_list = []
     group_by_stock_code_df=all_df.groupby('ts_code')
@@ -75,24 +79,45 @@ def fina_get_continuous_info(df, select='or_yoy', net_percent=20):
 
         #algorithm
         if(i > 1):
-             if group_df.loc[0]['or_yoy'] < group_df.loc[1]['or_yoy']:  #decline, skip
-                continue
+            pass
+            #if group_df.loc[0]['or_yoy'] < group_df.loc[1]['or_yoy']:  #decline, skip
+            #   continue
         else:
-             continue
+            continue
 
+        #funcat call
+        T(curr_day)
+        S(stock_code)
+        pre_close = REF(C, 1)
+        open_p = (O - pre_close)/pre_close
+        open_p = round (open_p.value, 4)
+        open_jump=open_p - 0.02
+        if debug:
+            print(str(nowdate), stock_code, O, H, L, C, open_p)
+
+        close_p = (C - pre_close)/pre_close
+        close_p = round (close_p.value, 4) * 100
+
+        all_df = hsgtdata.get_data_from_hdata(stock_code=stock_code, end_date=curr_day, limit=60)
+        hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total = comm_handle_hsgt_data(all_df)
+        
 
         if debug:
-            print(max_date, stock_code, stock_name, or_yoy,  netprofit_yoy, i)
+            print(curr_day, max_date, stock_code, stock_name, or_yoy,  netprofit_yoy, i, close_p, C.value, hsgt_share, hsgt_date, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total )
 
-        data_list.append([max_date, stock_code, stock_name, or_yoy, netprofit_yoy,  i])  #i  is conti_day
+        data_list.append([ max_date, stock_code, stock_name, or_yoy, netprofit_yoy,  i, close_p, C.value, hsgt_share, hsgt_date, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total])  #i  is conti_day
 
-    data_column=['record_date', 'stock_code', 'stock_name', 'or_yoy', 'netprofit_yoy', 'conti_day']
+    data_column=['record_date', 'stock_code', 'stock_name', 'or_yoy', 'netprofit_yoy', 'conti_day', 'a_pct', 'close', 'hk_share', 'hk_date', 'hk_pct', 'hk_delta1', 'hk_deltam', 'conti_day', 'hk_m_total']
 
     ret_df = pd.DataFrame(data_list, columns=data_column)
     if select is 'or_yoy':
         ret_df = ret_df.sort_values('or_yoy', ascending=0)
     elif select is 'netprofit_yoy':
         ret_df = ret_df.sort_values('netprofit_yoy', ascending=0)
+
+    ret_df = ret_df.fillna(0)
+    ret_df=ret_df.round(2)
+
 
 
     return ret_df
@@ -127,11 +152,11 @@ def fina_generate_html(df):
     
     
     
-def get_example_data():
+def get_example_data(curr_day):
 
     hdata_fina.db_connect()#由于每次连接数据库都要耗时0.0几秒，故获取历史数据时统一连接
     df = get_fina_data()
-    df_fina =  fina_get_continuous_info(df, 'or_yoy')
+    df_fina =  fina_get_continuous_info(df, curr_day, 'or_yoy')
     hdata_fina.db_disconnect()
 
     return df, df_fina
@@ -141,7 +166,11 @@ def get_example_data():
 if __name__ == '__main__':
 
     t1 = clock()
-    df, df_fina = get_example_data()
+    nowdate=datetime.datetime.now().date()
+    curr_day=nowdate.strftime("%Y-%m-%d")
+    print("curr_day:%s"%(curr_day))
+
+    df, df_fina = get_example_data(curr_day)
     fina_generate_html(df_fina)
     t2 = clock()
     print("t1:%s, t2:%s, delta=%s"%(t1, t2, t2-t1))

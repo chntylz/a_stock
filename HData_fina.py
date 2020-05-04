@@ -138,7 +138,7 @@ class HData_fina(object):
         conn = psycopg2.connect(database="usr", user=self.user, password=self.password, host="127.0.0.1",
                                 port="5432")
         cur = conn.cursor()
-        sql_temp="select * from hdata_fina_table where ann_date between " + "\'" + start_time + "\'  and  " + "\'" + end_time + "\';"
+        sql_temp="select * from hdata_fina_table where ann_date between " + "\'" + start_time + "\'  and  " + "\'" + end_time + "\' order by ann_date desc;"
         cur.execute(sql_temp)
         rows = cur.fetchall()
 
