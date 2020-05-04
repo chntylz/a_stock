@@ -60,7 +60,7 @@ def update_holder(nowdate):
         #get data
         hist_data = pro.stk_holdernumber(ts_code=stock_code_new, start_date=start_date, end_date=end_date)
         
-        time.sleep(0.6) #fix bug: 抱歉，您每分钟最多访问该接口100次
+        time.sleep(0.65) #fix bug: 抱歉，您每分钟最多访问该接口100次
 
         if hist_data is None:
             if debug:
