@@ -124,8 +124,8 @@ def hsgt_handle_all_data(df):
     if debug:
         print(all_df.head(10))    
 
-    all_df=all_df[all_df['delta1_m'] != 0]
-    all_df=all_df.reset_index(drop=True)
+    #all_df=all_df[all_df['delta1_m'] != 0]
+    #all_df=all_df.reset_index(drop=True)
 
     return all_df, latest_date
 
