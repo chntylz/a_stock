@@ -123,7 +123,7 @@ def getAllFiles(directory):
     for dirpath, dirnames,filenames in os.walk(directory):
         if filenames!=[]:
             for file in filenames:
-                if ('index' in file) or ('holder' in file) or ('zheli' in file)  or ('macd' in file)  or ('zig' in file) or ('hsgt' in file ) or ('test' in file ) or ('quad' in file) or ('finance' in file):
+                if ('index' in file) or ('repurchase' in file) or ('holder' in file) or ('zheli' in file)  or ('macd' in file)  or ('zig' in file) or ('hsgt' in file ) or ('test' in file ) or ('quad' in file) or ('finance' in file):
                     continue;
                 else:
                     files.append(dirpath+'/'+file)

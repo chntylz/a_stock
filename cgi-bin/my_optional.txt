@@ -2,16 +2,22 @@
 sh shangzheng
 399001 shenzheng
 399006 chuangyeban
+600352 zhejianglongsheng
+601318 zhongguopingan
+000513 lizhujituan
 600048 baolidichan
+000401 jidongshuini
+300253 weiningjiankang
+002273 shuijingguangdian
+002230 kedaxunfei
+
 300638 guanghetong
 002271 dongfangyuhong
 002304 yanghegufen
-002230 kedaxunfei
 002475 lixunjingmi
 002049 ziguangguohui
 
 600438 tongweigufen
-000401 jidongshuini
 600585 hailuoshuini
 000877 tianshangufen
 002332 xianjuzhiyao
