@@ -16,13 +16,16 @@ set_data_backend(AaronDataBackend())
 
 
 import psycopg2
+from Stocks import *
 from HData_hsgt import *
 
 hsgtdata=HData_hsgt("usr","usr")
+stocks=Stocks("usr","usr")
 
 
 #get basic stock info
-basic_df=ts.get_stock_basics()
+#basic_df=ts.get_stock_basics()
+basic_df=stocks.get_all_data()
 
 debug=0
 #debug=1

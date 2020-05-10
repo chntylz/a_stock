@@ -3,6 +3,9 @@
 
 import tushare as ts
 import psycopg2
+import pandas as pd
+import numpy as np
+
 
 token='21dddafc47513ea46b89057b2c4edf7b44882b3e92274b431f199552'
 pro = ts.pro_api(token)
@@ -17,7 +20,7 @@ class Stocks(object):#这个类表示"股票们"的整体(不是单元)
         cur = conn.cursor()
         # 创建stocks表
         cur.execute('''
-                select * from stocks;
+                select * from stocks order by stock_code asc;
                ''')
         rows =cur.fetchall()
         conn.commit()
@@ -30,9 +33,9 @@ class Stocks(object):#这个类表示"股票们"的整体(不是单元)
         self.user=user
         self.password=password
 
-    def db_perstock_insertsql(self,stock_code,cns_name, area, industry, list_date):#返回的是插入语句
+    def db_perstock_insertsql(self,stock_code,name, area, industry, list_date):#返回的是插入语句
         sql_temp="insert into stocks values("
-        sql_temp+="\'"+stock_code+"\'"+","+"\'"+cns_name+"\'"+","
+        sql_temp+="\'"+stock_code+"\'"+","+"\'"+name+"\'"+","
         sql_temp+="\'"+area+"\'"+","+"\'"+industry+"\'"+","
         sql_temp+="\'"+list_date+"\'"
         sql_temp +=");"
@@ -74,7 +77,7 @@ class Stocks(object):#这个类表示"股票们"的整体(不是单元)
             drop table if exists stocks;
             create table stocks(
                 stock_code varchar primary key,
-                cns_name varchar,
+                name varchar,
                 area varchar,
                 industry varchar,
                 list_date date
@@ -85,4 +88,22 @@ class Stocks(object):#这个类表示"股票们"的整体(不是单元)
         print("db_stocks_create finish")
         pass
         
-        
+    def get_all_data(self): 
+        conn = psycopg2.connect(database="usr", user=self.user, password=self.password, host="127.0.0.1", port="5432")
+        cur = conn.cursor()
+        sql_temp="select * from stocks order by stock_code asc;"
+        cur.execute(sql_temp)
+        rows = cur.fetchall()
+
+        conn.commit()
+        conn.close()
+
+        dataframe_cols=[tuple[0] for tuple in cur.description]#列名和数据库列一致
+        df = pd.DataFrame(rows, columns=dataframe_cols)
+        #index =  df["stock_code"]
+        #df = pd.DataFrame(rows, index=index, columns=dataframe_cols)
+        df=df.set_index('stock_code')
+
+        return df
+
+

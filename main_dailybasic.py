@@ -3,7 +3,6 @@
 
 import psycopg2 #使用的是PostgreSQL数据库
 import tushare as ts
-from Stocks import *
 from HData_dailybasic import *
 import  datetime
 
