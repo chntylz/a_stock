@@ -82,7 +82,7 @@ def showImageInHTML(imageTypes,savedir):
         f.write('     <a href="../cgi-bin/hsgt-search.cgi"  target="_blank">hsgt-search </a>\n')
         f.write('</td>\n')
         f.write('<td>\n')
-        f.write('     <a href="macd-index.html"  target="_blank">macd strategy </a>\n')
+        f.write('     <a href="macd-index.html"  target="_blank">macd </a>\n')
         f.write('</td>\n')
         f.write('<td>\n')
         f.write('     <a href="zig-index.html"  target="_blank"> zig </a>\n')
