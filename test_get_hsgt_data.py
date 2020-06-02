@@ -108,6 +108,8 @@ def hsgt_get_day_item_from_json(file_path):
 
 
             list_tmp.append([shgt_date, shgt_code, shgt_cname, shgt_holding, shgt_percent, shgt_open, shgt_close, shgt_high, shgt_low, shgt_volume])
+        else:
+            print('############## daily data is null!!! ##############')
 
     if debug:
         print(list_tmp)
