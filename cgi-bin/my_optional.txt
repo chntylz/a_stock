@@ -2,6 +2,7 @@
 sh shangzheng
 399001 shenzheng
 399006 chuangyeban
+159994 5GETF
 600352 zhejianglongsheng
 601318 zhongguopingan
 000513 lizhujituan

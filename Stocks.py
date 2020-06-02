@@ -7,12 +7,18 @@ import pandas as pd
 import numpy as np
 
 
+
 token='21dddafc47513ea46b89057b2c4edf7b44882b3e92274b431f199552'
 pro = ts.pro_api(token)
+
+debug=0
+#debug=1
 
 class Stocks(object):#这个类表示"股票们"的整体(不是单元)
     def get_stock_basic(self):
         self.stock_basic = pro.stock_basic(exchange='', list_status='L', fields='ts_code,symbol,name,area,industry,list_date')
+
+        self.stock_basic = self.stock_basic.fillna(0)
 
     def get_codestock_local(self):#从本地获取所有股票代号和名称
         conn = psycopg2.connect(database="usr", user=self.user, password=self.password, host="127.0.0.1",
@@ -34,11 +40,24 @@ class Stocks(object):#这个类表示"股票们"的整体(不是单元)
         self.password=password
 
     def db_perstock_insertsql(self,stock_code,name, area, industry, list_date):#返回的是插入语句
+
+        #transfer to stirng
+        if type(area) is type(0):
+            area=str(area)
+
+        if type(industry) is type(0):
+            industry=str(industry)
+            
+
         sql_temp="insert into stocks values("
         sql_temp+="\'"+stock_code+"\'"+","+"\'"+name+"\'"+","
         sql_temp+="\'"+area+"\'"+","+"\'"+industry+"\'"+","
         sql_temp+="\'"+list_date+"\'"
         sql_temp +=");"
+
+        if debug:
+            print('sql_temp:%s' % sql_temp)
+
         return sql_temp
         pass
 
@@ -51,18 +70,27 @@ class Stocks(object):#这个类表示"股票们"的整体(不是单元)
         for i in range(0,len(self.stock_basic)):
             sql_temp='''select * from stocks where stock_code='''
             sql_temp+="\'"+self.stock_basic["symbol"][i]+"\';"
+
+            if debug:
+                print('sql_temp:%s' % sql_temp)
+
             cur.execute(sql_temp)
             rows=cur.fetchall()
             if(len(rows)==0):
                 #如果股票代码没找到就插
                 ans+=1
-                cur.execute(self.db_perstock_insertsql(
+                sql_tmp = self.db_perstock_insertsql(
                     self.stock_basic["symbol"][i],
                     self.stock_basic["name"][i],
                     self.stock_basic["area"][i],
                     self.stock_basic["industry"][i],
                     self.stock_basic["list_date"][i]
-                    ))
+                    )
+
+                if debug:
+                    print('sql_temp:%s' % sql_temp)
+
+                cur.execute(sql_temp)
                 pass
         conn.commit()
         conn.close()

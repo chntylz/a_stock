@@ -29,7 +29,7 @@ pro = ts.pro_api(token)
 debug=0
 #debug=1
 
-
+yesterday=0
 
 stocks=Stocks("usr","usr")
 hdata_day=HData_day("usr","usr")
@@ -56,7 +56,12 @@ def get_daily_data(codestock_local, nowdate):
         if debug:
             print('maxdate:%s, nowdate:%s' % (maxdate, nowdate))
 
-        if(maxdate):
+        if yesterday:
+            maxdate = 0
+
+        #if(maxdate):
+        if(0):
+
 
             '''
             today_data=ts.get_today_all()
@@ -120,6 +125,9 @@ def get_daily_data(codestock_local, nowdate):
 
             df = ts.get_realtime_quotes(nowcode)
  
+            #only current day
+            df=df[df['date'] == nowdate.strftime("%Y-%m-%d")]
+
             if df is None:
                 if debug:
                     print("df is None: %d, %s, %s" % (i,nowcode,codestock_local[i][1]))
@@ -130,6 +138,9 @@ def get_daily_data(codestock_local, nowdate):
                     print("df length is 0: i=%d, nowcode:%s, nowname:%s " %(i,nowcode,codestock_local[i][1]))
                 continue
 
+            if debug:
+                print('before df=%s' % df)
+        
                
             cols=['date', 'code', 'open', 'price', 'high', 'low', 'volume', 'amount', 'pre_close']
             #df=df.ix[:,cols]语句表示，DataFrame的行索引不变，列索引是cols中给定的索引。
@@ -147,7 +158,7 @@ def get_daily_data(codestock_local, nowdate):
             df = df.set_index('date')
 
             if debug:
-                print(df)
+                print('before df=%s' % df)
         
             #insert datafram
             hdata_day.insert_allstock_hdatadate(df)
@@ -169,8 +180,16 @@ def get_daily_data(codestock_local, nowdate):
             df = ts.pro_bar(ts_code='603699.SH', start_date='20180101', end_date='20200205', adj='qfq', freq='D')
             hist_data=df.head(10)
             '''
+            if yesterday:
+                s_date =  (nowdate-datetime.timedelta(1)).strftime("%Y%m%d")
+                e_date =  nowdate.strftime("%Y%m%d")
+            else:
+                s_date =  '20150101'
+                e_date =  nowdate.strftime("%Y%m%d")
+
+
             #hist_data = ts.pro_bar(ts_code=stock_code_new, start_date='20200422', end_date=str(nowdate), adj='qfq', freq='D')
-            hist_data = ts.pro_bar(ts_code=stock_code_new, start_date='20150101', end_date=nowdate.strftime("%Y%m%d"), adj='qfq', freq='D')
+            hist_data = ts.pro_bar(ts_code=stock_code_new, start_date=s_date, end_date=e_date, adj='qfq', freq='D')
 
             if hist_data is None:
                 if debug:
