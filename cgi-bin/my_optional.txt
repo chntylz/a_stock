@@ -3,20 +3,24 @@ sh shangzheng
 399001 shenzheng
 399006 chuangyeban
 159994 5GETF
+512550 fushi_A50
 600352 zhejianglongsheng
 601318 zhongguopingan
-000513 lizhujituan
 600048 baolidichan
 000401 jidongshuini
-300253 weiningjiankang
 002273 shuijingguangdian
 002230 kedaxunfei
-
 300638 guanghetong
-002271 dongfangyuhong
-002304 yanghegufen
+300676 huadajiyin
+
+002463 hudiankeji
 002475 lixunjingmi
 002049 ziguangguohui
+
+300253 weiningjiankang
+000513 lizhujituan
+002271 dongfangyuhong
+002304 yanghegufen
 
 600438 tongweigufen
 600585 hailuoshuini
@@ -43,8 +47,6 @@ sh shangzheng
 600298 anqijiaomu
 
 
-300676 huadajiyin
-002463 hudiankeji
 
 300249 yimikang
 600487 hengtongguangdian

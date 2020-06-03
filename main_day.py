@@ -59,8 +59,7 @@ def get_daily_data(codestock_local, nowdate):
         if yesterday:
             maxdate = 0
 
-        #if(maxdate):
-        if(0):
+        if(maxdate):
 
 
             '''
