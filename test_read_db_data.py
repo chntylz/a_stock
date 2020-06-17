@@ -193,7 +193,8 @@ for i in range(0,stock_len):
     cond_2 = C > MA(C, 21)
     cond_3 = MA(C, 21) > REF(MA(C, 21), 1)
     cond_4 = today_p > 0.095 and yes_p > 0.095
-    if cond_1 and cond_2 and cond_3 and (cond_4 != True):
+    #if cond_1 and cond_2 and cond_3 and (cond_4 != True):
+    if cond_1 and cond_2 and cond_3 :
         draw_flag = True
         #insert into database
         dataframe_cols=['record_date','stock_code', 'stock_name', 'open', 'close', 'high', 'low', 'volume', 'p_change']
