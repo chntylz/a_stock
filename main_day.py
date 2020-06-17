@@ -5,12 +5,14 @@ import psycopg2 #使用的是PostgreSQL数据库
 import tushare as ts
 from Stocks import *
 from HData_day import *
+from HData_divided import *
 import  datetime
 
 from time import clock
 
 from common import Log
 
+from comm_generate_web_html import handle_divided
 
 
 import pandas as pd
@@ -33,6 +35,7 @@ yesterday=0
 
 stocks=Stocks("usr","usr")
 hdata_day=HData_day("usr","usr")
+hdata_divided=HData_divided("usr","usr")
 
 # stocks.db_stocks_create()#如果还没有表则需要创建
 print(stocks.db_stocks_update())#根据todayall的情况更新stocks表
@@ -40,7 +43,7 @@ print(stocks.db_stocks_update())#根据todayall的情况更新stocks表
 #hdata_day.db_hdata_date_create()
 
 
-def get_daily_data(codestock_local, nowdate):
+def get_daily_data(codestock_local, nowdate, div_df):
 
     length=len(codestock_local)
 
@@ -50,6 +53,13 @@ def get_daily_data(codestock_local, nowdate):
     for i in range(0,length):
         nowcode=codestock_local[i][0]
         #nowcode='600485'
+
+        is_divided = int(div_df[div_df['stock_code'] == nowcode]['is_divided'])
+
+        if is_divided:
+            if debug:
+                print('nowcode=%s, nowdate:%s, delete first because of divided'% (nowcode, nowdate.strftime("%Y%m%d")))
+            hdata_day.delete_data_of_stock_code(nowcode)
 
         
         maxdate=hdata_day.db_get_maxdate_of_stock(nowcode)
@@ -249,7 +259,8 @@ if __name__ == '__main__':
     hdata_day.delete_data_of_day_stock(nowdate.strftime("%Y-%m-%d")) #delete first
 
 
-    get_daily_data(codestock_local, nowdate)
+    div_df = hdata_divided.get_data_from_hdata()
+    get_daily_data(codestock_local, nowdate, div_df)
 
     #delete closed stock data according amount=0
     hdata_day.delete_amount_is_zero()

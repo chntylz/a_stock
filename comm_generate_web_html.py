@@ -4,6 +4,10 @@ import os,sys,time, datetime
 import tushare as ts
 import numpy as np
 import pandas as pd
+
+
+import time
+
 #keep 0.01 accrucy
 pd.set_option('display.float_format',lambda x : '%.2f' % x)
 
@@ -21,6 +25,9 @@ from HData_hsgt import *
 
 hsgtdata=HData_hsgt("usr","usr")
 stocks=Stocks("usr","usr")
+
+token='21dddafc47513ea46b89057b2c4edf7b44882b3e92274b431f199552'
+pro = ts.pro_api(token)
 
 
 #get basic stock info
@@ -499,3 +506,43 @@ def comm_generate_web_dataframe(images, curr_day, dict_industry):
     ret_df = ret_df.sort_values('hk_m_total', ascending=0)
  
     return ret_df
+
+
+def handle_divided(stock_code=None,
+        curr_date=None):
+
+    if stock_code[0:1] == '6':
+        stock_code_new= stock_code + '.SH'
+    else:
+        stock_code_new= stock_code + '.SZ'
+
+    df = pro.dividend(ts_code=stock_code_new, fields='ts_code,div_proc,stk_div,record_date,ex_date')
+
+    time.sleep(0.6)
+
+    #delete row where value is equal to None
+    df = df[~df.astype(str).eq('None').any(1)]
+
+    #reset index
+    df=df.reset_index(drop=True)
+
+    length = len(df)
+
+    if length is 0 :
+        return
+
+    if debug:
+        print(df.head(1))
+
+    ex_date=df['ex_date'][0]
+
+    if debug:
+        print('ex_date=%s'% (ex_date))
+
+    
+    if curr_date == ex_date:
+        return True
+    else:
+        return False
+
+

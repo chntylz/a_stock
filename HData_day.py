@@ -272,6 +272,18 @@ class HData_day(object):
 
         pass
  
+    def delete_data_of_stock_code(self, stock_code):
+        conn = psycopg2.connect(database="usr", user=self.user, password=self.password, host="127.0.0.1",
+                                port="5432")
+        cur = conn.cursor()
+        sql_temp="delete from hdata_d_table where stock_code = " + "\'" + stock_code + "\' ;"
+        cur.execute(sql_temp)
+
+        conn.commit()
+        conn.close()
+
+        pass
+ 
     #fix bug: delete zero when the stock is closed
     def delete_amount_is_zero(self):
         conn = psycopg2.connect(database="usr", user=self.user, password=self.password, host="127.0.0.1",
