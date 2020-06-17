@@ -31,7 +31,7 @@ dict_industry={}
 
 
 debug=0
-#debug=1
+debug=1
 
 from sys import argv
 # 如果执行的方式错误输出使用方法
@@ -143,15 +143,20 @@ def showImageInHTML(imageTypes,savedir):
     
     #get continuous stock_code
     last_day = get_valid_last_day(nowdate)
+
     if debug:
         print("last_day:%s, curr_day:%s curr_dir:%s" % (last_day, curr_day, curr_dir))
     
-    if os.path.exists(savedir + '/' + curr_dir ) == False:
-        print("%s not exist!!! return" % (savedir + '/' + curr_dir ))
+    real_dir = savedir + '/' + curr_dir 
+    if debug:
+        print('real_dir:%s'% real_dir)
+
+    if os.path.exists(real_dir) == False:
+        print("%s not exist!!! return" % (real_dir ))
         return
     
    
-    ret_df = comm_generate_web_dataframe(images, curr_day, dict_industry)
+    ret_df = comm_generate_web_dataframe(real_dir, images, curr_day, dict_industry)
 
     comm_handle_html_head(newfile, stock_data_dir, curr_day )
     quad_continue_handle_html_body_special(newfile, curr_day)

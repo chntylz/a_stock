@@ -453,7 +453,12 @@ def insert_industry(dict_name, key):
         dict_name[key]=dict_name[key] + 1
 
 
-def comm_generate_web_dataframe(images, curr_day, dict_industry):
+def comm_generate_web_dataframe(curr_dir, images, curr_day, dict_industry):
+    
+    txt_file = curr_dir + '/' + curr_day +'.txt'
+    
+    with open(txt_file,'w') as f:
+        f.write('\n')
 
     data_list = []
     for image in images:
@@ -470,7 +475,10 @@ def comm_generate_web_dataframe(images, curr_day, dict_industry):
         pos_s=stock_name.rfind('[')
         pos_e=stock_name.rfind(']')
         stock_name=stock_name[pos_s+1: pos_e]
-
+        
+        #save stock_code to txt_file
+        with open(txt_file,'a') as f:
+            f.write('%s \n' % stock_code)
 
         #funcat call
         T(curr_day)
