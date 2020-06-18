@@ -63,7 +63,7 @@ def hsgt_get_continuous_info(df, select):
         group_df    = group_df.reset_index(drop=True) #reset index
         max_date    = group_df.loc[0, 'record_date']
         stock_cname = group_df.loc[0, 'stock_cname']
-        percent     = group_df.loc[0, 'percent']
+        hk_pct      = group_df.loc[0, 'hk_pct']
         delta1      = group_df.loc[0, 'delta1']
         delta1_m    = group_df.loc[0, 'delta1_m']
         close       = group_df.loc[0, 'close']
@@ -94,11 +94,11 @@ def hsgt_get_continuous_info(df, select):
                 
         money_total = round(money_total,2)
         if debug:
-            print(max_date, stock_code, stock_cname, percent, close, a_pct, delta1, i, money_total)
+            print(max_date, stock_code, stock_cname, hk_pct, close, a_pct, delta1, i, money_total)
 
-        data_list.append([max_date, stock_code, stock_cname, percent, close, a_pct, delta1, delta1_m, i, money_total])  #i  is conti_day
+        data_list.append([max_date, stock_code, stock_cname, hk_pct, close, a_pct, delta1, delta1_m, i, money_total])  #i  is conti_day
 
-    data_column=['record_date', 'stock_code', 'stock_cname', 'percent', 'close', 'a_pct', 'delta1', 'delta1_m', 'conti_day', 'money_total']
+    data_column=['record_date', 'stock_code', 'stock_cname', 'hk_pct', 'close', 'a_pct', 'delta1', 'delta1_m', 'conti_day', 'money_total']
 
     ret_df = pd.DataFrame(data_list, columns=data_column)
     ret_df['m_per_day'] = ret_df.money_total / ret_df.conti_day
@@ -174,7 +174,7 @@ def comm_write_to_file(f, k, df, filename):
                 print('element_value: %s' % element_value)
                                      
             if k is -1: # normal case
-                #data_column=['record_date', 'stock_code', 'stock_cname', 'percent', 'close', 'delta1', 'delta1_m', 'conti_day', 'money_total']
+                #data_column=['record_date', 'stock_code', 'stock_cname', 'hk_pct', 'close', 'delta1', 'delta1_m', 'conti_day', 'money_total']
                 if(j == 0): 
                     f.write('           <a href="%s" target="_blank"> %s[fina]</a>\n'%(fina_url, element_value))
                 elif(j == 1): 
@@ -199,8 +199,8 @@ def comm_write_to_file(f, k, df, filename):
                         f.write('           <a> %s</a>\n'%(element_value))
             
             else: #special case for get red color column
-                #set color to delta column, 6 is the position of percent
-                #record_date,  stock_code,  stock_cname, share_holding,   close, a_pct,  percent,  delta1,  delta2,  delta3,  delta4,  delta5,  delta10, delta21, delta120,    delta1_m,    delta2_m,  delta3_m, delta4_m, delta5_m,    delta10_m,   delta21_m
+                #set color to delta column, 6 is the position of hk_pct
+                #record_date,  stock_code,  stock_cname, share_holding,   close, a_pct,  hk_pct,  delta1,  delta2,  delta3,  delta4,  delta5,  delta10, delta21, delta120,    delta1_m,    delta2_m,  delta3_m, delta4_m, delta5_m,    delta10_m,   delta21_m
                 if (j == k + 6):
                     f.write('           <a style="color: #FF0000"> %s</a>\n'%(element_value))
                 else:
@@ -302,7 +302,7 @@ def comm_handle_html_body(filename, all_df, select='topy10'):
             f.write('<p style="color: #FF0000"> delta1_m sum is: %.2fw rmb </p>\n'%(daily_net))
             if select is 'top10':
 
-                delta_list = ['percent', 'delta1', 'delta1_m', 'delta2', 'delta3', 'delta4',  'delta5', 'delta10', 'delta21', 'delta120', 'delta2_m',    'delta3_m',   'delta4_m', 'delta5_m', 'delta10_m', 'delta21_m']
+                delta_list = ['hk_pct', 'delta1', 'delta1_m', 'delta2', 'delta3', 'delta4',  'delta5', 'delta10', 'delta21', 'delta120', 'delta2_m',    'delta3_m',   'delta4_m', 'delta5_m', 'delta10_m', 'delta21_m']
                 lst_len = len(delta_list)
                 for k in range(0, lst_len):
                     f.write('           <p style="color: #FF0000">------------------------------------top10 order by %s desc---------------------------------------------- </p>\n'%(delta_list[k]))

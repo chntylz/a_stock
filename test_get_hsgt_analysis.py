@@ -80,21 +80,21 @@ def hsgt_handle_all_data(df):
     
     all_df['percent_tmp'] = all_df['percent']
     del all_df['percent']
-    all_df['percent'] = all_df['percent_tmp']
+    all_df['hk_pct'] = all_df['percent_tmp']
     del all_df['percent_tmp']
 
-    all_df['delta1']  = all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-1))    
+    all_df['delta1']  = all_df.groupby('stock_code')['hk_pct'].apply(lambda i:i.diff(-1))    
     all_df['delta1_share'] = all_df.groupby('stock_code')['share_holding'].apply(lambda i:i.diff(-1))
     all_df['delta1_m'] = all_df['close'] * all_df['delta1_share'] / 10000;
     del all_df['delta1_share']
 
-    all_df['delta2']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-2))                                                                                                                  
-    all_df['delta3']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-3))
-    all_df['delta4']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-4))
-    all_df['delta5']  =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-5))
-    all_df['delta10'] =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-10))
-    all_df['delta21'] =all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-21))
-    all_df['delta120']=all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-120))
+    all_df['delta2']  =all_df.groupby('stock_code')['hk_pct'].apply(lambda i:i.diff(-2))                                                                                                                  
+    all_df['delta3']  =all_df.groupby('stock_code')['hk_pct'].apply(lambda i:i.diff(-3))
+    all_df['delta4']  =all_df.groupby('stock_code')['hk_pct'].apply(lambda i:i.diff(-4))
+    all_df['delta5']  =all_df.groupby('stock_code')['hk_pct'].apply(lambda i:i.diff(-5))
+    all_df['delta10'] =all_df.groupby('stock_code')['hk_pct'].apply(lambda i:i.diff(-10))
+    all_df['delta21'] =all_df.groupby('stock_code')['hk_pct'].apply(lambda i:i.diff(-21))
+    all_df['delta120']=all_df.groupby('stock_code')['hk_pct'].apply(lambda i:i.diff(-120))
     
 
     max_number=21
@@ -141,7 +141,7 @@ def hsgt_handle_html_special(filename):
         f.write('<p style="color: #FF0000">     所有境外投资者对单个上市公司A股的持股比例总和，不得超过该上市公司股份总数的30% </p>\n')
         f.write('<p style="color: #FF0000"> ----------------------------------------------------------------------------------------</p>\n')
 
-        f.write('<p style="color: #FF0000"> delta1: delta percent of 1 day </p>\n')
+        f.write('<p style="color: #FF0000"> delta1: delta hk_pct of 1 day </p>\n')
         f.write('<p style="color: #FF0000"> delta1_m: delta money of 1 day, delta share_holding * close </p>\n')
         
 
