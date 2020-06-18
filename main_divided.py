@@ -43,19 +43,21 @@ def get_daily_data(codestock_local, nowdate):
         nowcode=codestock_local[i][0]
         #nowcode='600485'
 
-        if handle_divided(nowcode, nowdate.strftime("%Y%m%d")):
+
+        is_div, div_value = handle_divided(nowcode, nowdate.strftime("%Y%m%d"))
+        if is_div:
             is_divided = 1
         else:
             is_divided = 0
         
         if debug:
-            print('nowcode=%s, nowdate:%s, it is divided=%d'% (nowcode, nowdate.strftime("%Y%m%d"), is_divided))
+            print('nowcode=%s, nowdate:%s, it is divided=%d, div_value=[%d/100]' % (nowcode, nowdate.strftime("%Y%m%d"), is_divided, div_value*100))
 
-        data_list.append([nowdate, nowcode, is_divided])
+        data_list.append([nowdate, nowcode, is_divided, div_value])
 
 
     #handle hist_data
-    data_column = ['datetime', 'stock_code', 'is_divided']
+    data_column = ['datetime', 'stock_code', 'is_divided', 'div_value']
     new_data =  pd.DataFrame(data_list, columns=data_column)
 
     hist_data = new_data.set_index('datetime')

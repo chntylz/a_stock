@@ -39,7 +39,8 @@ class HData_divided(object):
                 create table hdata_divided(
                     record_date     date,
                     stock_code      varchar,
-                    is_divided      float
+                    is_divided      float,
+                    div_value       float
                     );
                 alter table hdata_divided add primary key(stock_code,record_date);
                 ''')
@@ -54,7 +55,7 @@ class HData_divided(object):
         conn = psycopg2.connect(database="usr", user=self.user, password=self.password, host="127.0.0.1",
                                 port="5432")
 
-        data_format = " record_date, stock_code, is_divided"
+        data_format = " record_date, stock_code, is_divided, div_value"
 
         t1=clock()
 

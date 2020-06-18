@@ -519,6 +519,9 @@ def comm_generate_web_dataframe(curr_dir, images, curr_day, dict_industry):
 def handle_divided(stock_code=None,
         curr_date=None):
 
+    is_div = False
+    div_value = 0
+
     if stock_code[0:1] == '6':
         stock_code_new= stock_code + '.SH'
     else:
@@ -536,21 +539,23 @@ def handle_divided(stock_code=None,
 
     length = len(df)
 
-    if length is 0 :
-        return
+    if length == 0 :
+        return is_div, div_value
 
     if debug:
         print(df.head(1))
 
     ex_date=df['ex_date'][0]
+    div_value=df['stk_div'][0] 
 
     if debug:
         print('ex_date=%s'% (ex_date))
 
     
     if curr_date == ex_date:
-        return True
+        is_div = True
     else:
-        return False
+        is_div = False
 
+    return is_div, div_value
 
