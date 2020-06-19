@@ -109,12 +109,12 @@ def hsgt_get_day_item_from_json(file_path):
 
             list_tmp.append([shgt_date, shgt_code, shgt_cname, shgt_holding, shgt_percent, shgt_open, shgt_close, shgt_high, shgt_low, shgt_volume])
         else:
-            print('############## daily data is null!!! ##############')
+            print('############## code:%s, name=%s, daily data is null!!! ##############' % (shgt_code, shgt_cname))
 
     if debug:
         print(list_tmp)
 
-    dataframe_cols = ['record_date', 'stock_code','shgt_cname', 'share_holding', 'percent', 'open', 'close', 'high', 'low', 'volume']
+    dataframe_cols = ['record_date', 'stock_code','shgt_cname', 'share_holding', 'hk_pct', 'open', 'close', 'high', 'low', 'volume']
 
     df = pd.DataFrame(list_tmp, columns=dataframe_cols)
     index =  df["record_date"]
