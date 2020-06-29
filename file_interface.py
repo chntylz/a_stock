@@ -104,3 +104,21 @@ def check_input_parameter():
     return script_name, para1
 
 
+
+    #gold cross, return 1
+    #dead cross, return -1
+    #others, return 0    
+def macd_cross(dif, dea):
+    ret = 0 
+    if len(dif) < 2 or len(dea) < 2:
+        print('###error, dif len < 2')
+        return ret
+    if dif[-1] > dea[-1] and dif[-2] <= dea[-2]:
+        ret = 1
+    if dif[-1] < dea[-1] and dif[-2] >= dea[-2]:
+        ret = -1
+    #print('macd_cross ret=%d'% ret)
+    return ret
+
+
+

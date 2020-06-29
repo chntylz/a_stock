@@ -32,6 +32,7 @@ debug=0
 #debug=1
 
 yesterday=0
+#yesterday=1
 
 stocks=Stocks("usr","usr")
 hdata_day=HData_day("usr","usr")
@@ -55,8 +56,9 @@ def get_daily_data(codestock_local, nowdate, div_df):
         #nowcode='600485'
 
         is_divided = int(div_df[div_df['stock_code'] == nowcode]['is_divided'])
+        div_value  = int(div_df[div_df['stock_code'] == nowcode]['div_value'] * 100)
 
-        if is_divided:
+        if is_divided and div_value:
             if debug:
                 print('nowcode=%s, nowdate:%s, delete first because of divided'% (nowcode, nowdate.strftime("%Y%m%d")))
             hdata_day.delete_data_of_stock_code(nowcode)
