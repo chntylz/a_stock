@@ -9,18 +9,19 @@ sh shangzheng
 603236 yiyuantongxin
 
 600352 zhejianglongsheng
-601318 zhongguopingan
-600048 baolidichan
-000401 jidongshuini
 002273 shuijingguangdian
 002230 kedaxunfei
 300638 guanghetong
 300676 huadajiyin
+603160 huidingkeji
 
 002572 suofeiya
 300603 li'angjishu
 603113 jin'nengkeji
 
+601318 zhongguopingan
+600048 baolidichan
+000401 jidongshuini
 
 002463 hudiankeji
 002475 lixunjingmi
