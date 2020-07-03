@@ -22,9 +22,11 @@ set_data_backend(AaronDataBackend())
 import psycopg2
 from Stocks import *
 from HData_hsgt import *
+from HData_dailybasic import *
 
 hsgtdata=HData_hsgt("usr","usr")
 stocks=Stocks("usr","usr")
+db_daily=HData_dailybasic("usr", "usr")
 
 token='21dddafc47513ea46b89057b2c4edf7b44882b3e92274b431f199552'
 pro = ts.pro_api(token)
@@ -496,20 +498,26 @@ def comm_generate_web_dataframe(curr_dir, images, curr_day, dict_industry):
         all_df = hsgtdata.get_data_from_hdata(stock_code=stock_code, end_date=curr_day, limit=60)
         hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total = comm_handle_hsgt_data(all_df)
 
+        total_mv_df = db_daily.get_data_from_hdata(stock_code=stock_code, limit=1)
+        #市值，单位：亿
+        total_mv = total_mv_df['total_mv'][0]/10000 
 
         industry_name = basic_df.loc[stock_code]['industry']
         insert_industry(dict_industry, industry_name)
 
 
-        data_list.append([curr_day, stock_code, stock_name, close_p, C.value, image, hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total ])
+        data_list.append([curr_day, stock_code, stock_name, close_p, C.value, image, hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total, total_mv ])
 
-    data_column = ['cur_date', 'code', 'name', 'a_pct', 'close', 'image_url', 'hk_date', 'hk_share', 'hk_pct', 'hk_delta1', 'hk_deltam', 'conti_day', 'hk_m_total']
+    data_column = ['cur_date', 'code', 'name', 'a_pct', 'close', 'image_url', 'hk_date', 'hk_share', 'hk_pct', 'hk_delta1', 'hk_deltam', 'conti_day', 'hk_m_total', 'total_mv']
     ret_df=pd.DataFrame(data_list, columns=data_column)
     ret_df['m_per_day'] = ret_df.hk_m_total / ret_df.conti_day
     ret_df = ret_df.fillna(0)
     ret_df=ret_df.round(2)
     if debug:
         print(ret_df)
+
+    data_column = ['cur_date', 'code', 'name', 'a_pct', 'close', 'image_url', 'hk_date', 'hk_share', 'hk_pct', 'hk_delta1', 'hk_deltam', 'conti_day', 'hk_m_total', 'm_per_day', 'total_mv']
+    ret_df=ret_df.loc[:,data_column]
 
     ret_df = ret_df.sort_values('hk_m_total', ascending=0)
  
