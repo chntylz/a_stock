@@ -39,6 +39,15 @@ basic_df=stocks.get_all_data()
 debug=0
 #debug=1
 
+def comm_get_total_mv(stock_code):
+    total_mv_df = db_daily.get_data_from_hdata(stock_code=stock_code, limit=1)
+    #市值，单位：亿
+    total_mv = total_mv_df['total_mv'][0]/10000 
+
+    return round(total_mv,2)
+
+
+
   
 ############################################################################################################
 
@@ -130,6 +139,11 @@ def comm_write_headline_column(f, df):
             f.write('           <a> %s</a>\n'%(list(df)[j]))
         f.write('        </td>\n')
 
+    #add total_mv
+    f.write('        <td>\n')
+    f.write('           <a> total_mv </a>\n')
+    f.write('        </td>\n')
+
     #add industry
     f.write('        <td>\n')
     f.write('           <a> _industry_ </a>\n')
@@ -217,10 +231,16 @@ def comm_write_to_file(f, k, df, filename):
             
                                 
             f.write('        </td>\n')
+        #add total_mv
+        f.write('        <td>\n')
+        f.write('           <a> %s </a>\n' %  (comm_get_total_mv(tmp_stock_code)))
+        f.write('        </td>\n')
+
         #add industry
         f.write('        <td>\n')
         f.write('           <a> %s </a>\n' % (basic_df.loc[tmp_stock_code]['industry']))
         f.write('        </td>\n')
+
         f.write('    </tr>\n')
 
     f.write('</table>\n')
@@ -498,9 +518,7 @@ def comm_generate_web_dataframe(curr_dir, images, curr_day, dict_industry):
         all_df = hsgtdata.get_data_from_hdata(stock_code=stock_code, end_date=curr_day, limit=60)
         hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total = comm_handle_hsgt_data(all_df)
 
-        total_mv_df = db_daily.get_data_from_hdata(stock_code=stock_code, limit=1)
-        #市值，单位：亿
-        total_mv = total_mv_df['total_mv'][0]/10000 
+        total_mv =  comm_get_total_mv(stock_code)
 
         industry_name = basic_df.loc[stock_code]['industry']
         insert_industry(dict_industry, industry_name)
