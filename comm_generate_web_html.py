@@ -42,7 +42,10 @@ debug=0
 def comm_get_total_mv(stock_code):
     total_mv_df = db_daily.get_data_from_hdata(stock_code=stock_code, limit=1)
     #市值，单位：亿
-    total_mv = total_mv_df['total_mv'][0]/10000 
+    if len(total_mv_df) > 0:
+        total_mv = total_mv_df['total_mv'][0]/10000 
+    else:
+        total_mv = 0
 
     return round(total_mv,2)
 

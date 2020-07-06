@@ -3,6 +3,10 @@
 import os,sys,time, datetime
 import cgi
 
+from HData_dailybasic import *
+
+db_daily=HData_dailybasic("usr", "usr")
+
 nowdate=datetime.datetime.now().date()
 str_date= nowdate.strftime("%Y-%m-%d")
 
@@ -112,6 +116,18 @@ def cgi_handle_html_head(title_name, refresh=0):
     print('\n')
     print('\n')
 
+
+
+def comm_get_total_mv(stock_code):
+    total_mv_df = db_daily.get_data_from_hdata(stock_code=stock_code, limit=1)
+    if (len(total_mv_df)) > 0:
+        total_mv = total_mv_df['total_mv'][0]/10000 
+    else:
+        total_mv = 0
+
+    return round(total_mv,2)
+
+
 def cgi_write_headline_column(df):
 
     print('    <tr>\n')
@@ -121,6 +137,11 @@ def cgi_write_headline_column(df):
         print('        <th>\n')
         print('        <a> %s</a>\n'%(list(df)[j]))
         print('        </th>\n')
+
+    #add total_mv
+    print('        <td>\n')
+    print('           <a> total_mv </a>\n')
+    print('        </td>\n')
 
     print('    </tr>\n')
 
@@ -173,6 +194,13 @@ def cgi_write_to_file( df):
                      
                                 
             print('        </td>\n')
+
+        #add total_mv
+        print('        <td>\n')
+        print('           <a> %s </a>\n' %  (comm_get_total_mv(tmp_stock_code)))
+        print('        </td>\n')
+
+
         print('    </tr>\n')
 
     print('</table>\n')
