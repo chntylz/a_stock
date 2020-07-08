@@ -78,14 +78,20 @@ def time_is_equal(time1,time2):
     return (t1 == t2)
 
 
+def is_national_holiday(date='20200707'):
+    national_holiday = ['20190913','20190914', '20191002','20191003','20191004', '20191005','20191007', '20200101', '20200124', '20200127', '20200128', '20200129', '20200130', '20200131', '20200406', '20200501', '20200504', '20200505', '20200625', '20200626', '20201001', '20201002','20201001','20201005','20201006','20201007','20201008']
+    if date in national_holiday:
+        return True
+    else:
+        return False
 
-
-def get_work_day(curr_date):
+#curr_date=datetime.datetime.now().date()
+def is_work_day(curr_date):
     weekday=curr_date.strftime("%w")
-    if weekday in ['6', '0']:
-        return 0
+    if weekday in ['6', '0'] or is_national_holiday(curr_date.strftime("%Y%m%d")):
+        return False
     else: 
-        return 1
+        return True
 
 
 def check_input_parameter():
@@ -122,3 +128,4 @@ def macd_cross(dif, dea):
 
 
 
+    

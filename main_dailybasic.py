@@ -55,7 +55,7 @@ if __name__ == '__main__':
     nowdate=nowdate-datetime.timedelta(int(para1))
 
     #check_work_day
-    if get_work_day(nowdate) is 0:
+    if is_work_day(nowdate) :
         print('%s is holiday, exit' % nowdate.strftime("%Y-%m-%d") )
         exit(1)
 
