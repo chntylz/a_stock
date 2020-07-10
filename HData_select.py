@@ -8,6 +8,8 @@ from time import clock
 import sys
 import os
 
+debug=0
+#debug=1
 
 class HData_select(object):
     def __init__(self,user,password):
@@ -213,3 +215,80 @@ class HData_select(object):
         conn.close()
 
         pass
+
+
+    def get_data_from_hdata(self, stock_code=None,
+                        start_date=None,
+                        end_date=None,
+                        limit=0):#将数据库中的数据读取并转为dataframe格式返回
+        conn = psycopg2.connect(database="usr", user=self.user, password=self.password, host="127.0.0.1",
+                                port="5432")
+        cur = conn.cursor()
+        and_flag = False
+
+        sql_temp = "select * from hdata_s_table"
+
+        if stock_code is None and start_date is None and end_date is None:
+            pass
+        else:
+            sql_temp += " where "
+
+        if stock_code is None:
+            pass
+        else:
+            sql_temp += " stock_code="+"\'"+stock_code+"\'"
+            and_flag |= True
+
+        if start_date is None:
+            pass
+        else:
+            if and_flag:
+                sql_temp += " and record_date >="+"\'"+start_date+"\'"
+            else:
+                sql_temp += " record_date >="+"\'"+start_date+"\'"
+
+            and_flag |= True
+
+
+        if end_date is None:
+            pass
+        else:
+            if and_flag:
+                sql_temp += " and record_date <="+"\'"+end_date+"\'"
+            else:
+                sql_temp += " record_date <="+"\'"+end_date+"\'"
+
+
+        sql_temp += " order by record_date desc "
+
+        if limit == 0:
+            pass
+        else:
+            sql_temp += " LIMIT "+"\'"+str(limit)+"\'"
+
+
+        sql_temp += ";"
+
+        if debug:
+            print("get_data_from_hdata, sql_temp:%s" % sql_temp)
+
+
+
+        #select * from (select * from hdata_hsgt_table where stock_code='000922' order by record_date desc LIMIT 5) as tbl order by record_date asc;
+        cur.execute(sql_temp)
+        rows = cur.fetchall()
+
+        conn.commit()
+        conn.close()
+
+        dataframe_cols=[tuple[0] for tuple in cur.description]#列名和数据库列一致
+        df = pd.DataFrame(rows, columns=dataframe_cols)
+
+        if debug:
+            print(type(df))
+            print(df.head(2))
+
+        return df
+
+        pass
+

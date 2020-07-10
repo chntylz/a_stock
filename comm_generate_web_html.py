@@ -23,10 +23,14 @@ import psycopg2
 from Stocks import *
 from HData_hsgt import *
 from HData_dailybasic import *
+from HData_select import *
+
+from file_interface import *
 
 hsgtdata=HData_hsgt("usr","usr")
 stocks=Stocks("usr","usr")
 db_daily=HData_dailybasic("usr", "usr")
+sdata=HData_select("usr","usr")
 
 token='21dddafc47513ea46b89057b2c4edf7b44882b3e92274b431f199552'
 pro = ts.pro_api(token)
@@ -167,7 +171,45 @@ def comm_handle_link(stock_code):
 
     fina_url = xueqiu_url + '/detail#/ZYCWZB'    
     return xueqiu_url, hsgt_url, fina_url
+
+#image_name='2019-09-23-1-002436-兴森科技-814-878-891-796-840.png'
+def get_conti_day_from_s_db(image_name):
     
+    i = 1
+    j = 1
+
+    if len(image_name) < 19:
+        return 0
+
+    stock_code = image_name[13:19]
+    curr_date = image_name[0:10]
+    
+    if debug:
+        print('get_conti_day_from_s_db(): curr_date=%s, stock_code=%s' % (curr_date, stock_code) )
+
+    now_date = datetime.datetime.strptime(curr_date,'%Y-%m-%d')
+
+    while True:
+        s_date = (now_date - datetime.timedelta(int(i))).strftime("%Y-%m-%d")
+        e_date = (now_date - datetime.timedelta(int(i-1))).strftime("%Y-%m-%d")
+        select_df = sdata.get_data_from_hdata(stock_code=stock_code, start_date=s_date, end_date=e_date, limit=1)
+        if debug:
+            print('i = %d,s_date=%s select_df:' % (i, s_date))
+            print('%s' % select_df)
+
+        #todo
+        if is_work_day(datetime.datetime.strptime(s_date,'%Y-%m-%d')):
+            if len(select_df) > 0:
+                j = j + 1
+            else:
+            #it already raise 2 days, so it should be plused with 1
+                return j  
+        else:
+            if debug:
+                print("%s is holiday" % s_date)
+
+        i = i+1
+    pass
     
 def comm_write_to_file(f, k, df, filename):
     f.write('<table class="gridtable">\n')
@@ -205,15 +247,20 @@ def comm_write_to_file(f, k, df, filename):
                 elif(j == 8):
                     f.write('           <a> %.2f</a>\n'%(element_value))
                 else:
+                    #element_value=2019-09-23-1-002436-兴森科技-814-878-891-796-840.png
                     if 'png' in str(element_value):
+                        conti_day = str(get_conti_day_from_s_db(str(element_value)))
+                        if debug:
+                            print('basic 2days up: conti_day=%s' % conti_day)
+
                         if 'buy' in str(element_value) and 'bottom' in str(element_value):#zig+bottom
-                            f.write('           <a href="%s" target="_blank"> %s</a>\n'%( element_value, 'zig+b'))
+                            f.write('           <a href="%s" target="_blank"> %s</a>\n'%( element_value, conti_day + 'zig+b'))
                         elif 'buy' in str(element_value):#zig
-                            f.write('           <a href="%s" target="_blank"> %s</a>\n'%( element_value, 'zig'))
+                            f.write('           <a href="%s" target="_blank"> %s</a>\n'%( element_value, conti_day + 'zig'))
                         elif 'bottom' in str(element_value):#bottom
-                            f.write('           <a href="%s" target="_blank"> %s</a>\n'%( element_value, 'bottom'))
+                            f.write('           <a href="%s" target="_blank"> %s</a>\n'%( element_value, conti_day + 'bottom'))
                         else:
-                            f.write('           <a href="%s" target="_blank"> %s</a>\n'%( element_value, '0'))
+                            f.write('           <a href="%s" target="_blank"> %s</a>\n'%( element_value, conti_day ))
                     else:
                         f.write('           <a> %s</a>\n'%(element_value))
             
@@ -513,7 +560,7 @@ def comm_generate_web_dataframe(curr_dir, images, curr_day, dict_industry):
         open_p = round (open_p.value, 4)
         open_jump=open_p - 0.02
         if debug:
-            print(str(nowdate), stock_code, O, H, L, C, open_p)
+            print(str(curr_day), stock_code, O, H, L, C, open_p)
 
         close_p = (C - pre_close)/pre_close
         close_p = round (close_p.value, 4) * 100
