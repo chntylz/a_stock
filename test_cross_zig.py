@@ -116,6 +116,8 @@ print("start_time: %s, end_time: %s" % (start_time, end_time))
 debug = 0
 debug = 0
 
+clean_flag = True
+
 #define canvas out of loop
 plt.style.use('bmh')
 fig = plt.figure(figsize=(24, 30),dpi=80)
@@ -194,6 +196,14 @@ for i in range(0,stock_len):
 
     save_dir = 'stock_data'
     sub_name = '-zig'
+
+     #################### delete begin ##################
+     if clean_flag:
+         clean_flag = False
+         remove_dir(nowdate, save_dir, sub_name)
+     #################### delete end ##################
+
+
     plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name) 
     ################################################################
 

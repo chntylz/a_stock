@@ -18,6 +18,22 @@ debug=0
 nowdate=datetime.datetime.now().date()
 str_date= nowdate.strftime("%Y-%m-%d")
 
+def is_work_time():
+    ret = False
+    s_time = datetime.datetime.strptime(str(datetime.datetime.now().date())+'9:25', '%Y-%m-%d%H:%M')
+    e_time = datetime.datetime.strptime(str(datetime.datetime.now().date())+'15:10', '%Y-%m-%d%H:%M')
+
+    n_time = datetime.datetime.now()
+
+    if n_time > s_time and n_time < e_time:
+        ret = True
+    else:
+        ret = False
+
+    return ret
+
+
+
 def get_stock_info(file_name):
     stock_list = []
     with open(file_name) as f:
@@ -45,21 +61,27 @@ def show_realdata():
     my_list = get_stock_info(file_name)
     if debug:
         print(my_list)
+    length=len(my_list)
+    
+    stock_list = []
 
-    for i in range(len(my_list)):
+    for i in range(length):
+        stock_list.append(my_list[i][0])
 
+    real_df = ts.get_realtime_quotes(stock_list)
+
+    for i in range(length):
         new_date        = str_date
         new_code        = my_list[i][0]
         new_name        = my_list[i][1]
         if debug:
             print("new_code:%s" % new_code)
         
-        df = ts.get_realtime_quotes(new_code)
-        new_pre_price   = df['pre_close'][0]
-        new_price       = df['price'][0]
+        new_pre_price   = real_df['pre_close'][i]
+        new_price       = real_df['price'][i]
         new_percent     = ((float(new_price) - float(new_pre_price)) / float(new_pre_price)) * 100
         new_percent     = round (new_percent, 2)
-       
+      
         hsgt_df = hdata_hsgt.get_data_from_hdata(stock_code=new_code, limit=60)
         
 

@@ -5,8 +5,9 @@
 import time
 import datetime
 
-import os,sys
+import os,sys,os.path
 from sys import argv
+import shutil
 
 #把时间戳转化为时间: 1479264792 to 2016-11-16 10:53:12
 def TimeStampToTime(timestamp):
@@ -144,4 +145,21 @@ def macd_cross(dif, dea):
 
 
 
+
+def remove_dir(nowdate, save_dir, sub_name):
+
+    cmd = save_dir + '/' + nowdate.strftime("%Y-%m-%d-%w") + sub_name
+    print('%s'%cmd)
+
+    if os.path.exists(cmd):
+        shutil.rmtree(cmd)
+
+    #/var/www/html/stock_data/
+    cmd = '/var/www/html/' + save_dir + '/' + nowdate.strftime("%Y-%m-%d-%w") + sub_name
+    print('%s'%cmd)
+
+    if os.path.exists(cmd):
+        shutil.rmtree(cmd)
+
+    pass
 

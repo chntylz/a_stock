@@ -80,6 +80,7 @@ sdata=HData_select("usr","usr")
 #debug switch
 debug = 0
 within_days = 8
+clean_flag = True
 
 
 #return the day(j) and cross_flag(true or false) if P is true during with_days, P is cross(5, 30), etc
@@ -289,6 +290,15 @@ def quadrilateral_algorythm(codestock_local, nowdate, para1):
 
         save_dir = 'stock_data'
         sub_name = '-quad'
+
+        #################### delete begin ##################
+        global clean_flag
+        if clean_flag:
+            clean_flag = False
+            remove_dir(nowdate, save_dir, sub_name)
+        #################### delete end ##################
+
+
         plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name) 
         ################################################################
 

@@ -38,7 +38,7 @@ import mplfinance as mpf
 #time
 import datetime as datetime
 import time
-import os
+import os, os.path
 import sys
 
 #talib
@@ -116,6 +116,8 @@ print("start_time: %s, end_time: %s" % (start_time, end_time))
 #debug switch
 debug = 0
 #debug = 1
+
+clean_flag = True
 
 #define canvas out of loop
 plt.style.use('bmh')
@@ -259,13 +261,19 @@ for i in range(0,stock_len):
     #check need to generate png 
     if draw_flag == False:
         continue
-    
+
 
     save_dir = 'stock_data'
     sub_name = ''
+
+    #################### delete begin ##################
+    if clean_flag:
+        clean_flag = False
+        remove_dir(nowdate, save_dir, sub_name)
+    #################### delete end ##################
+    
     plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name) 
     ################################################################
-
 
 shell_cmd='cp -rf stock_data/' + nowdate.strftime("%Y-%m-%d") +'*'  + ' /var/www/html/stock_data' +'/'
 os.system(shell_cmd)
