@@ -194,15 +194,14 @@ def get_conti_day_from_s_db(image_name):
         e_date = (now_date - datetime.timedelta(int(i-1))).strftime("%Y-%m-%d")
         select_df = sdata.get_data_from_hdata(stock_code=stock_code, start_date=s_date, end_date=e_date, limit=1)
         if debug:
-            print('i = %d,s_date=%s select_df:' % (i, s_date))
+            print('i = %d,s_date=%s, e_date=%s select_df:' % (i, e_date, s_date))
             print('%s' % select_df)
 
         #todo
-        if is_work_day(datetime.datetime.strptime(s_date,'%Y-%m-%d')):
+        if is_work_day(datetime.datetime.strptime(e_date,'%Y-%m-%d')):
             if len(select_df) > 0:
                 j = j + 1
             else:
-            #it already raise 2 days, so it should be plused with 1
                 return j  
         else:
             if debug:

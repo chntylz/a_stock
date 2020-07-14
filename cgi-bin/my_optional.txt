@@ -4,28 +4,35 @@ sh shangzheng
 399006 chuangyeban
 159994 5GETF
 512550 fushi_A50
+
+603160 huidingkeji
+300603 li'angjishu
+002230 kedaxunfei
+601318 zhongguopingan
+002106 laibaogaoke
+
+300256 xingxingkeji
+300556 silushijue
+603313 mengbaihe
+
+600352 zhejianglongsheng
+002273 shuijingguangdian
+300638 guanghetong
+002475 lixunjingmi
+002049 ziguangguohui
+300676 huadajiyin
+
+002572 suofeiya
+603113 jin'nengkeji
+
 603717 tianyugufen
 002050 sanhuazhikong
 603236 yiyuantongxin
 
-600352 zhejianglongsheng
-002273 shuijingguangdian
-002230 kedaxunfei
-300638 guanghetong
-300676 huadajiyin
-603160 huidingkeji
-
-002572 suofeiya
-300603 li'angjishu
-603113 jin'nengkeji
-
-601318 zhongguopingan
 600048 baolidichan
 000401 jidongshuini
 
 002463 hudiankeji
-002475 lixunjingmi
-002049 ziguangguohui
 
 300253 weiningjiankang
 000513 lizhujituan
