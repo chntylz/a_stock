@@ -94,6 +94,22 @@ def is_work_day(curr_date):
         return True
 
 
+def is_work_time():
+    ret = False
+    s_time = datetime.datetime.strptime(str(datetime.datetime.now().date())+'9:25', '%Y-%m-%d%H:%M')
+    e_time = datetime.datetime.strptime(str(datetime.datetime.now().date())+'15:10', '%Y-%m-%d%H:%M')
+
+    n_time = datetime.datetime.now()
+
+    if n_time > s_time and n_time < e_time:
+        ret = True
+    else:
+        ret = False
+
+    return ret
+
+
+
 def check_input_parameter():
 # 如果执行的方式错误输出使用方法
     USAGE = '''
@@ -128,4 +144,4 @@ def macd_cross(dif, dea):
 
 
 
-    
+

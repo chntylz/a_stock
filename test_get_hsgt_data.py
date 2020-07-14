@@ -163,9 +163,9 @@ def hsgt_get_all_data():
 
         position=tmp_file.rfind('.json.gz')
         curr_date=tmp_file[position-8:position]
-        if debug:
-            print("curr_date %s < latest_date:%s"%(curr_date, latest_date))
         result=compare_time(curr_date, latest_date)
+        if debug:
+            print("result=%s, curr_date %s < latest_date:%s"%(result, curr_date, latest_date))
 
         if result is False: 
             #insert data into hdata_hsgt_table

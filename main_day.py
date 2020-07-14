@@ -32,7 +32,6 @@ debug=0
 #debug=1
 
 yesterday=0
-#yesterday=1
 
 stocks=Stocks("usr","usr")
 hdata_day=HData_day("usr","usr")
@@ -191,8 +190,8 @@ def get_daily_data(codestock_local, nowdate, div_df):
             df = ts.pro_bar(ts_code='603699.SH', start_date='20180101', end_date='20200205', adj='qfq', freq='D')
             hist_data=df.head(10)
             '''
-            if yesterday:
-                s_date =  (nowdate-datetime.timedelta(1)).strftime("%Y%m%d")
+            if yesterday > 0:
+                s_date =  (nowdate-datetime.timedelta(yesterday)).strftime("%Y%m%d")
                 e_date =  nowdate.strftime("%Y%m%d")
             else:
                 s_date =  '20150101'
@@ -247,8 +246,12 @@ if __name__ == '__main__':
     
     cript_name, para1 = check_input_parameter()
 
+    
     t1 = clock()
     start_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+
+    if int(para1) > 0:
+        yesterday = int(para1)
 
     nowdate=datetime.datetime.now().date()
     nowdate=nowdate-datetime.timedelta(int(para1))
