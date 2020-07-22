@@ -272,6 +272,9 @@ def comm_get_hsgt_continous_info(df):
 
     money_total = round(money_total, 2)
 
+    if money_total < 0:
+        i = -i
+
     return i, money_total
  
 

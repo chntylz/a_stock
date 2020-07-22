@@ -378,6 +378,7 @@ def comm_handle_html_body(filename, all_df, select='topy10'):
                 for k in range(0, lst_len):
                     f.write('           <p style="color: #FF0000">------------------------------------top10 order by %s desc---------------------------------------------- </p>\n'%(delta_list[k]))
                     delta_tmp = hsgt_daily_sort(daily_df, delta_list[k])
+                    #top20
                     delta_tmp = delta_tmp.head(20)
                     comm_write_to_file(f, k, delta_tmp, filename)
 

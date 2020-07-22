@@ -53,9 +53,13 @@ def get_daily_data(codestock_local, nowdate, div_df):
     for i in range(0,length):
         nowcode=codestock_local[i][0]
         #nowcode='600485'
-
-        is_divided = int(div_df[div_df['stock_code'] == nowcode]['is_divided'])
-        div_value  = int(div_df[div_df['stock_code'] == nowcode]['div_value'] * 100)
+        
+        if len(div_df) > 0:
+            is_divided = int(div_df[div_df['stock_code'] == nowcode]['is_divided'])
+            div_value  = int(div_df[div_df['stock_code'] == nowcode]['div_value'] * 100)
+        else:
+            is_divided = 0
+            div_value  = 0
 
         if is_divided and div_value:
             if debug:

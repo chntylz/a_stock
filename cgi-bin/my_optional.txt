@@ -5,8 +5,9 @@ sh shangzheng
 159994 5GETF
 512550 fushi_A50
 
-603160 huidingkeji
+603236 yiyuantongxin
 300603 li'angjishu
+603160 huidingkeji
 002230 kedaxunfei
 601318 zhongguopingan
 002106 laibaogaoke
@@ -27,7 +28,6 @@ sh shangzheng
 
 603717 tianyugufen
 002050 sanhuazhikong
-603236 yiyuantongxin
 
 600048 baolidichan
 000401 jidongshuini
