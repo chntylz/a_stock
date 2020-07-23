@@ -178,7 +178,12 @@ def cgi_write_to_file( df):
 
         col_len=len(list(df))
         for j in range(0, col_len): #loop column
-            print('        <td>\n')
+            #set align right begin from the third column
+            if j>2:
+                print('        <td align="right">\n')
+            else:
+                print('        <td>\n')
+
             element_value = a_array[0][j] #get a[i][j] element
             #df_cgi_column=['record_date', 'stock_code', 'stock_name', 'or_yoy', 'netprofit_yoy', 'conti_day']
             if(j == 0): 
@@ -196,7 +201,7 @@ def cgi_write_to_file( df):
             print('        </td>\n')
 
         #add total_mv
-        print('        <td>\n')
+        print('        <td align="right">\n')
         print('           <a> %s </a>\n' %  (comm_get_total_mv(tmp_stock_code)))
         print('        </td>\n')
 
