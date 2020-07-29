@@ -197,11 +197,11 @@ for i in range(0,stock_len):
     save_dir = 'stock_data'
     sub_name = '-zig'
 
-     #################### delete begin ##################
-     if clean_flag:
-         clean_flag = False
-         remove_dir(nowdate, save_dir, sub_name)
-     #################### delete end ##################
+    #################### delete begin ##################
+    if clean_flag:
+        clean_flag = False
+        remove_dir(nowdate, save_dir, sub_name)
+    #################### delete end ##################
 
 
     plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name) 
