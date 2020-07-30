@@ -9,6 +9,16 @@ import os,sys,os.path
 from sys import argv
 import shutil
 
+# basic
+import numpy as np
+import pandas as pd
+
+import talib
+#funcat
+from funcat import *
+from funcat.data.aaron_backend import AaronDataBackend
+set_data_backend(AaronDataBackend())
+
 #把时间戳转化为时间: 1479264792 to 2016-11-16 10:53:12
 def TimeStampToTime(timestamp):
     timeStruct = time.localtime(timestamp)
@@ -162,4 +172,42 @@ def remove_dir(nowdate, save_dir, sub_name):
         shutil.rmtree(cmd)
 
     pass
+
+
+
+# 
+def peach_exist(now_date, stock_code, days, data_df):
+    ema_cross_flag  = False
+    boll_cross_flag = False
+    macd_cross_flag = False
+
+    df_len = len(data_df)
+
+    for loop in range(0, days):
+        cur_date=data_df['record_date'][df_len- loop - 1]
+        data_df = data_df.head(len(data_df)-loop)    
+    
+        dif, dea, macd_hist = talib.MACD(np.array(data_df['close'], dtype=float), fastperiod=12, slowperiod=26, signalperiod=9)
+        upperband, middleband, lowerband = talib.BBANDS(np.array(data_df['close']),timeperiod=20, nbdevdn=2, nbdevup=2)
+        
+        T(str(cur_date))
+        S(stock_code)
+
+        today_p = ((C - REF(C, 1))/REF(C, 1))
+        today_p = round (today_p.value, 4)
+
+        yes_p = ((REF(C, 1) - REF(C, 2))/REF(C, 2))
+        yes_p = round (yes_p.value, 4)
+
+        cond_0 = C > O and today_p > 0.01 and ( REF(C, 1) <  REF(EMA(C,12), 1) and C > EMA(C,12)) # C cross EMA12
+        cond_1 = C > O and today_p > 0.01 and ( REF(C, 1) <  REF(EMA(C,50), 1) and C > EMA(C,50)) # C cross EMA50
+        cond_2 = (O < middleband[-1] and C > middleband[-1] ) or (O < C and O > middleband[-1] )
+        cond_3 = macd_cross(dif, dea) # macd gold cross
+
+        ema_cross_flag = ema_cross_flag or (cond_0 and cond_1)
+        boll_cross_flag = boll_cross_flag or cond_2
+        macd_cross_flag = macd_cross_flag or (cond_3  == 1)
+
+    
+    return ema_cross_flag and boll_cross_flag and macd_cross_flag 
 

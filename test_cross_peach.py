@@ -210,6 +210,12 @@ for i in range(0,stock_len):
 
     第三介入点出现上面的2个买点后，如果错过，等回踩EXPMA）再买，或者加仓。
     '''
+
+     
+
+
+
+    '''
     #macd
     today_p = ((C - REF(C, 1))/REF(C, 1)) 
     today_p = round (today_p.value, 4)
@@ -218,21 +224,16 @@ for i in range(0,stock_len):
     yes_p = round (yes_p.value, 4)
 
     cond_1 = C > O and today_p > 0.01 and ( REF(C, 1) <  REF(EMA(C,12), 1) and C > EMA(C,12)) # C cross EMA12
-    cond_2 = macd_cross(dif, dea) # macd gold cross
-    cond_3 = (O < middleband[-1] and C > middleband[-1] ) or (O < C and O > middleband[-1] )  
+    cond_2 = (O < middleband[-1] and C > middleband[-1] ) or (O < C and O > middleband[-1] )  
+    cond_3 = macd_cross(dif, dea) # macd gold cross
+    cond_4 = cond_1 and cond_2 and (cond_3 == 1) 
+    '''
 
-    if cond_1 and (cond_2 == 1) and cond_3:
+    cond_5 = peach_exist(nowdate, nowcode, 2, detail_info)
+    if cond_5:
         draw_flag = True
-        #insert into database
-        dataframe_cols=['record_date','stock_code', 'stock_name', 'open', 'close', 'high', 'low', 'volume', 'p_change']
-        # row=['2019-07-02',  '300750', 70.28,  71.04,  72.38,  69.96,  162519.0, 1.02]
-        row=[nowdate, nowcode, nowname, O, C, H, L, V, today_p * 100]
-        # print("row=%s" % (row))
-        df=pd.DataFrame([row], columns=dataframe_cols)
-        df=df.set_index('record_date')
-        #insert to DB
-        #sdata.insert_perstock_hdatadate(nowcode, df)
         print("[tao_yuan_san_jie_yi] peach and macd golden cross: code:%s, name:%s" % (nowcode, nowname ))
+
     #############################################################################
 
 

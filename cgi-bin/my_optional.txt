@@ -5,6 +5,7 @@ sh shangzheng
 159994 5GETF
 512550 fushi_A50
 
+601399 STguozhongzhuang
 603236 yiyuantongxin
 300603 li'angjishu
 603160 huidingkeji
