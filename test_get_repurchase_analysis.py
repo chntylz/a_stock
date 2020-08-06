@@ -58,7 +58,8 @@ def repurchase_get_hk_info(df, curr_day):
         proc     = df.loc[i,'proc']
         exp_date = df.loc[i,'exp_date']
         repu_vol = df.loc[i,'vol']
-        repu_amount = df.loc[i,'amount'] / 10000.0
+        repu_amount = df.loc[i,'amount'] / 10000.0/10000.0
+        repu_amount = str(round(repu_amount, 2))+'Y'
         high_limit  = df.loc[i,'high_limit']        
         low_limit   =  df.loc[i,'low_limit']
 
