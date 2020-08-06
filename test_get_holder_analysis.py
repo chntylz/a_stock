@@ -40,6 +40,12 @@ def get_holder_data():
     return holder_data
 
 def holder_get_continuous_info(df, curr_day):
+
+    df=df[~df['holder_num'].isin([0])]  #delete the line which holder_num value is 0
+    df = df.fillna(0)
+    df['holder_last']=df.groupby('stock_code')['holder_num'].shift((-1))
+    df['holder_pct']=(df['holder_num'] - df['holder_last'])  * 100 / df['holder_last']
+
     all_df = df
     data_list = []
     group_by_stock_code_df=all_df.groupby('stock_code')
@@ -63,6 +69,7 @@ def holder_get_continuous_info(df, curr_day):
  
         
         group_df=group_df.reset_index(drop=True) #reset index
+        holder_pct = group_df.loc[0, 'holder_pct']
         max_date=group_df.loc[0, 'record_date']
         holder_num=group_df.loc[0, 'holder_num']
 
@@ -104,16 +111,17 @@ def holder_get_continuous_info(df, curr_day):
         
 
         if debug:
-            print( max_date, stock_code, stock_name, holder_num, i, close_p, C.value, hsgt_share, hsgt_date, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total )
+            print( max_date, stock_code, stock_name, holder_num, i, holder_pct, close_p, C.value, hsgt_share, hsgt_date, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total )
 
-        data_list.append([ max_date, stock_code, stock_name, holder_num,  i, close_p, C.value,  hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total])  #i  is conti_day
+        data_list.append([ max_date, stock_code, stock_name, holder_num,  i, holder_pct, close_p, C.value,  hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total])  #i  is conti_day
 
-    data_column=['record_date', 'stock_code', 'stock_name', 'holder_num', 'cont_d', 'a_pct', 'close', 'hk_date', 'hsgt_share', 'hk_pct', 'hk_delta1', 'hk_deltam', 'hk_cont_d', 'hk_m_total']
+    data_column=['record_date', 'stock_code', 'stock_name', 'holder_num', 'cont_d', 'holder_pct', 'a_pct', 'close', 'hk_date', 'hsgt_share', 'hk_pct', 'hk_delta1', 'hk_deltam', 'hk_cont_d', 'hk_m_total']
 
     ret_df = pd.DataFrame(data_list, columns=data_column)
     ret_df = ret_df.fillna(0)
     ret_df=ret_df.round(2)
-    ret_df = ret_df.sort_values('cont_d', ascending=0)
+    #ret_df = ret_df.sort_values('cont_d', ascending=0)
+    ret_df = ret_df.sort_values('holder_pct', ascending=1)
 
 
     return ret_df

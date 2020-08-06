@@ -244,7 +244,11 @@ def comm_write_to_file(f, k, df, filename):
                 elif(j == 3):
                     f.write('           <a> %.2f%s</a>\n'%(element_value, '%'))
                 elif(j == 8):
-                    f.write('           <a> %.2f</a>\n'%(element_value))
+                    #fix bug:  must be real number, not datetime.date for holder function
+                    if list(df)[j] == 'hk_date':
+                        f.write('           <a> %s</a>\n'%(element_value))
+                    else:
+                        f.write('           <a> %.2f</a>\n'%(element_value))
                 else:
                     #element_value=2019-09-23-1-002436-兴森科技-814-878-891-796-840.png
                     if 'png' in str(element_value):
