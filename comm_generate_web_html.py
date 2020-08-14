@@ -257,13 +257,19 @@ def comm_write_to_file(f, k, df, filename):
                             print('basic 2days up: conti_day=%s' % conti_day)
 
                         if 'buy' in str(element_value) and 'bottom' in str(element_value):#zig+bottom
-                            f.write('           <a href="%s" target="_blank"> %s</a>\n'%( element_value, conti_day + 'zig+b'))
+                            conti_day = conti_day + 'zig+b'
                         elif 'buy' in str(element_value):#zig
-                            f.write('           <a href="%s" target="_blank"> %s</a>\n'%( element_value, conti_day + 'zig'))
+                            conti_day = conti_day + 'zig'
                         elif 'bottom' in str(element_value):#bottom
-                            f.write('           <a href="%s" target="_blank"> %s</a>\n'%( element_value, conti_day + 'bottom'))
+                            conti_day = conti_day + 'bottom'
+                        
+                        #the last zig status
+                        if 'z1' in str(element_value):
+                            conti_day = conti_day + '_z1'
                         else:
-                            f.write('           <a href="%s" target="_blank"> %s</a>\n'%( element_value, conti_day ))
+                            conti_day = conti_day + '_z0'
+
+                        f.write('           <a href="%s" target="_blank"> %s</a>\n'%( element_value, conti_day ))
                     else:
                         f.write('           <a> %s</a>\n'%(element_value))
             

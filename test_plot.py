@@ -194,6 +194,14 @@ def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name
             if z_buy_state[-2] is 1:  #valid zig must 1, that means valley
                 print('%s gold node, buy it!!' % nowcode )
                 buy_flag = '-buy'
+
+    #check the last zig status
+    z_status = ''
+    if z_len >=2:
+        z_status = '-z' + str(z_buy_state[-2])
+    else:
+        z_status = '-z0'
+
     
     #check whether it is bottom or not, 2020-05-01
     if check_is_bottom(nowdate, nowcode, nowname, 3):
@@ -261,7 +269,8 @@ def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name
                     '-' + str(int(round(H.value *100, 4))) + \
                     '-' + str(int(round(L.value *100, 4))) + \
                     '-' + str(int(today_p * 10000)) + \
-                     buy_flag + '.png'
+                     buy_flag + \
+                     z_status + '.png'
 
     
 
