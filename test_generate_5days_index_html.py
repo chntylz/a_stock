@@ -8,7 +8,7 @@ nowdate=datetime.datetime.now().date()
 #nowdate=nowdate-datetime.timedelta(1)
 src_dir=nowdate.strftime("%Y-%m-%d")
 stock_data_dir="stock_data"
-file_name='basic'
+file_name='5days'
 target_html=file_name + '-index.html'
 
 def showImageInHTML(imageTypes,savedir):
@@ -123,12 +123,13 @@ def getAllFiles(directory):
     for dirpath, dirnames,filenames in os.walk(directory):
         if filenames!=[]:
             for file in filenames:
-                if ('index' in file) or ('repurchase' in file) or ('holder' in file) or ('zheli' in file)  or ('macd' in file)  or ('zig' in file) or ('hsgt' in file ) or ('test' in file ) or ('quad' in file)  or ('finance' in file) or ('peach' in file) or ('5days' in file) :
+                if (file_name + '-index') in file:
                     continue;
-                else:
+                if file_name in file:
                     files.append(dirpath+'/'+file)
     # files.sort(key=len)
     files=sorted(files, reverse=True)
+    print('files :%s'% files)
     return files
 
 #获取脚本文件的当前路径
@@ -144,4 +145,6 @@ def cur_file_dir():
         
 if __name__ == '__main__':
     savedir=cur_file_dir()#获取当前.py脚本文件的文件路径
+    print('savedir:%s' % savedir)
     showImageInHTML(('html'), savedir)#浏览所有jpg,png,gif文件
+

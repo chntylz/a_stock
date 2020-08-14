@@ -114,6 +114,7 @@ print("start_time: %s, end_time: %s" % (start_time, end_time))
 
 #debug switch
 debug = 0
+#debug = 1
 
 clean_flag = True
 
@@ -142,6 +143,11 @@ for i in range(0,stock_len):
     if debug:
         print("code:%s, name:%s" % (nowcode, nowname ))
 
+    '''
+    #debug
+    if '2187' not in str(nowcode):
+        continue
+    '''
 
     #skip ST
     #if ('ST' in nowname or '300' in nowcode):
@@ -179,108 +185,28 @@ for i in range(0,stock_len):
     T(str(nowdate))
     S(nowcode)
     # print(str(nowdate), nowcode, nowname, O, H, L, C)
-
-    # dif: 12， 与26日的差别
-    # dea:dif的9日以移动平均线
-    # 计算MACD指标
-    dif, dea, macd_hist = talib.MACD(np.array(detail_info['close'], dtype=float), fastperiod=12, slowperiod=26, signalperiod=9)
-   
-    upperband, middleband, lowerband = talib.BBANDS(np.array(detail_info['close']),timeperiod=20, nbdevdn=2, nbdevup=2)
-
-       
-    ##############################################################################
-    '''
-    桃园三结义的技术要点：
-
-    1 股价要以阳线的形式上冲EXPMA（线 股价一定要站上这条线 光头阳线比带着影线的阳线强 涨停的光头阳线是最好的阳线
-
-    2. MACD出现金叉 MACD一般有4种金叉，0轴之下的金叉 0轴之下的双次金叉 0轴之上的金叉 0轴之上的2次金叉。 一般是来说二次金叉>0轴上的金叉>0轴下的双次金叉>0轴之下的金叉
-
-    3 BOLL突破中轨 一定是在中轨上方 有2中情况 第一种 从下面穿上来 第二种站在上方
-
-    满足这3个条件 我们就叫桃园三结义。 。买入这种形态之后 就一路上涨。
-
-    尤其是通过长期横盘之后的出现桃园三结义。这样横有多长，竖有多高。很容易出现翻翻行情。
-
-    桃园三结义的买点：
-
-    第一介入点条件达成当天尾盘
-
-    第二介入点第二天开盘价如果开盘价过高。盘中低点买。
-
-    第三介入点出现上面的2个买点后，如果错过，等回踩EXPMA）再买，或者加仓。
-    '''
-
+    
      
+    for k in range(0, 6):
+        yes_c = REF(C, k+1)
+        cur_c = REF(C, k)
+        cur_o = REF(O, k)
+        if debug:
+            print(str(nowdate), nowcode, nowname, k, yes_c, cur_c, cur_o)
 
-
-
-    #macd
-    today_p = ((C - REF(C, 1))/REF(C, 1)) 
-    today_p = round (today_p.value, 4)
-
-    yes_p = ((REF(C, 1) - REF(C, 2))/REF(C, 2)) 
-    yes_p = round (yes_p.value, 4)
-
-    '''
-    cond_1 = C > O and today_p > 0.01 and ( REF(C, 1) <  REF(EMA(C,12), 1) and C > EMA(C,12)) # C cross EMA12
-    cond_2 = (O < middleband[-1] and C > middleband[-1] ) or (O < C and O > middleband[-1] )  
-    cond_3 = macd_cross(dif, dea) # macd gold cross
-    cond_4 = cond_1 and cond_2 and (cond_3 == 1) 
-    '''
-
-    cond_5 = peach_exist(nowdate, nowcode, 2, detail_info)
-    if cond_5 and today_p > 0.01:
-        draw_flag = True
-        print("[tao_yuan_san_jie_yi] peach and macd golden cross: code:%s, name:%s" % (nowcode, nowname ))
+        if (cur_c  > cur_o) and ( cur_c < yes_c * 1.09):
+            continue;
+        else:
+            break;
+    
+    
+    #5day up, up range is lower than 20%
+    if 5 == k and (C < REF(C, 5) * 1.1 ): 
+        draw_flag  = True
+        print("[5days continue up]  code:%s, name:%s" % (nowcode, nowname ))
 
     #############################################################################
 
-
-    ##############################################################################
-    '''
-    #cross
-    cond_1 = CROSS(MA(C,5), MA(C, 13))
-    cond_2 = CROSS(MA(C,13), MA(C, 21))
-    cond_3 = C > MA(C, 5)
-    cond_4 = V > MA(V, 50)
-    cond_5 = ((C - REF(C, 1))/REF(C, 1)) > 0.03
-    
-    if cond_1 and cond_2 and cond_3 and cond_4 and cond_5:
-        draw_flag = True
-        print("cross: code:%s, name:%s" % (nowcode, nowname ))
-    '''
-    ##############################################################################
-
-
-
-    
-    #################################################################
-    '''
-    # 程序交易 （K线图数据，分钟/）
-    # 使用程序的判断依据来模拟MACD指标交易情况，买入、卖出
-    # 以200天为例，从第一天到第200天每天进行判断
-    for i in range(1, dif.size):
-
-        # 进行交易判断
-        # DIF差离值和DEM讯号线的交替状态
-
-        # 考虑买入的信号
-        # 买入：金叉信号：昨天：DIF差离值 < DEA讯号线 and DIF差离值 > DEA讯号线 
-        if dif[i-1] - dea[i-1] < 0 and dif[i] - dea[i] > 0:
-            print("在第%d天:%s：买入了某某股票多少量的股票:%d" % (i, detail_info.index[i],detail_info['close'][i]))
-
-        # 考虑卖出的信号
-        # 买入：死叉信号：昨天：DIF差离值 > DEA讯号线 and DIF差离值 <  DEA讯号线
-        if dif[i-1] - dea[i-1] > 0 and dif[i] - dea[i] < 0:
-            print("在第%d天:%s：卖出了某某股票多少量的股票:%d" %  (i, detail_info.index[i],detail_info['close'][i]))
-
-
-
-    plt.style.use('bmh')
-    fig = plt.figure(figsize=(24, 30),dpi=160)
-    '''
-    ################################################################
 
 
     ################################################################
@@ -289,7 +215,7 @@ for i in range(0,stock_len):
         continue
     
     save_dir = 'stock_data'
-    sub_name = '-peach'
+    sub_name = '-5days'
 
     #################### delete begin ##################
     if clean_flag:
