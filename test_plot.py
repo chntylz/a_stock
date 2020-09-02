@@ -198,7 +198,7 @@ def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name
     #check the last zig status
     z_status = ''
     if z_len >=2:
-        z_status = '-z' + str(z_buy_state[-2])
+        z_status = '-z' + str(z_buy_state[-2])+ '_' + str(z_peers[-1] - z_peers[-2])
     else:
         z_status = '-z0'
 

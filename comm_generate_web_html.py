@@ -264,10 +264,11 @@ def comm_write_to_file(f, k, df, filename):
                             conti_day = conti_day + 'bottom'
                         
                         #the last zig status
+                        zig_days=element_value[element_value.rfind('_'): element_value.rfind('.')]
                         if 'z1' in str(element_value):
-                            conti_day = conti_day + '_z1'
+                            conti_day = conti_day + '_z1' + zig_days
                         else:
-                            conti_day = conti_day + '_z0'
+                            conti_day = conti_day + '_z0' + zig_days
 
                         f.write('           <a href="%s" target="_blank"> %s</a>\n'%( element_value, conti_day ))
                     else:
