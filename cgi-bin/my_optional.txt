@@ -5,6 +5,8 @@ sh shangzheng
 159994 5GETF
 512550 fushi_A50
 
+300676 huadajiyin
+300664 pengyaohuanbao
 300761 lihuagufen
 601399 STguozhongzhuang
 603236 yiyuantongxin
@@ -23,7 +25,6 @@ sh shangzheng
 300638 guanghetong
 002475 lixunjingmi
 002049 ziguangguohui
-300676 huadajiyin
 
 002572 suofeiya
 603113 jin'nengkeji

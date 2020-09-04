@@ -120,26 +120,68 @@ def peach_continue_handle_html_end_special(newfile, dict_industry):
 
     pass
     
+def is_exist_quad(stock_name, days=30): 
    
+    if days < 0:
+       return False
+
+    tmp_date=nowdate-datetime.timedelta(int(days))
+
+    tmp_day=tmp_date.strftime("%Y-%m-%d")
+    quad_day_w = tmp_date.strftime("%Y-%m-%d-%w")
+    quad_dir=quad_day_w+'-quad'
+
+    #curr_path=cur_file_dir()#获取当前.py脚本文件的文件路径
+    curr_path='/var/www/html'
+    stock_data_path= curr_path + '/' + stock_data_dir 
+    quad_path=stock_data_path + '/' + quad_dir
+    quad_files=getAllFiles(quad_path)
+
+    if debug:
+    #if False:
+        #print('quad_path = %s' % quad_path)
+        #print('quad_files = %s' % quad_files)
+        pass
+
+    peach_quad_file=[f for f in quad_files if stock_name in f]
     
+    if len(peach_quad_file) > 0:
+        return True
+    else:
+        return  is_exist_quad(stock_name, days -1)
+
+     
     
 def showImageInHTML(imageTypes,savedir):
-    files=getAllFiles(savedir+'/' + curr_dir)
+    curr_path= savedir+'/' + curr_dir
+    files=getAllFiles(curr_path)
     if debug:
-        print("file:%s" % (files))
+        print('')
+        print('curr_path:%s' % curr_path)
+        print("all file:%s" % (files))
+
     images=[f for f in files if f[f.rfind('.')+1:] in imageTypes]
     if debug:
-        print("%s"%(images))
+        print('')
+        print("png jpg gif file %s"%(images))
+
     images=[item for item in images if os.path.getsize(item)>5*1024]
     if debug:
-        print("%s"%(images))
+        print('')
+        print("size > 5 * 1024: %s"%(images))
+        
     #images=[curr_dir+item[item.rfind('/'):] for item in images]
     images=[item[item.rfind('/')+1:] for item in images]
     if debug:
-        print("%s"%(images))
+        print('')
+        print("png name: %s"%(images))
+
+    print('')
     newfile='%s/%s'%(savedir, curr_dir + '/' + curr_dir + '.html')
+    newfile_2='%s/%s'%(savedir, curr_dir + '/' + curr_dir + '-new.html')
     if debug:
         print("%s"% newfile)
+        print("%s"% newfile_2)
     
     #get continuous stock_code
     last_day = get_valid_last_day(nowdate)
@@ -155,6 +197,24 @@ def showImageInHTML(imageTypes,savedir):
         print("%s not exist!!! return" % (real_dir ))
         return
     
+    if debug:
+        print('real_dir:%s'% real_dir)
+        print('images:%s'% images)
+        print('curr_day:%s'% curr_day)
+        print('dict_industry:%s'% dict_industry)
+
+    
+    quad_peach_list = []
+    for image in images:
+        stock_name=image[13:19]
+        if is_exist_quad(stock_name, 30): 
+            #satisfy quad condition
+            quad_peach_list.append(image)
+            print('peach_quad stock_name:%s' % stock_name)
+        else:
+            print('!!! none peach_quad stock_name:%s' % stock_name)
+            
+    print('quad_peach_list=%s' % quad_peach_list)
    
     ret_df = comm_generate_web_dataframe(real_dir, images, curr_day, dict_industry)
 
@@ -164,6 +224,15 @@ def showImageInHTML(imageTypes,savedir):
     peach_continue_handle_html_end_special(newfile, dict_industry)
     comm_handle_html_end(newfile, curr_dir)
 
+
+    ret_df = comm_generate_web_dataframe(real_dir, quad_peach_list, curr_day, dict_industry)
+    comm_handle_html_head(newfile_2, stock_data_dir, curr_day )
+    peach_continue_handle_html_body_special(newfile_2, curr_day)
+    comm_handle_html_body(newfile_2, ret_df)
+    peach_continue_handle_html_end_special(newfile_2, dict_industry)
+    comm_handle_html_end(newfile_2, curr_dir)
+	
+	
 def getAllFiles(directory):
     files=[]
     for dirpath, dirnames,filenames in os.walk(directory):
@@ -227,6 +296,7 @@ if __name__ == '__main__':
     print('last_day:%s' %  (last_day))
     '''
 
-    savedir=cur_file_dir()#获取当前.py脚本文件的文件路径
+    #savedir=cur_file_dir()#获取当前.py脚本文件的文件路径
+    savedir='/var/www/html'
     savedir= savedir + '/' + stock_data_dir 
     showImageInHTML(('jpg','png','gif'), savedir)#浏览所有jpg,png,gif文件
