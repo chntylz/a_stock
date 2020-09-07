@@ -89,8 +89,14 @@ def showImageInHTML(imageTypes,savedir):
         for image in images:
             # '2019-07-10.html' -> '2019-07-10' 
             tmp_image=image[0:image.rfind('.')]
-            print("%s" % (tmp_image))
-            image = stock_data_dir + '/' + tmp_image + '/' + image
+            print("tmp_image=%s" % (tmp_image))
+            tmp_tmp_image=tmp_image
+            if 'new' in tmp_image:
+                print(tmp_image)
+                tmp_tmp_image=tmp_image[0:tmp_image.rfind('new')-1]
+                print(tmp_tmp_image)
+               
+            image = stock_data_dir + '/' + tmp_tmp_image + '/' + image
 
 
             if i % column == 0:
