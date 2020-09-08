@@ -179,5 +179,19 @@ if __name__ == '__main__':
     comm_handle_html_body(newfile, all_df, 'p_continous_day')
     comm_handle_html_end(newfile)
 
+    file_name=save_dir + '-' + datetime.datetime.strptime(latest_date,'%Y-%m-%d').strftime("%Y-%m-%d-%w") + '-r3'
+    newfile=save_dir + '/' + file_name + '.html'
+    comm_handle_html_head(newfile, 'hsgt', latest_date)
+    hsgt_handle_html_special(newfile)
+    comm_handle_html_body(newfile, all_df, 'p_minus_money')
+    comm_handle_html_end(newfile)
+
+    file_name=save_dir + '-' + datetime.datetime.strptime(latest_date,'%Y-%m-%d').strftime("%Y-%m-%d-%w") + '-r4'
+    newfile=save_dir + '/' + file_name + '.html'
+    comm_handle_html_head(newfile, 'hsgt', latest_date)
+    hsgt_handle_html_special(newfile)
+    comm_handle_html_body(newfile, all_df, 'p_minus_continous_day')
+    comm_handle_html_end(newfile)
+
 
 hdata_hsgt.db_disconnect()

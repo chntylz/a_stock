@@ -90,25 +90,50 @@ def hsgt_get_continuous_info(df, select):
         length=len(group_df)
         money_total = 0
         flag_m = group_df.loc[0]['delta1_m']
-        if flag_m > 0:
-            conti_flag = 1
-        else:
-            conti_flag = 0
-        
-        for i in range(length):
-            delta_m = group_df.loc[i]['delta1_m']
-            if debug:
-                print('delta_m=%f'%(delta_m))
 
-            if delta_m >= 0:
-                tmp_flag = 1
+        if 'minus' in select:
+            #money < 0
+            if flag_m < 0:
+                conti_flag = 1
             else:
-                tmp_flag = 0
+                conti_flag = 0
+            
+            for i in range(length):
+                delta_m = group_df.loc[i]['delta1_m']
+                if debug:
+                    print('delta_m=%f'%(delta_m))
 
-            if conti_flag == tmp_flag:
-                money_total = money_total + delta_m
+                if delta_m < 0:
+                    tmp_flag = 1
+                else:
+                    tmp_flag = 0
+
+                if conti_flag == tmp_flag:
+                    money_total = money_total + delta_m
+                else:
+                    break
+ 
+        else: 
+            # money > 0
+            if flag_m > 0:
+                conti_flag = 1
             else:
-                break
+                conti_flag = 0
+            
+            for i in range(length):
+                delta_m = group_df.loc[i]['delta1_m']
+                if debug:
+                    print('delta_m=%f'%(delta_m))
+
+                if delta_m >= 0:
+                    tmp_flag = 1
+                else:
+                    tmp_flag = 0
+
+                if conti_flag == tmp_flag:
+                    money_total = money_total + delta_m
+                else:
+                    break
                 
         money_total = round(money_total,2)
         if debug:
@@ -124,8 +149,12 @@ def hsgt_get_continuous_info(df, select):
     #ret_df = ret_df.sort_values('money_total', ascending=0)
     #ret_df = ret_df.sort_values('conti_day', ascending=0)
     if select is 'p_money':
-        ret_df = ret_df.sort_values('m_per_day', ascending=0)
+        ret_df = ret_df.sort_values('money_total', ascending=0)
+    elif select is 'p_minus_money':
+        ret_df = ret_df.sort_values('money_total', ascending=1)
     elif select is 'p_continous_day':
+        ret_df = ret_df.sort_values('conti_day', ascending=0)
+    elif select is 'p_minus_continous_day':
         ret_df = ret_df.sort_values('conti_day', ascending=0)
 
     return ret_df
@@ -399,11 +428,22 @@ def comm_handle_html_body(filename, all_df, select='topy10'):
                 conti_df = conti_df[ (conti_df.money_total / conti_df.conti_day > 1000) & (conti_df.money_total > 2000) &(conti_df.delta1_m > 1000)] 
                 comm_write_to_file(f, -1, conti_df, filename)
 
+            elif select is 'p_minus_money':
+                conti_df = hsgt_get_continuous_info(all_df, 'p_minus_money')
+                #select condition
+                conti_df = conti_df[ (conti_df.money_total / conti_df.conti_day < -1000) & (conti_df.money_total < -2000) &(conti_df.delta1_m < -1000)] 
+                comm_write_to_file(f, -1, conti_df, filename)
+
             elif select is 'p_continous_day':
                 conti_df = hsgt_get_continuous_info(all_df, 'p_continous_day')
                 #select condition
-                #conti_df = conti_df[ (conti_df.money_total / conti_df.conti_day > 1000) & (conti_df.money_total > 2000) &(conti_df.delta1_m > 1000)] 
                 conti_df = conti_df[conti_df.money_total > 2000] 
+                comm_write_to_file(f, -1, conti_df, filename)
+  
+            elif select is 'p_minus_continous_day':
+                conti_df = hsgt_get_continuous_info(all_df, 'p_minus_continous_day')
+                #select condition
+                conti_df = conti_df[conti_df.money_total < -2000] 
                 comm_write_to_file(f, -1, conti_df, filename)
         else:
             comm_write_to_file(f, -1, all_df, filename)
