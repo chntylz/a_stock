@@ -7,6 +7,7 @@ import pandas as pd
 from time import clock
 
 debug = 0
+db_columns = "record_date , stock_code , open , close , high , low , volume ,  amount , p_change "
 
 class HData_day(object):
     def __init__(self,user,password):
@@ -166,8 +167,11 @@ class HData_day(object):
         cur = conn.cursor()
 
         #sql_temp="select * from (select * from hdata_d_table where stock_code='000922' order by record_date desc LIMIT 5) as tbl order by record_date asc;"
+        #sql_temp="select " +  db_columns +"  from (select " + db_columns + " from hdata_d_table where stock_code="+"\'"+stock_code+"\'  and record_date <= "+"\'"+ end_day +"\'  order by record_date desc LIMIT "+"\'"+str(limit_number)+"\' ) as tbl order by record_date asc;"
         sql_temp="select * from (select * from hdata_d_table where stock_code="+"\'"+stock_code+"\'  and record_date <= "+"\'"+ end_day +"\'  order by record_date desc LIMIT "+"\'"+str(limit_number)+"\' ) as tbl order by record_date asc;"
         #sql_temp="select * from hdata_d_table where stock_code="+"\'"+stock_code+"\';"
+        if debug:
+            print('sql_temp:%s'%sql_temp)
         cur.execute(sql_temp)
         rows = cur.fetchall()
 
@@ -297,3 +301,9 @@ class HData_day(object):
 
         pass
  
+
+
+#alter table hdata_d_table add  "up_days" int not null default 0;
+#INSERT INTO test_postgre(record_date, stock_code, is_zig) VALUES('2018-10-08','002732', 8) ON conflict(id) DO UPDATE SET is_zig=1;
+
+# update hdata_d_table set is_zig=0 where record_date = '2018-10-08' and stock_code = '002732';
