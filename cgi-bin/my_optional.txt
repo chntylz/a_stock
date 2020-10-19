@@ -5,6 +5,10 @@ sh shangzheng
 159994 5GETF
 512550 fushi_A50
 
+003009 zhongtianhuojian
+000651 gelidianqi
+002030 da'an'ji'yin
+600196 fuxingyiyao
 300676 huadajiyin
 300664 pengyaohuanbao
 300761 lihuagufen
