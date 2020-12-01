@@ -7,6 +7,7 @@ import pandas as pd
 from time import clock
 
 debug = 0
+#debug = 1
 db_columns = "record_date , stock_code , open , close , high , low , volume ,  amount , p_change "
 
 class HData_day(object):
@@ -89,7 +90,6 @@ class HData_day(object):
 
         #print(stock_code+" insert_perstock_hdatadate finish")
 
-
     def insert_allstock_hdatadate(self, data):#插入一支股票的所有历史数据到数据库#如果有code和index相同的不重复插入
 
         #data format: record_date , stock_code , open , close , high , low  , volume ,  amount  , p_change 
@@ -137,6 +137,78 @@ class HData_day(object):
         #print(clock()-t1)
 
         #print(stock_code+" insert_perstock_hdatadate finish")
+
+
+
+
+    def update_allstock_hdatadate(self, data):
+
+        t1=clock()
+
+        if debug:
+            print(" update_perstock_hdatadate begin")
+
+        if data is None:
+            print("None")
+        else:
+            length = len(data)
+            sql_cmd = ""
+            sql_head="UPDATE hdata_d_table SET is_zig = tmp.is_zig, is_quad=tmp.is_quad, is_peach=tmp.is_peach FROM ( VALUES "
+            sql_tail=" ) AS tmp (record_date, stock_code, is_peach, is_zig, is_quad ) WHERE hdata_d_table.record_date = tmp.record_date and hdata_d_table.stock_code = tmp.stock_code;"
+            each_num = 1000
+            for i in range(0,length):
+                if debug:
+                    print (i)
+
+                str_temp = ""
+                str_temp+="DATE "+"\'"+str(data.iloc[i,0])+"\'" + ","
+                column_size = data.shape[1]
+
+                if debug:
+                    print('column_size=%d'% (column_size))
+                '''
+                for j in range(1, column_size - 1):
+                    str_temp+="\'"+str(data.iloc[i,j])+"\'" + ","
+                str_temp+="\'"+str(data.iloc[i,column_size-1])+"\'" 
+                '''
+                str_temp+="\'"+str(data.iloc[i,1])+"\'" + ","
+                for j in range(2, column_size - 1):
+                    str_temp+=str(data.iloc[i,j])+ ","
+                str_temp+=str(data.iloc[i,column_size-1]) 
+
+                sql_cmd= sql_cmd + "("+str_temp+")"
+
+                if i % each_num == 0 or i == (length -1):
+                    pass
+                else:
+                    sql_cmd = sql_cmd+ ","
+
+                if i % each_num == 0:
+                    if debug:
+                        print(sql_cmd)
+                    if(sql_cmd != ""):
+                        final_sql=sql_head +sql_cmd+ sql_tail
+                        if debug:
+                            print('final_sql=%s'%(final_sql))
+                            
+                        self.cur.execute(final_sql)
+                        self.conn.commit()
+                        sql_cmd = ""
+
+            if debug:
+                print(sql_cmd)
+            if(sql_cmd != ""):
+                final_sql=sql_head +sql_cmd+ sql_tail
+                if debug:
+                    print('final_sql=%s'%(final_sql))
+                    
+                self.cur.execute(final_sql)
+                self.conn.commit()
+                pass
+
+        if debug:
+            print(clock()-t1)
+            print(" insert_perstock_hdatadate finish")
 
 
     def get_all_hdata_of_stock(self,stock_code):#将数据库中的数据读取并转为dataframe格式返回
@@ -304,6 +376,10 @@ class HData_day(object):
 
 
 #alter table hdata_d_table add  "up_days" int not null default 0;
-#INSERT INTO test_postgre(record_date, stock_code, is_zig) VALUES('2018-10-08','002732', 8) ON conflict(id) DO UPDATE SET is_zig=1;
 
-# update hdata_d_table set is_zig=0 where record_date = '2018-10-08' and stock_code = '002732';
+
+#update hdata_d_table set is_zig=0 where record_date = '2018-10-08' and stock_code = '002732';
+
+#UPDATE hdata_d_table SET is_zig = tmp.is_zig, is_quad=tmp.is_quad FROM    (VALUES ( DATE  '2018-06-13', '600647', 11, 1), ( DATE  '2018-06-12', '600647', 12, 1) ) AS tmp (record_date, stock_code, is_zig, is_quad ) WHERE hdata_d_table.record_date = tmp.record_date and hdata_d_table.stock_code = tmp.stock_code;
+#select * from hdata_d_table where stock_code ='600647' and (record_date='2018-06-13' or record_date='2018-06-12' ); 
+        

@@ -110,19 +110,20 @@ print("start_time: %s, end_time: %s" % (start_time, end_time))
 
 #debug switch
 debug = 0
-debug = 1
+#debug = 1
 
 clean_flag = True
 
 stock_len=len(codestock_local)
-#for i in range(0,stock_len):
-for i in range(0,5):
+update_list=[]  #for update is_peach, is_zig, is_quad in database table
+for i in range(0,stock_len):
+#for i in range(0,5):
 #if (True):
     #i = 0
     draw_flag = False
-    is_peach = False
+    is_peach = 0
     is_zig = 0
-    is_quad = False
+    is_quad = 0
     is_boll_cross = False
     is_macd_cross = False
     is_ema_cross = False
@@ -228,10 +229,10 @@ for i in range(0,5):
     #is_peach
     cond_5 = peach_exist(nowdate, nowcode, 2, detail_info)
     if cond_5 and today_p > 0.01:
-        is_peach = True
+        is_peach = 1 
         print("[tao_yuan_san_jie_yi] peach and macd golden cross: code:%s, name:%s" % (nowcode, nowname ))
-
-    print('is_peach %s' % is_peach)
+    if debug:
+        print('is_peach %s' % is_peach)
 
 ################################################################################################
 
@@ -339,7 +340,7 @@ for i in range(0,5):
 
         if c_less_ma5 and c_less_ma60:
            print('### %s, %s, %s' %(str(nowdate), nowcode, nowname))
-           is_quad = True
+           is_quad = 1
 
     if debug:
         print('is_quad=%s' % is_quad)
@@ -351,7 +352,14 @@ for i in range(0,5):
 ################################################################################################
 ################################################################################################
     
+    update_list.append([nowdate.strftime("%Y-%m-%d"), nowcode, is_peach, is_zig, is_quad])
 
+    if debug:
+        print('final nowdate=%s, code:%s, name:%s,is_peach=%s, is_zig=%s,is_quad=%s'% (nowdate.strftime("%Y-%m-%d"), nowcode, nowname, is_peach, is_zig, is_quad))
+    
+    if (is_peach or is_quad) and (is_zig > 0):
+        print('final real code:%s, name:%s,is_peach=%s, is_zig=%s,is_quad=%s'% (nowcode, nowname, is_peach, is_zig, is_quad))
+    
     if debug:
         print('#############################################################################')
 
@@ -372,8 +380,13 @@ for i in range(0,5):
     ##############################################################################
 
 
-
-
+if debug:
+    print('update_list:%s'% update_list)
+data_column=['record_date', 'stock_code', 'is_peach', 'is_zig', 'is_quad']
+update_df=pd.DataFrame(update_list, columns=data_column)
+if debug:
+    print(update_df)
+hdata.update_allstock_hdatadate(update_df)
 
 hdata.db_disconnect()
 sdata.db_disconnect()
