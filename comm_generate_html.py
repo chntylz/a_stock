@@ -336,5 +336,7 @@ def comm_handle_hsgt_data(df):
         money_total         = 0
 
 
+    hsgt_share = round(hsgt_share / 10000, 2)
+
     return hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total   
     
