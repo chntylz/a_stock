@@ -317,6 +317,10 @@ def comm_handle_hsgt_data(df):
         hsgt_deltam         = (hsgt_df['share_holding'][0] - hsgt_df['share_holding'][1]) * hsgt_df['close'][0] /10000.0
         hsgt_deltam         = round(hsgt_deltam, 2)
         conti_day, money_total= comm_get_hsgt_continous_info(hsgt_df)
+
+        is_zig              = hsgt_df['is_zig'][0]
+        is_quad             = hsgt_df['is_quad'][0]
+        is_peach            = hsgt_df['is_peach'][0]
     elif hsgt_df_len > 0:
         hsgt_date           = hsgt_df['record_date'][0]
         hsgt_share          = hsgt_df['share_holding'][0]
@@ -326,17 +330,25 @@ def comm_handle_hsgt_data(df):
         hsgt_deltam         = round(hsgt_deltam, 2)
         conti_day             = 1
         money_total         = hsgt_deltam
+
+        is_zig              = hsgt_df['is_zig'][0]
+        is_quad             = hsgt_df['is_quad'][0]
+        is_peach            = hsgt_df['is_peach'][0]
     else:
         hsgt_date           = ''
         hsgt_share          = 0
         hsgt_percent        = 0
         hsgt_delta1         = 0
         hsgt_deltam         = 0
-        conti_day             = 0
+        conti_day           = 0
         money_total         = 0
+
+        is_zig              = 0
+        is_quad             = 0
+        is_peach            = 0
 
 
     hsgt_share = round(hsgt_share / 10000, 2)
 
-    return hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total   
+    return hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total, is_zig, is_quad, is_peach   
     
