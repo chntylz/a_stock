@@ -171,6 +171,9 @@ def comm_write_headline_column(f, df):
     #headline
     col_len=len(list(df))
     for j in range(0, col_len): 
+        if debug:
+            print(('list(df)[%d]=%s') % (j, list(df)[j]))
+
         f.write('        <td>\n')
         if (j == 0):
             f.write('           <a> record__date</a>\n') #align
@@ -264,7 +267,22 @@ def comm_write_to_file(f, k, df, filename):
             element_value = a_array[0][j] #get a[i][j] element
             if debug:
                 print('element_value: %s' % element_value)
-                                     
+            '''
+            list(df)[0]=record_date
+            list(df)[1]=stock_code
+            list(df)[2]=stock_cname
+            list(df)[3]=hk_pct
+            list(df)[4]=close
+            list(df)[5]=a_pct
+            list(df)[6]=is_zig
+            list(df)[7]=is_quad
+            list(df)[8]=is_peach
+            list(df)[9]=delta1
+            list(df)[10]=delta1_m
+            list(df)[11]=conti_day
+            list(df)[12]=money_total
+            list(df)[13]=m_per_day
+            '''
             if k is -1: # normal case
                 #data_column=['record_date', 'stock_code', 'stock_cname', 'hk_pct', 'close', 'delta1', 'delta1_m', 'conti_day', 'money_total']
                 if(j == 0): 
@@ -275,7 +293,7 @@ def comm_write_to_file(f, k, df, filename):
                     f.write('           <a href="%s" target="_blank"> %s</a>\n'%(xueqiu_url, element_value))
                 elif(j == 3):
                     f.write('           <a> %.2f%s</a>\n'%(element_value, '%'))
-                elif(j == 8):
+                elif(j == 11):
                     #fix bug:  must be real number, not datetime.date for holder function
                     if list(df)[j] == 'hk_date':
                         f.write('           <a> %s</a>\n'%(element_value))
@@ -308,7 +326,35 @@ def comm_write_to_file(f, k, df, filename):
             
             else: #special case for get red color column
                 #set color to delta column, 6 is the position of hk_pct
-                #record_date,  stock_code,  stock_cname, share_holding,   close, a_pct,  hk_pct,  delta1,  delta2,  delta3,  delta4,  delta5,  delta10, delta21, delta120,    delta1_m,    delta2_m,  delta3_m, delta4_m, delta5_m,    delta10_m,   delta21_m
+                '''
+                list(df)[0]=record_date
+                list(df)[1]=stock_code
+                list(df)[2]=stock_cname
+                list(df)[3]=share_holding
+                list(df)[4]=close
+                list(df)[5]=is_zig
+                list(df)[6]=is_quad
+                list(df)[7]=is_peach
+                list(df)[8]=a_pct
+                list(df)[9]=hk_pct
+                list(df)[10]=delta1
+                list(df)[11]=delta1_m
+                list(df)[12]=delta2
+                list(df)[13]=delta3
+                list(df)[14]=delta4
+                list(df)[15]=delta5
+                list(df)[16]=delta10
+                list(df)[17]=delta21
+                list(df)[18]=delta120
+                list(df)[19]=delta2_m
+                list(df)[20]=delta3_m
+                list(df)[21]=delta4_m
+                list(df)[22]=delta5_m
+                list(df)[23]=delta10_m
+                list(df)[24]=delta21_m
+                '''
+
+               #record_date,  stock_code,  stock_cname, share_holding,   close, a_pct,  hk_pct,  delta1,  delta2,  delta3,  delta4,  delta5,  delta10, delta21, delta120,    delta1_m,    delta2_m,  delta3_m, delta4_m, delta5_m,    delta10_m,   delta21_m
                 if (j == k + 9):
                     f.write('           <a style="color: #FF0000"> %s</a>\n'%(element_value))
                 else:

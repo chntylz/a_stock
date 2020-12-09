@@ -41,7 +41,12 @@ def hsgt_get_stock_list():
 
 #get all hsgt data from hdata_hsgt_table order by record_date desc
 def hsgt_get_all_data():
-    df=hdata_hsgt.get_all_hdata_of_stock()
+    nowdate=datetime.datetime.now().date()
+    from_date=nowdate-datetime.timedelta(150)
+    print("from_date is %s"%(from_date.strftime("%Y-%m-%d")))
+
+
+    df=hdata_hsgt.get_all_hdata_of_stock(from_date.strftime("%Y-%m-%d"))
     if debug:
         print("df size is %d"% (len(df)))
     
@@ -192,6 +197,5 @@ if __name__ == '__main__':
     hsgt_handle_html_special(newfile)
     comm_handle_html_body(newfile, all_df, 'p_minus_continous_day')
     comm_handle_html_end(newfile)
-
 
 hdata_hsgt.db_disconnect()
