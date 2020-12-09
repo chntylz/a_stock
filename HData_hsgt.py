@@ -10,6 +10,7 @@ pd.set_option('display.float_format',lambda x : '%.2f' % x)
 
 debug=0
 
+cur_culumn=" record_date , stock_code, stock_cname, share_holding, percent, open, close, high, low, volume, is_zig, is_quad, is_peach "
 class HData_hsgt(object):
     def __init__(self,user,password):
         # self.aaa = aaa
@@ -136,13 +137,13 @@ class HData_hsgt(object):
                 if i % each_num == 0:
                     #print(sql_cmd)
                     if(sql_cmd != ""):
-                        self.cur.execute("insert into hdata_hsgt_table (record_date , stock_code, stock_cname, share_holding, percent, open, close, high, low, volume ) values "+sql_cmd+";")
+                        self.cur.execute("insert into hdata_hsgt_table ( " + cur_culumn + ") values "+sql_cmd+";")
                         self.conn.commit()
                         sql_cmd = ""
 
             #print(sql_cmd)
             if(sql_cmd != ""):
-                self.cur.execute("insert into hdata_hsgt_table (record_date , stock_code, stock_cname, share_holding, percent, open, close, high, low, volume ) values "+sql_cmd+";")
+                self.cur.execute("insert into hdata_hsgt_table ( " + cur_culumn + ") values "+sql_cmd+";")
                 self.conn.commit()
 
         #print(clock()-t1)
@@ -371,4 +372,7 @@ class HData_hsgt(object):
         pass
         
 
-
+#add is_zig, is_quad, is_peach column
+#alter table hdata_hsgt_table add  "is_zig" int not null default 0;
+#alter table hdata_hsgt_table add  "is_quad" int not null default 0;
+#alter table hdata_hsgt_table add  "is_peach" int not null default 0;

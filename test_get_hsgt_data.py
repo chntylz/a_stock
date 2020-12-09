@@ -105,16 +105,20 @@ def hsgt_get_day_item_from_json(file_path):
             shgt_high=day_dict['high'][0]
             shgt_low=day_dict['low'][0]
             shgt_volume=day_dict['volume'][0]
+            shgt_is_zig=day_dict['is_zig'][0]
+            shgt_is_quad=day_dict['is_quad'][0]
+            shgt_is_peach=day_dict['is_peach'][0]
 
 
-            list_tmp.append([shgt_date, shgt_code, shgt_cname, shgt_holding, shgt_percent, shgt_open, shgt_close, shgt_high, shgt_low, shgt_volume])
+
+            list_tmp.append([shgt_date, shgt_code, shgt_cname, shgt_holding, shgt_percent, shgt_open, shgt_close, shgt_high, shgt_low, shgt_volume, shgt_is_zig, shgt_is_quad, shgt_is_peach])
         else:
             print('############## code:%s, name=%s, daily data is null!!! ##############' % (shgt_code, shgt_cname))
 
     if debug:
         print(list_tmp)
 
-    dataframe_cols = ['record_date', 'stock_code','shgt_cname', 'share_holding', 'hk_pct', 'open', 'close', 'high', 'low', 'volume']
+    dataframe_cols = ['record_date', 'stock_code','shgt_cname', 'share_holding', 'hk_pct', 'open', 'close', 'high', 'low', 'volume', 'is_zig', 'is_quad', 'is_peach']
 
     df = pd.DataFrame(list_tmp, columns=dataframe_cols)
     index =  df["record_date"]

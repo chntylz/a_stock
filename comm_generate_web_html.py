@@ -85,7 +85,10 @@ def hsgt_get_continuous_info(df, select):
         delta1      = group_df.loc[0, 'delta1']
         delta1_m    = group_df.loc[0, 'delta1_m']
         close       = group_df.loc[0, 'close']
-        a_pct     = group_df.loc[0, 'a_pct']
+        a_pct       = group_df.loc[0, 'a_pct']
+        is_zig      = group_df.loc[0, 'is_zig']
+        is_quad     = group_df.loc[0, 'is_quad']
+        is_peach    = group_df.loc[0, 'is_peach']
 
         length=len(group_df)
         money_total = 0
@@ -137,11 +140,11 @@ def hsgt_get_continuous_info(df, select):
                 
         money_total = round(money_total,2)
         if debug:
-            print(max_date, stock_code, stock_cname, hk_pct, close, a_pct, delta1, i, money_total)
+            print(max_date, stock_code, stock_cname, hk_pct, close, a_pct, is_zig, is_quad, is_peach, delta1, i, money_total)
 
-        data_list.append([max_date, stock_code, stock_cname, hk_pct, close, a_pct, delta1, delta1_m, i, money_total])  #i  is conti_day
+        data_list.append([max_date, stock_code, stock_cname, hk_pct, close, a_pct, is_zig, is_quad, is_peach, delta1, delta1_m, i, money_total])  #i  is conti_day
 
-    data_column=['record_date', 'stock_code', 'stock_cname', 'hk_pct', 'close', 'a_pct', 'delta1', 'delta1_m', 'conti_day', 'money_total']
+    data_column=['record_date', 'stock_code', 'stock_cname', 'hk_pct', 'close', 'a_pct', 'is_zig', 'is_quad', 'is_peach', 'delta1', 'delta1_m', 'conti_day', 'money_total']
 
     ret_df = pd.DataFrame(data_list, columns=data_column)
     ret_df['m_per_day'] = ret_df.money_total / ret_df.conti_day
@@ -306,7 +309,7 @@ def comm_write_to_file(f, k, df, filename):
             else: #special case for get red color column
                 #set color to delta column, 6 is the position of hk_pct
                 #record_date,  stock_code,  stock_cname, share_holding,   close, a_pct,  hk_pct,  delta1,  delta2,  delta3,  delta4,  delta5,  delta10, delta21, delta120,    delta1_m,    delta2_m,  delta3_m, delta4_m, delta5_m,    delta10_m,   delta21_m
-                if (j == k + 6):
+                if (j == k + 9):
                     f.write('           <a style="color: #FF0000"> %s</a>\n'%(element_value))
                 else:
                     if(j == 0): 
