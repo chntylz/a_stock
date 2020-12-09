@@ -46,7 +46,8 @@ def hsgt_get_all_data():
     print("from_date is %s"%(from_date.strftime("%Y-%m-%d")))
 
 
-    df=hdata_hsgt.get_all_hdata_of_stock(from_date.strftime("%Y-%m-%d"))
+    #df=hdata_hsgt.get_all_hdata_of_stock(from_date.strftime("%Y-%m-%d"))
+    df=hdata_hsgt.get_data_from_hdata(start_date=from_date.strftime("%Y-%m-%d"))
     if debug:
         print("df size is %d"% (len(df)))
     
@@ -71,7 +72,7 @@ def hsgt_handle_all_data(df):
     all_df=df
 
     latest_date=all_df.loc[0,'record_date']
-    print(latest_date)
+    print('lastet_date:%s' % (latest_date))
 
     del all_df['open']
     del all_df['high']

@@ -369,7 +369,8 @@ class HData_hsgt(object):
 
         dataframe_cols=[tuple[0] for tuple in cur.description]#列名和数据库列一致
         df = pd.DataFrame(rows, columns=dataframe_cols)
-        
+        df['record_date'] = df['record_date'].apply(lambda x: x.strftime('%Y-%m-%d'))        
+
         if debug:
             print(type(df))
             print(df.head(2))
