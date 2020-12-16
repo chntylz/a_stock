@@ -7,6 +7,7 @@ sh shangzheng
 
 000651 gelidianqi
 000401 jidongshuini
+002959 xiaoxiongdianqi
 300724 jiejiaweichuang
 601933 yonghuichaoshi
 600585 hailuoshuini

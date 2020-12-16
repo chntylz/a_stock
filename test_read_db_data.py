@@ -143,7 +143,12 @@ for i in range(0,stock_len):
     log.debug("code:%s, name:%s" % (nowcode, nowname ))
     if debug:
         print("code:%s, name:%s" % (nowcode, nowname ))
-
+    '''
+    if '300724' in nowcode:
+        pass
+    else:
+        continue
+    '''
 
     #skip ST
     #if ('ST' in nowname or '300' in nowcode):
