@@ -6,6 +6,7 @@ import tushare as ts
 from Stocks import *
 from HData_fina import *
 from HData_hsgt import *
+from HData_day import *
 from comm_generate_web_html import *
 import  datetime
 
@@ -23,6 +24,7 @@ set_data_backend(AaronDataBackend())
 
 hdata_fina=HData_fina("usr","usr")
 hsgtdata=HData_hsgt("usr","usr")
+hdata_day=HData_day("usr","usr")
 
 debug = 0 
 #debug = 1
@@ -99,15 +101,48 @@ def fina_get_continuous_info(df, curr_day, select='or_yoy', net_percent=20):
         close_p = round (close_p.value, 4) * 100
 
         all_df = hsgtdata.get_data_from_hdata(stock_code=stock_code, end_date=curr_day, limit=60)
-        hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total = comm_handle_hsgt_data(all_df)
+        hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total \
+                = comm_handle_hsgt_data(all_df)
         
+        daily_df = hdata_day.get_day_hdata_of_stock(curr_day)
+        tmp_df  = daily_df[daily_df['stock_code']==stock_code]
+        if debug:
+            print(stock_code)
+            print(len(tmp_df), tmp_df)
+
+        if(len(tmp_df)):
+            is_zig   = tmp_df['is_zig'][0]
+            is_quad  = tmp_df['is_quad'][0]
+            is_peach = tmp_df['is_peach'][0]
+
+        else:
+            is_zig   = 0
+            is_quad  = 0
+            is_peach = 0
+        
+        '''
+        is_zig   = daily_df[daily_df['stock_code']==stock_code]['is_zig'][0]
+        is_quad  = daily_df[daily_df['stock_code']==stock_code]['is_quad'][0]
+        is_peach = daily_df[daily_df['stock_code']==stock_code]['is_peach'][0]
+        '''
+
 
         if debug:
-            print(curr_day, max_date, stock_code, stock_name, or_yoy,  netprofit_yoy, i, close_p, C.value, hsgt_share, hsgt_date, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total )
+            print(curr_day, max_date, stock_code, stock_name, or_yoy,  netprofit_yoy, i, \
+                    close_p, C.value, hsgt_share, hsgt_date, hsgt_percent, hsgt_delta1, hsgt_deltam,\
+                    conti_day, money_total,\
+                    is_peach, is_zig, is_quad )
 
-        data_list.append([ max_date, stock_code, stock_name, or_yoy, netprofit_yoy,  i, close_p, C.value, hsgt_share, hsgt_date, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total])  #i  is conti_day
+        data_list.append([ max_date, stock_code, stock_name, or_yoy, netprofit_yoy,  i, \
+                close_p, C.value, hsgt_share, hsgt_date, hsgt_percent, hsgt_delta1, hsgt_deltam,\
+                conti_day, money_total,\
+                is_peach, is_zig, is_quad])  #i  is conti_day
+        #break
 
-    data_column=['record_date', 'stock_code', 'stock_name', 'or_yoy', 'netprofit_yoy', 'conti_day', 'a_pct', 'close', 'hk_share', 'hk_date', 'hk_pct', 'hk_delta1', 'hk_deltam', 'conti_day', 'hk_m_total']
+    data_column=['record_date', 'stock_code', 'stock_name', 'or_yoy', 'netprofit_yoy', 'conti_day', \
+            'a_pct', 'close', 'hk_share', 'hk_date', 'hk_pct', 'hk_delta1', 'hk_deltam', \
+            'conti_day', 'hk_m_total',\
+            'peach', 'zig', 'quad']
 
     ret_df = pd.DataFrame(data_list, columns=data_column)
     if select is 'or_yoy':
@@ -117,6 +152,15 @@ def fina_get_continuous_info(df, curr_day, select='or_yoy', net_percent=20):
 
     ret_df = ret_df.fillna(0)
     ret_df=ret_df.round(2)
+
+    data_column=['record_date', 'stock_code', 'stock_name', 'or_yoy', 'netprofit_yoy', 'conti_day', \
+            'a_pct', 'close', \
+            'peach', 'zig', 'quad',\
+            'hk_share', 'hk_date', 'hk_pct', 'hk_delta1', 'hk_deltam', \
+            'conti_day', 'hk_m_total']
+
+    ret_df=ret_df.loc[:,data_column]
+
 
 
 
@@ -167,6 +211,7 @@ if __name__ == '__main__':
 
     t1 = clock()
     nowdate=datetime.datetime.now().date()
+    #nowdate=nowdate-datetime.timedelta(1)
     curr_day=nowdate.strftime("%Y-%m-%d")
     print("curr_day:%s"%(curr_day))
 
