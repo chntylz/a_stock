@@ -8,6 +8,7 @@ sh shangzheng
 000651 gelidianqi
 000401 jidongshuini
 002959 xiaoxiongdianqi
+002475 lixunjingmi
 300724 jiejiaweichuang
 601933 yonghuichaoshi
 600585 hailuoshuini
@@ -16,7 +17,6 @@ sh shangzheng
 600745 wentaikeji
 002273 shuijingguangdian
 300638 guanghetong
-002475 lixunjingmi
 002049 ziguangguohui
 002230 kedaxunfei
 002030 da'an'ji'yin

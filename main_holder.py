@@ -35,6 +35,13 @@ def update_holder(nowdate):
     for i in range(0,length):
         nowcode=codestock_local[i][0]
 
+        '''
+        if nowcode == '601696':
+            pass
+        else:
+            continue
+        '''
+
         maxdate=hdata_holder.db_get_maxdate_of_stock(nowcode)
         if debug:
             print('maxdate:%s, nowdate:%s' % (maxdate, nowdate))
@@ -55,10 +62,12 @@ def update_holder(nowdate):
             stock_code_new= nowcode + '.SZ'
 
         if debug:
-            print('stock_code_new:%s, start_date:%s, end_date:%s' % (stock_code_new, start_date, end_date))
+            print('stock_code_new:%s, start_date:%s, end_date:%s' % \
+                    (stock_code_new, start_date, end_date))
 
         #get data
-        hist_data = pro.stk_holdernumber(ts_code=stock_code_new, start_date=start_date, end_date=end_date)
+        hist_data = pro.stk_holdernumber(ts_code=stock_code_new, \
+                start_date=start_date, end_date=end_date)
         
         time.sleep(0.65) #fix bug: 抱歉，您每分钟最多访问该接口100次
 
@@ -69,12 +78,14 @@ def update_holder(nowdate):
 
         if(len(hist_data) == 0):
             if debug:
-                print("hist_data length is 0: i=%d, nowcode:%s, nowname:%s " %(i,nowcode,codestock_local[i][1]))
+                print("hist_data length is 0: i=%d, nowcode:%s, nowname:%s " %\
+                        (i,nowcode,codestock_local[i][1]))
             continue
 
         hist_data=hist_data.fillna(0)
 
-        hist_data=hist_data.drop_duplicates(subset='end_date', keep='first', inplace=False)  #delete end_date line with the same data
+        #delete end_date line with the same data
+        hist_data=hist_data.drop_duplicates(subset='end_date', keep='first', inplace=False) 
 
         #handle hist_data
         new_data =  pd.DataFrame()
@@ -84,7 +95,8 @@ def update_holder(nowdate):
         new_data['end_date']    = hist_data['end_date']    
         new_data['holder_num']     = hist_data['holder_num']     
 
-        new_data['record_date']=new_data['record_date'].apply(lambda x: datetime.datetime.strptime(x,'%Y%m%d'))
+        new_data['record_date']=new_data['record_date'].\
+                apply(lambda x: datetime.datetime.strptime(x,'%Y%m%d'))
         
         hist_data = new_data.set_index('record_date')
 
