@@ -174,7 +174,8 @@ class HData_holder(object):
                     #print(sql_cmd)
                     if(sql_cmd != ""):
                         self.cur.execute("insert into hdata_holder (" + data_format + " ) values " + sql_cmd + \
-                                "  ON CONFLICT (record_date , stock_code ) DO UPDATE SET ann_date  = EXCLUDED.ann_date , end_date  = EXCLUDED.end_date, holder_num=EXCLUDED.holder_num ;")
+                                "  ON CONFLICT (record_date , stock_code ) DO UPDATE SET ann_date  = EXCLUDED.ann_date , \
+                                end_date  = EXCLUDED.end_date, holder_num=EXCLUDED.holder_num ;")
                         self.conn.commit()
                         sql_cmd = ""
 
@@ -182,7 +183,8 @@ class HData_holder(object):
             if(sql_cmd != ""):
                 #self.cur.execute("insert into hdata_holder (" + data_format + " ) values " + sql_cmd + ";")
                 self.cur.execute("insert into hdata_holder (" + data_format + " ) values " + sql_cmd + \
-                        "  ON CONFLICT (record_date , stock_code ) DO UPDATE SET ann_date  = EXCLUDED.ann_date , end_date  = EXCLUDED.end_date, holder_num=EXCLUDED.holder_num ;")
+                        "  ON CONFLICT (record_date , stock_code ) DO UPDATE SET ann_date  = EXCLUDED.ann_date , \
+                        end_date  = EXCLUDED.end_date, holder_num=EXCLUDED.holder_num ;")
                 self.conn.commit()
 
         #print(clock()-t1)

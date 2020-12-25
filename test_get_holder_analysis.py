@@ -34,7 +34,7 @@ debug = 0
 
 def get_holder_data():
     nowdate = datetime.datetime.now().date()    
-    lastdate = nowdate - datetime.timedelta(365 * 2) #two years ago
+    lastdate = nowdate - datetime.timedelta(365 * 3) #3 years ago
 
     print('nowdate:%s, lastdate:%s' % (nowdate, lastdate))
     holder_data  =  hdata_holder.get_data_from_hdata( start_date=lastdate.strftime("%Y%m%d"), end_date=nowdate.strftime("%Y%m%d"))
@@ -89,6 +89,9 @@ def holder_get_continuous_info(df, curr_day):
 
         #algorithm
         if(i > 1):
+            curr_holder_num = group_df.loc[0, 'holder_num']
+            i_holder_num = group_df.loc[i, 'holder_num']
+            holder_pct_i =  (curr_holder_num - i_holder_num ) * 100 / i_holder_num
             pass
             #if group_df.loc[0]['holder_num'] < group_df.loc[1]['holder_num']:  #decline, skip
             #   continue
@@ -111,8 +114,17 @@ def holder_get_continuous_info(df, curr_day):
         all_df = hdata_hsgt.get_data_from_hdata(stock_code=stock_code, end_date=curr_day, limit=60)
         hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total \
                 = comm_handle_hsgt_data(all_df)
-        
-        daily_df = hdata_day.get_day_hdata_of_stock(curr_day)
+       
+
+        now_hour = int(datetime.datetime.now().strftime("%H"))
+        if now_hour > 12:
+            daily_df = hdata_day.get_day_hdata_of_stock(curr_day)
+        else:
+            nowdate=datetime.datetime.now().date()
+            lastdate=nowdate-datetime.timedelta(1)
+            last_day=nowdate.strftime("%Y-%m-%d")
+            daily_df = hdata_day.get_day_hdata_of_stock(last_day)
+
         tmp_df  = daily_df[daily_df['stock_code']==stock_code]
         if debug:
             print(stock_code)
@@ -136,18 +148,18 @@ def holder_get_continuous_info(df, curr_day):
 
 
         if debug:
-            print( max_date, stock_code, stock_name, holder_num, i, holder_pct, close_p, C.value, \
+            print( max_date, stock_code, stock_name, holder_num, i,  holder_pct, holder_pct_i, close_p, C.value, \
                     hsgt_share, hsgt_date, hsgt_percent, hsgt_delta1, hsgt_deltam, \
                     conti_day, money_total,\
                     is_peach, is_zig, is_quad )
 
-        data_list.append([ max_date, stock_code, stock_name, holder_num,  i, holder_pct, \
+        data_list.append([ max_date, stock_code, stock_name, holder_num,  i,  holder_pct, holder_pct_i, \
                 close_p, C.value,  hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, \
                 conti_day, money_total,\
                 is_peach, is_zig, is_quad])  #i  is conti_day
 
 
-    data_column=['record_date', 'stock_code', 'stock_name', 'holder_num', 'cont_d', 'holder_pct', \
+    data_column=['record_date', 'stock_code', 'stock_name', 'holder_num', 'cont_d', 'holder_pct', 'holder_pct_i', \
             'a_pct', 'close', 'hk_date', 'hsgt_share', 'hk_pct', 'hk_delta1', 'hk_deltam', \
             'hk_cont_d', 'hk_m_total',\
             'peach', 'zig', 'quad']
@@ -157,7 +169,7 @@ def holder_get_continuous_info(df, curr_day):
     ret_df=ret_df.round(2)
     #ret_df = ret_df.sort_values('cont_d', ascending=0)
 
-    data_column=['record_date', 'stock_code', 'stock_name', 'holder_num', 'cont_d', 'holder_pct', \
+    data_column=['record_date', 'stock_code', 'stock_name', 'holder_num', 'cont_d', 'holder_pct', 'holder_pct_i', \
             'a_pct', 'close', \
             'peach', 'zig', 'quad',\
             'hk_date', 'hsgt_share', 'hk_pct', 'hk_delta1', 'hk_deltam', \
@@ -213,7 +225,10 @@ if __name__ == '__main__':
 
     t1 = clock()
     nowdate=datetime.datetime.now().date()
+    lastdate=nowdate-datetime.timedelta(1)
     curr_day=nowdate.strftime("%Y-%m-%d")
+    last_day=nowdate.strftime("%Y-%m-%d")
+
     print("curr_day:%s"%(curr_day))
 
     df, df_holder = get_example_data(curr_day)

@@ -78,14 +78,137 @@ class HData_fina(object):
                         print(sql_cmd)
 
                     if(sql_cmd != ""):
-                        self.cur.execute("insert into hdata_fina_table (ts_code, ann_date, end_date, eps, dt_eps, total_revenue_ps, revenue_ps, capital_rese_ps, surplus_rese_ps, undist_profit_ps, extra_item, profit_dedt, gross_margin, current_ratio, quick_ratio, cash_ratio, ar_turn, ca_turn, fa_turn, assets_turn, op_income, ebit, ebitda, fcff, fcfe, current_exint, noncurrent_exint, interestdebt, netdebt, tangible_asset, working_capital, networking_capital, invest_capital, retained_earnings, diluted2_eps, bps, ocfps, retainedps, cfps, ebit_ps, fcff_ps, fcfe_ps, netprofit_margin, grossprofit_margin, cogs_of_sales, expense_of_sales, profit_to_gr, saleexp_to_gr, adminexp_of_gr, finaexp_of_gr, impai_ttm, gc_of_gr, op_of_gr, ebit_of_gr, roe, roe_waa, roe_dt, roa, npta, roic, roe_yearly, roa2_yearly, debt_to_assets, assets_to_eqt, dp_assets_to_eqt, ca_to_assets, nca_to_assets, tbassets_to_totalassets, int_to_talcap, eqt_to_talcapital, currentdebt_to_debt, longdeb_to_debt, ocf_to_shortdebt, debt_to_eqt, eqt_to_debt, eqt_to_interestdebt, tangibleasset_to_debt, tangasset_to_intdebt, tangibleasset_to_netdebt, ocf_to_debt, turn_days, roa_yearly, roa_dp, fixed_assets, profit_to_op, q_saleexp_to_gr, q_gc_to_gr, q_roe, q_dt_roe, q_npta, q_ocf_to_sales, basic_eps_yoy, dt_eps_yoy, cfps_yoy, op_yoy, ebt_yoy, netprofit_yoy, dt_netprofit_yoy, ocf_yoy, roe_yoy, bps_yoy, assets_yoy, eqt_yoy, tr_yoy, or_yoy, q_sales_yoy, q_op_qoq, equity_yoy ) values "+sql_cmd+";")
+                        self.cur.execute("insert into hdata_fina_table (ts_code, ann_date, end_date, eps, dt_eps, \
+                            total_revenue_ps, revenue_ps, capital_rese_ps, surplus_rese_ps, undist_profit_ps, \
+                            extra_item, profit_dedt, gross_margin, current_ratio, quick_ratio, cash_ratio, \
+                            ar_turn, ca_turn, fa_turn, assets_turn, op_income, ebit, ebitda, fcff, fcfe, \
+                            current_exint, noncurrent_exint, interestdebt, netdebt, tangible_asset, \
+                            working_capital, networking_capital, invest_capital, retained_earnings, \
+                            diluted2_eps, bps, ocfps, retainedps, cfps, ebit_ps, fcff_ps, fcfe_ps, \
+                            netprofit_margin, grossprofit_margin, cogs_of_sales, expense_of_sales, \
+                            profit_to_gr, saleexp_to_gr, adminexp_of_gr, finaexp_of_gr, impai_ttm, \
+                            gc_of_gr, op_of_gr, ebit_of_gr, roe, roe_waa, roe_dt, roa, npta, roic, \
+                            roe_yearly, roa2_yearly, debt_to_assets, assets_to_eqt, dp_assets_to_eqt, \
+                            ca_to_assets, nca_to_assets, tbassets_to_totalassets, int_to_talcap, \
+                            eqt_to_talcapital, currentdebt_to_debt, longdeb_to_debt, ocf_to_shortdebt, \
+                            debt_to_eqt, eqt_to_debt, eqt_to_interestdebt, tangibleasset_to_debt, \
+                            tangasset_to_intdebt, tangibleasset_to_netdebt, ocf_to_debt, turn_days, \
+                            roa_yearly, roa_dp, fixed_assets, profit_to_op, q_saleexp_to_gr, q_gc_to_gr, \
+                            q_roe, q_dt_roe, q_npta, q_ocf_to_sales, basic_eps_yoy, dt_eps_yoy, cfps_yoy, \
+                            op_yoy, ebt_yoy, netprofit_yoy, dt_netprofit_yoy, ocf_yoy, roe_yoy, bps_yoy, \
+                            assets_yoy, eqt_yoy, tr_yoy, or_yoy, q_sales_yoy, q_op_qoq, equity_yoy ) \
+                            values "\
+                            +sql_cmd+\
+                            "   ON CONFLICT (ts_code, end_date) DO UPDATE SET " +\
+                            " ann_date= EXCLUDED.ann_date ,eps= EXCLUDED.eps ,dt_eps= EXCLUDED.dt_eps ,\
+                            total_revenue_ps= EXCLUDED.total_revenue_ps ,revenue_ps= EXCLUDED.revenue_ps ,capital_rese_ps= EXCLUDED.capital_rese_ps ,\
+                            surplus_rese_ps= EXCLUDED.surplus_rese_ps ,undist_profit_ps= EXCLUDED.undist_profit_ps ,\
+                            extra_item= EXCLUDED.extra_item ,profit_dedt= EXCLUDED.profit_dedt ,gross_margin= EXCLUDED.gross_margin ,\
+                            current_ratio= EXCLUDED.current_ratio ,quick_ratio= EXCLUDED.quick_ratio ,cash_ratio= EXCLUDED.cash_ratio ,\
+                            ar_turn= EXCLUDED.ar_turn ,ca_turn= EXCLUDED.ca_turn ,fa_turn= EXCLUDED.fa_turn ,assets_turn= EXCLUDED.assets_turn ,\
+                            op_income= EXCLUDED.op_income ,ebit= EXCLUDED.ebit ,ebitda= EXCLUDED.ebitda ,fcff= EXCLUDED.fcff ,fcfe= EXCLUDED.fcfe ,\
+                            current_exint= EXCLUDED.current_exint ,noncurrent_exint= EXCLUDED.noncurrent_exint ,interestdebt= EXCLUDED.interestdebt ,\
+                            netdebt= EXCLUDED.netdebt ,tangible_asset= EXCLUDED.tangible_asset ,\
+                            working_capital= EXCLUDED.working_capital ,networking_capital= EXCLUDED.networking_capital ,\
+                            invest_capital= EXCLUDED.invest_capital ,retained_earnings= EXCLUDED.retained_earnings ,\
+                            diluted2_eps= EXCLUDED.diluted2_eps ,bps= EXCLUDED.bps ,ocfps= EXCLUDED.ocfps ,retainedps= EXCLUDED.retainedps ,\
+                            cfps= EXCLUDED.cfps ,ebit_ps= EXCLUDED.ebit_ps ,fcff_ps= EXCLUDED.fcff_ps ,fcfe_ps= EXCLUDED.fcfe_ps ,\
+                            netprofit_margin= EXCLUDED.netprofit_margin ,grossprofit_margin= EXCLUDED.grossprofit_margin ,\
+                            cogs_of_sales= EXCLUDED.cogs_of_sales ,expense_of_sales= EXCLUDED.expense_of_sales ,\
+                            profit_to_gr= EXCLUDED.profit_to_gr ,saleexp_to_gr= EXCLUDED.saleexp_to_gr ,adminexp_of_gr= EXCLUDED.adminexp_of_gr ,\
+                            finaexp_of_gr= EXCLUDED.finaexp_of_gr ,impai_ttm= EXCLUDED.impai_ttm ,\
+                            gc_of_gr= EXCLUDED.gc_of_gr ,op_of_gr= EXCLUDED.op_of_gr ,ebit_of_gr= EXCLUDED.ebit_of_gr ,roe= EXCLUDED.roe ,\
+                            roe_waa= EXCLUDED.roe_waa ,roe_dt= EXCLUDED.roe_dt ,roa= EXCLUDED.roa ,npta= EXCLUDED.npta ,roic= EXCLUDED.roic ,\
+                            roe_yearly= EXCLUDED.roe_yearly ,roa2_yearly= EXCLUDED.roa2_yearly ,debt_to_assets= EXCLUDED.debt_to_assets ,\
+                            assets_to_eqt= EXCLUDED.assets_to_eqt ,dp_assets_to_eqt= EXCLUDED.dp_assets_to_eqt ,\
+                            ca_to_assets= EXCLUDED.ca_to_assets ,nca_to_assets= EXCLUDED.nca_to_assets ,\
+                            tbassets_to_totalassets= EXCLUDED.tbassets_to_totalassets ,int_to_talcap= EXCLUDED.int_to_talcap ,\
+                            eqt_to_talcapital= EXCLUDED.eqt_to_talcapital ,currentdebt_to_debt= EXCLUDED.currentdebt_to_debt ,\
+                            longdeb_to_debt= EXCLUDED.longdeb_to_debt ,ocf_to_shortdebt= EXCLUDED.ocf_to_shortdebt ,\
+                            debt_to_eqt= EXCLUDED.debt_to_eqt ,eqt_to_debt= EXCLUDED.eqt_to_debt ,\
+                            eqt_to_interestdebt= EXCLUDED.eqt_to_interestdebt ,tangibleasset_to_debt= EXCLUDED.tangibleasset_to_debt ,\
+                            tangasset_to_intdebt= EXCLUDED.tangasset_to_intdebt ,tangibleasset_to_netdebt= EXCLUDED.tangibleasset_to_netdebt ,\
+                            ocf_to_debt= EXCLUDED.ocf_to_debt ,turn_days= EXCLUDED.turn_days ,\
+                            roa_yearly= EXCLUDED.roa_yearly ,roa_dp= EXCLUDED.roa_dp ,fixed_assets= EXCLUDED.fixed_assets ,\
+                            profit_to_op= EXCLUDED.profit_to_op ,q_saleexp_to_gr= EXCLUDED.q_saleexp_to_gr ,q_gc_to_gr= EXCLUDED.q_gc_to_gr ,\
+                            q_roe= EXCLUDED.q_roe ,q_dt_roe= EXCLUDED.q_dt_roe ,q_npta= EXCLUDED.q_npta ,\
+                            q_ocf_to_sales= EXCLUDED.q_ocf_to_sales ,basic_eps_yoy= EXCLUDED.basic_eps_yoy ,\
+                            dt_eps_yoy= EXCLUDED.dt_eps_yoy ,cfps_yoy= EXCLUDED.cfps_yoy ,\
+                            op_yoy= EXCLUDED.op_yoy ,ebt_yoy= EXCLUDED.ebt_yoy ,netprofit_yoy= EXCLUDED.netprofit_yoy ,\
+                            dt_netprofit_yoy= EXCLUDED.dt_netprofit_yoy ,ocf_yoy= EXCLUDED.ocf_yoy ,\
+                            roe_yoy= EXCLUDED.roe_yoy ,bps_yoy= EXCLUDED.bps_yoy ,\
+                            assets_yoy= EXCLUDED.assets_yoy ,eqt_yoy= EXCLUDED.eqt_yoy ,tr_yoy= EXCLUDED.tr_yoy ,\
+                            or_yoy= EXCLUDED.or_yoy ,q_sales_yoy= EXCLUDED.q_sales_yoy ,q_op_qoq= EXCLUDED.q_op_qoq ,\
+                            equity_yoy=EXCLUDED.equity_yoy ;")
+                            
                         self.conn.commit()
                         sql_cmd = ""
 
             if debug:
                 print(sql_cmd)
             if(sql_cmd != ""):
-                self.cur.execute("insert into hdata_fina_table (ts_code, ann_date, end_date, eps, dt_eps, total_revenue_ps, revenue_ps, capital_rese_ps, surplus_rese_ps, undist_profit_ps, extra_item, profit_dedt, gross_margin, current_ratio, quick_ratio, cash_ratio, ar_turn, ca_turn, fa_turn, assets_turn, op_income, ebit, ebitda, fcff, fcfe, current_exint, noncurrent_exint, interestdebt, netdebt, tangible_asset, working_capital, networking_capital, invest_capital, retained_earnings, diluted2_eps, bps, ocfps, retainedps, cfps, ebit_ps, fcff_ps, fcfe_ps, netprofit_margin, grossprofit_margin, cogs_of_sales, expense_of_sales, profit_to_gr, saleexp_to_gr, adminexp_of_gr, finaexp_of_gr, impai_ttm, gc_of_gr, op_of_gr, ebit_of_gr, roe, roe_waa, roe_dt, roa, npta, roic, roe_yearly, roa2_yearly, debt_to_assets, assets_to_eqt, dp_assets_to_eqt, ca_to_assets, nca_to_assets, tbassets_to_totalassets, int_to_talcap, eqt_to_talcapital, currentdebt_to_debt, longdeb_to_debt, ocf_to_shortdebt, debt_to_eqt, eqt_to_debt, eqt_to_interestdebt, tangibleasset_to_debt, tangasset_to_intdebt, tangibleasset_to_netdebt, ocf_to_debt, turn_days, roa_yearly, roa_dp, fixed_assets, profit_to_op, q_saleexp_to_gr, q_gc_to_gr, q_roe, q_dt_roe, q_npta, q_ocf_to_sales, basic_eps_yoy, dt_eps_yoy, cfps_yoy, op_yoy, ebt_yoy, netprofit_yoy, dt_netprofit_yoy, ocf_yoy, roe_yoy, bps_yoy, assets_yoy, eqt_yoy, tr_yoy, or_yoy, q_sales_yoy, q_op_qoq, equity_yoy ) values "+sql_cmd+";")
+                self.cur.execute("insert into hdata_fina_table (ts_code, ann_date, end_date, eps, dt_eps, \
+                    total_revenue_ps, revenue_ps, capital_rese_ps, surplus_rese_ps, undist_profit_ps, \
+                    extra_item, profit_dedt, gross_margin, current_ratio, quick_ratio, cash_ratio, \
+                    ar_turn, ca_turn, fa_turn, assets_turn, op_income, ebit, ebitda, fcff, fcfe, \
+                    current_exint, noncurrent_exint, interestdebt, netdebt, tangible_asset, \
+                    working_capital, networking_capital, invest_capital, retained_earnings, \
+                    diluted2_eps, bps, ocfps, retainedps, cfps, ebit_ps, fcff_ps, fcfe_ps, \
+                    netprofit_margin, grossprofit_margin, cogs_of_sales, expense_of_sales, \
+                    profit_to_gr, saleexp_to_gr, adminexp_of_gr, finaexp_of_gr, impai_ttm, \
+                    gc_of_gr, op_of_gr, ebit_of_gr, roe, roe_waa, roe_dt, roa, npta, roic, \
+                    roe_yearly, roa2_yearly, debt_to_assets, assets_to_eqt, dp_assets_to_eqt, \
+                    ca_to_assets, nca_to_assets, tbassets_to_totalassets, int_to_talcap, \
+                    eqt_to_talcapital, currentdebt_to_debt, longdeb_to_debt, ocf_to_shortdebt, \
+                    debt_to_eqt, eqt_to_debt, eqt_to_interestdebt, tangibleasset_to_debt, \
+                    tangasset_to_intdebt, tangibleasset_to_netdebt, ocf_to_debt, turn_days, \
+                    roa_yearly, roa_dp, fixed_assets, profit_to_op, q_saleexp_to_gr, q_gc_to_gr, \
+                    q_roe, q_dt_roe, q_npta, q_ocf_to_sales, basic_eps_yoy, dt_eps_yoy, cfps_yoy, \
+                    op_yoy, ebt_yoy, netprofit_yoy, dt_netprofit_yoy, ocf_yoy, roe_yoy, bps_yoy, \
+                    assets_yoy, eqt_yoy, tr_yoy, or_yoy, q_sales_yoy, q_op_qoq, equity_yoy ) \
+                    values "\
+                    +sql_cmd+\
+                     "   ON CONFLICT (ts_code, end_date) DO UPDATE SET " +\
+                     " ann_date= EXCLUDED.ann_date ,eps= EXCLUDED.eps ,dt_eps= EXCLUDED.dt_eps ,\
+                     total_revenue_ps= EXCLUDED.total_revenue_ps ,revenue_ps= EXCLUDED.revenue_ps ,capital_rese_ps= EXCLUDED.capital_rese_ps ,\
+                     surplus_rese_ps= EXCLUDED.surplus_rese_ps ,undist_profit_ps= EXCLUDED.undist_profit_ps ,\
+                     extra_item= EXCLUDED.extra_item ,profit_dedt= EXCLUDED.profit_dedt ,gross_margin= EXCLUDED.gross_margin ,\
+                     current_ratio= EXCLUDED.current_ratio ,quick_ratio= EXCLUDED.quick_ratio ,cash_ratio= EXCLUDED.cash_ratio ,\
+                     ar_turn= EXCLUDED.ar_turn ,ca_turn= EXCLUDED.ca_turn ,fa_turn= EXCLUDED.fa_turn ,assets_turn= EXCLUDED.assets_turn ,\
+                     op_income= EXCLUDED.op_income ,ebit= EXCLUDED.ebit ,ebitda= EXCLUDED.ebitda ,fcff= EXCLUDED.fcff ,fcfe= EXCLUDED.fcfe ,\
+                     current_exint= EXCLUDED.current_exint ,noncurrent_exint= EXCLUDED.noncurrent_exint ,interestdebt= EXCLUDED.interestdebt ,\
+                     netdebt= EXCLUDED.netdebt ,tangible_asset= EXCLUDED.tangible_asset ,\
+                     working_capital= EXCLUDED.working_capital ,networking_capital= EXCLUDED.networking_capital ,\
+                     invest_capital= EXCLUDED.invest_capital ,retained_earnings= EXCLUDED.retained_earnings ,\
+                     diluted2_eps= EXCLUDED.diluted2_eps ,bps= EXCLUDED.bps ,ocfps= EXCLUDED.ocfps ,retainedps= EXCLUDED.retainedps ,\
+                     cfps= EXCLUDED.cfps ,ebit_ps= EXCLUDED.ebit_ps ,fcff_ps= EXCLUDED.fcff_ps ,fcfe_ps= EXCLUDED.fcfe_ps ,\
+                     netprofit_margin= EXCLUDED.netprofit_margin ,grossprofit_margin= EXCLUDED.grossprofit_margin ,\
+                     cogs_of_sales= EXCLUDED.cogs_of_sales ,expense_of_sales= EXCLUDED.expense_of_sales ,\
+                     profit_to_gr= EXCLUDED.profit_to_gr ,saleexp_to_gr= EXCLUDED.saleexp_to_gr ,adminexp_of_gr= EXCLUDED.adminexp_of_gr ,\
+                     finaexp_of_gr= EXCLUDED.finaexp_of_gr ,impai_ttm= EXCLUDED.impai_ttm ,\
+                     gc_of_gr= EXCLUDED.gc_of_gr ,op_of_gr= EXCLUDED.op_of_gr ,ebit_of_gr= EXCLUDED.ebit_of_gr ,roe= EXCLUDED.roe ,\
+                     roe_waa= EXCLUDED.roe_waa ,roe_dt= EXCLUDED.roe_dt ,roa= EXCLUDED.roa ,npta= EXCLUDED.npta ,roic= EXCLUDED.roic ,\
+                     roe_yearly= EXCLUDED.roe_yearly ,roa2_yearly= EXCLUDED.roa2_yearly ,debt_to_assets= EXCLUDED.debt_to_assets ,\
+                     assets_to_eqt= EXCLUDED.assets_to_eqt ,dp_assets_to_eqt= EXCLUDED.dp_assets_to_eqt ,\
+                     ca_to_assets= EXCLUDED.ca_to_assets ,nca_to_assets= EXCLUDED.nca_to_assets ,\
+                     tbassets_to_totalassets= EXCLUDED.tbassets_to_totalassets ,int_to_talcap= EXCLUDED.int_to_talcap ,\
+                     eqt_to_talcapital= EXCLUDED.eqt_to_talcapital ,currentdebt_to_debt= EXCLUDED.currentdebt_to_debt ,\
+                     longdeb_to_debt= EXCLUDED.longdeb_to_debt ,ocf_to_shortdebt= EXCLUDED.ocf_to_shortdebt ,\
+                     debt_to_eqt= EXCLUDED.debt_to_eqt ,eqt_to_debt= EXCLUDED.eqt_to_debt ,\
+                     eqt_to_interestdebt= EXCLUDED.eqt_to_interestdebt ,tangibleasset_to_debt= EXCLUDED.tangibleasset_to_debt ,\
+                     tangasset_to_intdebt= EXCLUDED.tangasset_to_intdebt ,tangibleasset_to_netdebt= EXCLUDED.tangibleasset_to_netdebt ,\
+                     ocf_to_debt= EXCLUDED.ocf_to_debt ,turn_days= EXCLUDED.turn_days ,\
+                     roa_yearly= EXCLUDED.roa_yearly ,roa_dp= EXCLUDED.roa_dp ,fixed_assets= EXCLUDED.fixed_assets ,\
+                     profit_to_op= EXCLUDED.profit_to_op ,q_saleexp_to_gr= EXCLUDED.q_saleexp_to_gr ,q_gc_to_gr= EXCLUDED.q_gc_to_gr ,\
+                     q_roe= EXCLUDED.q_roe ,q_dt_roe= EXCLUDED.q_dt_roe ,q_npta= EXCLUDED.q_npta ,\
+                     q_ocf_to_sales= EXCLUDED.q_ocf_to_sales ,basic_eps_yoy= EXCLUDED.basic_eps_yoy ,\
+                     dt_eps_yoy= EXCLUDED.dt_eps_yoy ,cfps_yoy= EXCLUDED.cfps_yoy ,\
+                     op_yoy= EXCLUDED.op_yoy ,ebt_yoy= EXCLUDED.ebt_yoy ,netprofit_yoy= EXCLUDED.netprofit_yoy ,\
+                     dt_netprofit_yoy= EXCLUDED.dt_netprofit_yoy ,ocf_yoy= EXCLUDED.ocf_yoy ,\
+                     roe_yoy= EXCLUDED.roe_yoy ,bps_yoy= EXCLUDED.bps_yoy ,\
+                     assets_yoy= EXCLUDED.assets_yoy ,eqt_yoy= EXCLUDED.eqt_yoy ,tr_yoy= EXCLUDED.tr_yoy ,\
+                     or_yoy= EXCLUDED.or_yoy ,q_sales_yoy= EXCLUDED.q_sales_yoy ,q_op_qoq= EXCLUDED.q_op_qoq ,\
+                     equity_yoy=EXCLUDED.equity_yoy ;")
                 self.conn.commit()
 
         #print(clock()-t1)

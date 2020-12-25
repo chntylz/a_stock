@@ -9,6 +9,10 @@ sh shangzheng
 000401 jidongshuini
 002959 xiaoxiongdianqi
 002475 lixunjingmi
+300239 dongbaoshengwu
+300317 jiaweixinneng
+300142 wosengshengwu
+
 300724 jiejiaweichuang
 601933 yonghuichaoshi
 600585 hailuoshuini

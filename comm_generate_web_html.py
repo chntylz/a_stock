@@ -208,8 +208,10 @@ def comm_handle_link(stock_code):
         
     xueqiu_url='https://xueqiu.com/S/' + stock_code_new
     hsgt_url='../../cgi-bin/hsgt-search.cgi?name=' + tmp_stock_code
+    fina_url   = xueqiu_url + '/detail#/ZYCWZB'    
 
-    fina_url = xueqiu_url + '/detail#/ZYCWZB'    
+    holder_url = xueqiu_url + '/detail#/GDRS'    
+    add_url    = xueqiu_url + '/detail#/GGZJC'    
     return xueqiu_url, hsgt_url, fina_url
 
 #image_name='2019-09-23-1-002436-兴森科技-814-878-891-796-840.png'
