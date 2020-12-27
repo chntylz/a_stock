@@ -114,6 +114,7 @@ print("start_time: %s, end_time: %s" % (start_time, end_time))
 
 #debug switch
 debug = 0
+#debug = 1
 
 clean_flag = True
 
@@ -140,8 +141,14 @@ for i in range(0,stock_len):
     nowname=codestock_local[i][1]
     log.debug("code:%s, name:%s" % (nowcode, nowname ))
     if debug:
-        print("code:%s, name:%s" % (nowcode, nowname ))
+        #print("code:%s, name:%s" % (nowcode, nowname ))
+        pass
 
+    if (False):
+        if nowcode == '001896' or nowcode == '600810':
+            pass
+        else:
+            continue
 
     #skip ST
     #if ('ST' in nowname or '300' in nowcode):
@@ -151,7 +158,7 @@ for i in range(0,stock_len):
             print("skip code: code:%s, name:%s" % (nowcode, nowname ))
         continue
 
-    detail_info = hdata.get_limit_hdata_of_stock(nowcode, nowdate.strftime("%Y-%m-%d"), 300)
+    detail_info = hdata.get_limit_hdata_of_stock(nowcode, nowdate.strftime("%Y-%m-%d"), 600)
     #detail_info = hdata.get_limit_hdata_of_stock('000029',100) # test 'Exception: inputs are all NaN'
     #detail_info = all_info[all_info['stock_code'].isin([nowcode])]  #get date if nowcode == all_info['stock_code']
     #detail_info = detail_info.tail(100)
@@ -221,21 +228,43 @@ for i in range(0,stock_len):
 
     yes_p = ((REF(C, 1) - REF(C, 2))/REF(C, 2)) 
     yes_p = round (yes_p.value, 4)
+    
+    # C cross EMA12
+    cond_1 = C > O and today_p > 0.01 and ( REF(C, 1) <  REF(EMA(C,12), 1) and C > EMA(C,12)) 
+    if debug:
+        print( REF(C, 1) ,  REF(EMA(C,12), 1) ,  C , EMA(C,12))
 
-    '''
-    cond_1 = C > O and today_p > 0.01 and ( REF(C, 1) <  REF(EMA(C,12), 1) and C > EMA(C,12)) # C cross EMA12
-    cond_2 = (O < middleband[-1] and C > middleband[-1] ) or (O < C and O > middleband[-1] )  
-    cond_3 = macd_cross(dif, dea) # macd gold cross
-    cond_4 = cond_1 and cond_2 and (cond_3 == 1) 
-    '''
+    #C cross boll-mid
+    cond_2 = (O < middleband[-1] and C > middleband[-1])
 
-    cond_5 = peach_exist(nowdate, nowcode, 2, detail_info)
-    if cond_5 and today_p > 0.01:
+    #dif > dea
+    #cond_3 = dif[-1] >  dea[-1] # macd gold cross
+
+    #dif dea become big
+    cond_3 = dif[-1] > dif[-2] or dea[-1] > dea[-2]
+    if debug:
+        print(dif[-1] , dif[-2] , dea[-1] , dea[-2])
+
+    #C cross ma5 and ma10
+    low=min(REF(C,1), O)
+    cond_4 = low < MA(C, 5)  and C > MA(C, 5)
+
+    cond_5 = low < MA(C, 10) and C > MA(C, 10)
+
+    #volume not big 
+    cond_6 = V < (1.2 * REF(V, 1)) and V > (0.8 * REF(V, 1))
+    cond_6 = True
+
+
+    if debug:
+        print(cond_1, cond_2, cond_3, cond_4, cond_5 , cond_6)
+    if cond_1 and cond_2 and cond_3 and cond_4 and cond_5 and cond_6:
         draw_flag = True
-        print("[tao_yuan_san_jie_yi] peach and macd golden cross: code:%s, name:%s" % (nowcode, nowname ))
+        print("[tao_yuan_san_jie_yi_adv] peach and macd golden cross: code:%s, name:%s" % \
+                (nowcode, nowname ))
 
     #############################################################################
-
+    
 
     ##############################################################################
     '''
@@ -301,7 +330,8 @@ for i in range(0,stock_len):
     ################################################################
 
 
-shell_cmd='cp -rf stock_data/' + nowdate.strftime("%Y-%m-%d") +'*'  + ' /var/www/html/stock_data' +'/'
+shell_cmd='cp -rf stock_data/' + nowdate.strftime("%Y-%m-%d") +'*'  + \
+        ' /var/www/html/stock_data' +'/'
 os.system(shell_cmd)
 if debug:
     print('shell_cmd: %s' % shell_cmd)
