@@ -218,21 +218,52 @@ for i in range(0,stock_len):
     yes_p = ((REF(C, 1) - REF(C, 2))/REF(C, 2)) 
     yes_p = round (yes_p.value, 4)
 
-    '''
-    cond_1 = C > O and today_p > 0.01 and ( REF(C, 1) <  REF(EMA(C,12), 1) and C > EMA(C,12)) # C cross EMA12
-    cond_2 = (O < middleband[-1] and C > middleband[-1] ) or (O < C and O > middleband[-1] )  
-    cond_3 = macd_cross(dif, dea) # macd gold cross
-    cond_4 = cond_1 and cond_2 and (cond_3 == 1) 
-    '''
+    if ( False):
+        #is_peach
+        cond_5 = peach_exist(nowdate, nowcode, 2, detail_info)
+        if cond_5 and today_p > 0.01:
+            is_peach = 1 
+            print("[tao_yuan_san_jie_yi] peach and macd golden cross: code:%s, name:%s" % (nowcode, nowname ))
+    else:
+
+        # C cross EMA12
+        cond_1 = C > O and today_p > 0.01 and ( REF(C, 1) <  REF(EMA(C,12), 1) and C > EMA(C,12))
+        if debug:
+            print( REF(C, 1) ,  REF(EMA(C,12), 1) ,  C , EMA(C,12))
+
+        #C cross boll-mid
+        cond_2 = (O < middleband[-1] and C > middleband[-1])
+
+        #dif > dea
+        #cond_3 = dif[-1] >  dea[-1] # macd gold cross
+
+        #dif dea become big
+        cond_3 = dif[-1] > dif[-2] or dea[-1] > dea[-2]
+        if debug:
+            print(dif[-1] , dif[-2] , dea[-1] , dea[-2])
+
+        #C cross ma5 and ma10
+        low=min(REF(C,1), O)
+        cond_4 = low < MA(C, 5)  and C > MA(C, 5)
+
+        cond_5 = low < MA(C, 10) and C > MA(C, 10)
+
+        #volume not big
+        cond_6 = V < (1.2 * REF(V, 1)) and V > (0.8 * REF(V, 1))
+        cond_6 = True
 
 
-    #is_peach
-    cond_5 = peach_exist(nowdate, nowcode, 2, detail_info)
-    if cond_5 and today_p > 0.01:
-        is_peach = 1 
-        print("[tao_yuan_san_jie_yi] peach and macd golden cross: code:%s, name:%s" % (nowcode, nowname ))
-    if debug:
-        print('is_peach %s' % is_peach)
+        if debug:
+            print(cond_1, cond_2, cond_3, cond_4, cond_5 , cond_6)
+
+        if cond_1 and cond_2 and cond_3 and cond_4 and cond_5 and cond_6:
+            is_peach = 1 
+
+            print("[tao_yuan_san_jie_yi_adv] peach and macd golden cross: code:%s, name:%s" % \
+                    (nowcode, nowname ))
+            if debug:
+
+                print('is_peach %s' % is_peach)
 
 ################################################################################################
 
