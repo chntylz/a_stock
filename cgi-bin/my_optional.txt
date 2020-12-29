@@ -7,6 +7,9 @@ sh shangzheng
 
 000651 gelidianqi
 000401 jidongshuini
+002241 ge'ergufen
+000538 yunnanbaiyao
+
 002959 xiaoxiongdianqi
 002475 lixunjingmi
 300239 dongbaoshengwu
@@ -79,6 +82,5 @@ sh shangzheng
 300249 yimikang
 
 600309 wanhuahuaxue
-002241 ge'ergufen
 
 002123 mengwangjituan
