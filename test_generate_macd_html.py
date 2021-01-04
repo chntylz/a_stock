@@ -130,9 +130,13 @@ def showImageInHTML(imageTypes,savedir):
     images=[f for f in files if f[f.rfind('.')+1:] in imageTypes]
     if debug:
         print("%s"%(images))
+    '''
+    #delete size judge
     images=[item for item in images if os.path.getsize(item)>5*1024]
     if debug:
         print("%s"%(images))
+    '''
+
     #images=[curr_dir+item[item.rfind('/'):] for item in images]
     images=[item[item.rfind('/')+1:] for item in images]
     if debug:

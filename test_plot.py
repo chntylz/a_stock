@@ -277,7 +277,10 @@ def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name
     if debug:
         print('figure_name:%s' % figure_name)
     
-    fig.savefig(figure_name)
+    if False:
+        fig.savefig(figure_name)
+    else:
+        os.system("echo " + figure_name + "> ./" + figure_name)
 
     exec_command = "mkdir -p " + save_dir
     os.system(exec_command)
