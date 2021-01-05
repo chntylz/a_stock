@@ -175,7 +175,7 @@ def holder_get_continuous_info(df, curr_day):
             'hk_date', 'hsgt_share', 'hk_pct', 'hk_delta1', 'hk_deltam', \
             'hk_cont_d', 'hk_m_total']
     ret_df=ret_df.loc[:,data_column]
-			
+                        
     ret_df = ret_df.sort_values('holder_pct', ascending=1)
 
 

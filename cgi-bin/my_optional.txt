@@ -10,6 +10,9 @@ sh shangzheng
 002241 ge'ergufen
 000538 yunnanbaiyao
 
+600460 shilanwei
+002352 shunfengkonggu
+600660 fuyaoboli
 002959 xiaoxiongdianqi
 002475 lixunjingmi
 300239 dongbaoshengwu

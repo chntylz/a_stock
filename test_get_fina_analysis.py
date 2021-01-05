@@ -103,15 +103,15 @@ def fina_get_continuous_info(df, curr_day, select='or_yoy', net_percent=20):
         all_df = hsgtdata.get_data_from_hdata(stock_code=stock_code, end_date=curr_day, limit=60)
         hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total \
                 = comm_handle_hsgt_data(all_df)
-		
-	now_hour = int(datetime.datetime.now().strftime("%H"))
-	if now_hour > 12:
-	    daily_df = hdata_day.get_day_hdata_of_stock(curr_day)
-	else:
-	    nowdate=datetime.datetime.now().date()
-	    lastdate=nowdate-datetime.timedelta(1)
-	    last_day=nowdate.strftime("%Y-%m-%d")
-	    daily_df = hdata_day.get_day_hdata_of_stock(last_day)
+                
+        now_hour = int(datetime.datetime.now().strftime("%H"))
+        if now_hour > 12:
+            daily_df = hdata_day.get_day_hdata_of_stock(curr_day)
+        else:
+            nowdate=datetime.datetime.now().date()
+            lastdate=nowdate-datetime.timedelta(1)
+            last_day=nowdate.strftime("%Y-%m-%d")
+            daily_df = hdata_day.get_day_hdata_of_stock(last_day)
 
 
         tmp_df  = daily_df[daily_df['stock_code']==stock_code]
