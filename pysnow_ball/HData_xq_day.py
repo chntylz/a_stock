@@ -137,9 +137,10 @@ class HData_xq_day(object):
                 #str_temp+="\'"+data.index[i]+"\'"
                 #str_temp+="\'"+data.index[i].strftime("%Y-%m-%d")+"\'"
 
-                str_temp="\'"+str(data.iloc[i,0])+"\'"
-                for j in range(1,data.shape[1]):
-                    str_temp+=","+"\'"+str(data.iloc[i,j])+"\'"
+                str_temp= "\'" + str(data.iloc[i,0]) +  "\'"    #timestamp must be string
+                str_temp+=",\'"+str(data.iloc[i,1]) + "\'"      #stock_code must be string
+                for j in range(2,data.shape[1]):
+                    str_temp+=","+str(data.iloc[i,j])
 
                 sql_cmd= sql_cmd + "("+str_temp+")"
                 if i is 0:
@@ -153,18 +154,24 @@ class HData_xq_day(object):
                     if debug:
                         print(sql_cmd)
                     if(sql_cmd != ""):
-                        self.cur.execute("insert into xq_d_table ("\
+                        final_cmd = "insert into xq_d_table ("\
                                 + xq_cols + \
-                                " ) values "+sql_cmd+";")
+                                " ) values "+sql_cmd+";"
+                        if debug:
+                            print(final_cmd)
+                        self.cur.execute(final_cmd)
                         self.conn.commit()
                         sql_cmd = ""
 
             if debug:
                 print(sql_cmd)
             if(sql_cmd != ""):
-                self.cur.execute("insert into xq_d_table ("\
+                final_cmd = "insert into xq_d_table ("\
                         + xq_cols + \
-                        " ) values "+sql_cmd+";")
+                        " ) values "+sql_cmd+";"
+                if debug:
+                    print(final_cmd)
+                self.cur.execute(final_cmd)
                 self.conn.commit()
 
         if debug:
