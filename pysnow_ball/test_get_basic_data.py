@@ -4,9 +4,12 @@
 import pysnowball as ball
 import datetime
 from time import clock
+import time
 
 import sys 
 sys.path.append("..") 
+
+
 from Stocks import *
 stocks=Stocks("usr","usr")
 
@@ -16,6 +19,45 @@ import pandas as pd
 
 
 ball.set_token('xq_a_token=c833a63d6cd4b5033f1c789f2e08c2da787f32a3')
+
+debug = 0
+#debug = 1
+
+
+def get_stock_list():
+    codestock_local=stocks.get_codestock_local()
+    return codestock_local
+
+
+def get_his_data(stock_code, def_cnt=1):
+
+    data_list = []
+    his_data = ball.his_data(stock_code, def_cnt)
+
+    #dict -> dict
+    his_data = his_data['data']
+    symbol = his_data['symbol']             
+
+    #dict -> list
+    column = his_data['column']
+    col_len = len(column)
+
+    df_column = column
+    #df_column.append('symbol')
+
+    if debug:
+        print(df_column)
+
+    #dict -> list
+    his_data = his_data['item']
+
+    df = pd.DataFrame(his_data, columns= df_column)
+    
+    if debug:
+        print(df.loc[len(df)-1])        #series
+        print(df[len(df)-2:len(df)-1])  #dataframe
+
+    return df
 
 def get_realtime_data(data_list, stock_code):
     rt_data = ball.quotec(stock_code)
@@ -98,11 +140,7 @@ def get_realtime_data(data_list, stock_code):
 
     return data_list
 
-def get_stock_list():
-    codestock_local=stocks.get_codestock_local()
-    return codestock_local
-
-def convert_data_list_to_df():
+def convert_daily_data_list_to_df():
     data_list = []
     codestock_local=get_stock_list()
     length=len(codestock_local)
@@ -126,9 +164,9 @@ def convert_data_list_to_df():
     
 
 if __name__ == '__main__':
-
-    t1 = clock()
-    df = convert_data_list_to_df()
-    t2 = clock()
+    
+    print(time.localtime(time.time()))
+    t1 = time.time()
+    t2 = time.time()
     print("t1:%s, t2:%s, delta time=%s"%(t1, t2, t2-t1))
-
+    print(time.localtime(time.time()))
