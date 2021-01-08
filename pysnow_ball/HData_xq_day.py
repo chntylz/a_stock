@@ -138,17 +138,16 @@ class HData_xq_day(object):
                 #str_temp+="\'"+data.index[i].strftime("%Y-%m-%d")+"\'"
 
                 str_temp= "\'" + str(data.iloc[i,0]) +  "\'"    #timestamp must be string
-                str_temp+=",\'"+str(data.iloc[i,1]) + "\'"      #stock_code must be string
-                for j in range(2,data.shape[1]):
-                    str_temp+=","+str(data.iloc[i,j])
+                for j in range(1,data.shape[1]):
+                    str_temp+=",\'"+str(data.iloc[i,j]) + "\'"      #stock_code must be string
 
-                sql_cmd= sql_cmd + "("+str_temp+")"
+                sql_cmd += "("+str_temp+")"
                 if i is 0:
-                    sql_cmd = sql_cmd+","
+                    sql_cmd += ","
                 elif i % each_num == 0 or i == (length -1):
                     pass
                 else:
-                    sql_cmd = sql_cmd+","
+                    sql_cmd += ","
 
                 if i % each_num == 0 and i is not 0:
                     if debug:
@@ -180,7 +179,98 @@ class HData_xq_day(object):
 
         self.db_disconnect()
 
+    def insert_all_stock_data_2(self, data):
+        self.db_connect()
+        t0 = t1 = t2 = t3 = t4 = t5 = time.time()
 
+        if debug:
+            print('insert_all_stock_data()')
+
+        if data is None:
+            print("None")
+        else:
+            length = len(data)
+            sql_cmd = []
+            each_num = 1000
+            for i in range(length):
+                t1 = time.time()
+                if debug:
+                    print (i)
+
+                #str_temp+="\'"+stock_code+"\'"+","
+                #str_temp+="\'"+data.index[i]+"\'"
+                #str_temp+="\'"+data.index[i].strftime("%Y-%m-%d")+"\'"
+
+                str_temp=[]
+                str_temp.append('\'')
+                str_temp.append(str(data.iloc[i,0]))
+                str_temp.append('\'')
+
+                #data.values.tolist()[0]
+                for j in range(1,data.shape[1]):
+                    str_temp.append(',\'')
+                    str_temp.append(str(data.iloc[i,j]))
+                    str_temp.append('\'')
+
+                sql_cmd.append('(')
+                sql_cmd.extend(str_temp)
+                sql_cmd.append(')')
+                if i is 0:
+                    sql_cmd.append(",")
+                elif i % each_num == 0 or i == (length -1):
+                    pass
+                else:
+                    sql_cmd.append(",")
+
+                if i % each_num == 0 and i is not 0:
+                    if debug:
+                        print(sql_cmd)
+                        print("--------------------------------------")
+                        t=''.join(sql_cmd)
+                        print(t)
+                    if len(sql_cmd):
+                        final_sql = [] 
+                        final_sql.append("insert into xq_d_table (")
+                        final_sql.append(xq_cols)
+                        final_sql.append( " ) values ")
+                        final_sql.append(''.join(sql_cmd))
+                        final_sql.append( " ; ")
+                        #print(''.join(final_sql))
+                        sql_cmd = []
+                        t2 = time.time()
+                        self.cur.execute(''.join(final_sql))
+                        t3 = time.time()
+                        self.conn.commit()
+                        t4 = time.time()
+                        print(t1, t2, t3, t4, t5)
+                t5 = time.time()
+                print(t5-t1)
+            if debug:
+                print(sql_cmd)
+                print(sql_cmd)
+                print("--------------------------------------")
+                t=''.join(sql_cmd)
+                print(t)
+
+            if len(sql_cmd):
+                final_sql = []
+                final_sql.append("insert into xq_d_table (")
+                final_sql.append(xq_cols)
+                final_sql.append( " ) values ")
+                final_sql.append(''.join(sql_cmd))
+                final_sql.append( " ; ")
+                #print(''.join(final_sql))
+                sql_cmd = []
+                self.cur.execute(''.join(final_sql))
+                self.conn.commit()
+
+
+        if debug:
+            print(time.time()-t0)
+            print('insert_all_stock_data(\\)')
+
+
+        self.db_disconnect()
 
     def update_allstock_hdatadate(self, data):
 
