@@ -1,13 +1,20 @@
 #!/usr/bin/env python  
 # -*- coding: utf-8 -*-
 
-import  psycopg2
-import tushare as ts
+import psycopg2
 import pandas as pd
 import time
 
+import os
+import numpy as np
+from io import StringIO
+
+
+
+
+
 debug = 0
-#debug = 1
+debug = 1
 
 db_columns = " record_date , stock_code , open , close , high , low , volume ,  amount , p_change "
 
@@ -32,7 +39,8 @@ class HData_xq_day(object):
 
     
     def db_connect(self):
-        self.conn = psycopg2.connect(database="usr", user=self.user, password=self.password, host="127.0.0.1",
+        self.conn = psycopg2.connect(database="usr", \
+                                user=self.user, password=self.password, host="127.0.0.1",\
                                 port="5432")
         self.cur = self.conn.cursor()
 
@@ -97,6 +105,32 @@ class HData_xq_day(object):
 
         print("db_xq_d_table_create finish")
         pass
+
+    def copy_from_stringio(self, df):
+        """
+        Here we are going save the dataframe in memory
+        and use copy_from() to copy it to the table
+        """
+        # save dataframe to an in memory buffer
+        buffer = StringIO()
+        #df.to_csv(buffer, index_label='id', header=False)
+        df.to_csv(buffer, index=0, header=False)
+        buffer.seek(0)
+
+        self.db_connect()
+        try:
+            self.cur.copy_from(buffer, table='xq_d_table', sep=",")
+            self.conn.commit()
+        except (Exception, psycopg2.DatabaseError) as error:
+            print("Error: %s" % error)
+            self.conn.rollback()
+            self.db_disconnect()
+            return 1
+        
+        print("copy_from_stringio() done")
+        self.db_disconnect()
+
+
 
     def db_get_maxdate_of_stock(self,stock_code):#获取某支股票的最晚日期
 
@@ -269,6 +303,26 @@ class HData_xq_day(object):
             print(time.time()-t0)
             print('insert_all_stock_data(\\)')
 
+
+        self.db_disconnect()
+
+
+    def insert_all_stock_data_3(self, data):
+        self.db_connect()
+        t0 = t1 = t2 = t3 = t4 = t5 = time.time()
+
+        if debug:
+            print('insert_all_stock_data_3()')
+
+        if data is None:
+            print("None")
+        else:
+            data.to_sql(name='xq_d_table', con=self.conn, if_exists = 'replace', index=False)
+            pass
+
+        if debug:
+            print(time.time()-t0)
+            print('insert_all_stock_data_3(\\)')
 
         self.db_disconnect()
 

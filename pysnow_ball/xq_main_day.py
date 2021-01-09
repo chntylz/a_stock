@@ -90,7 +90,7 @@ def get_today_data():
         df = pd.concat([df, tmp_df])
 
         if( 0 ):
-            if i > 10:
+            if i > 5:
                 break
 
     tt_2 = time.time()
@@ -124,9 +124,10 @@ def get_all_his_data():
 
         #insert database
         #todo
+        hdata_day.copy_from_stringio(df)
 
-        if( 1 ):
-            if i > 10:
+        if( 0 ):
+            if i > 5:
                 break
     
     tt_2 = time.time()
@@ -140,6 +141,7 @@ def check_table():
     table_exist = hdata_day.table_is_exist() 
     print('table_exist=%d' % table_exist)
     if table_exist:
+        hdata_day.db_hdata_xq_create()
         print('table already exist')
     else:
         hdata_day.db_hdata_xq_create()
@@ -160,10 +162,13 @@ if __name__ == '__main__':
 
 
     check_table()
+    if int(para1):
+        get_all_his_data()
+    else:
+        today_df = get_today_data()
+        hdata_day.copy_from_stringio(today_df)
+        #hdata_day.insert_all_stock_data_3(today_df)
 
-    today_df = get_today_data()
-     
-    hdata_day.insert_all_stock_data(today_df)
     #delete closed stock data according amount=0
     #hdata_day.delete_amount_is_zero()
 
