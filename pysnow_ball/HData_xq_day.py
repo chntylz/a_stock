@@ -127,7 +127,7 @@ class HData_xq_day(object):
             self.db_disconnect()
             return 1
         
-        print("copy_from_stringio() done")
+        #print("copy_from_stringio() done")
         self.db_disconnect()
 
 

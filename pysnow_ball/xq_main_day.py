@@ -163,8 +163,10 @@ if __name__ == '__main__':
 
     check_table()
     if int(para1):
+        print('all data')
         get_all_his_data()
     else:
+        print('today data')
         today_df = get_today_data()
         hdata_day.copy_from_stringio(today_df)
         #hdata_day.insert_all_stock_data_3(today_df)

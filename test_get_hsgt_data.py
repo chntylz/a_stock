@@ -121,7 +121,9 @@ def hsgt_get_day_item_from_json(file_path):
     dataframe_cols = ['record_date', 'stock_code','shgt_cname', 'share_holding', 'hk_pct', 'open', 'close', 'high', 'low', 'volume', 'is_zig', 'is_quad', 'is_peach']
 
     df = pd.DataFrame(list_tmp, columns=dataframe_cols)
+    
     index =  df["record_date"]
+
     df = pd.DataFrame(list_tmp, index=index, columns=dataframe_cols)
     del df["record_date"]
     
