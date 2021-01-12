@@ -14,7 +14,7 @@ from io import StringIO
 
 
 debug = 0
-debug = 1
+#debug = 1
 
 db_columns = " record_date , stock_code , open , close , high , low , volume ,  amount , p_change "
 
@@ -77,15 +77,15 @@ class HData_xq_day(object):
             create table xq_d_table(
                 record_date date, 
                 stock_code varchar,
-                volume  float, 
                 open float, 
+                close float, 
                 high float, 
                 low float,
-                close float, 
-                chg float, 
-                percent float, 
-                turnoverrate float,
+                volume  float, 
                 amount float, 
+                percent float, 
+                chg float, 
+                turnoverrate float,
                 pe float, 
                 pb float, 
                 ps float,
@@ -436,8 +436,137 @@ class HData_xq_day(object):
         self.conn.commit()
         self.db_disconnect()
         pass
- 
 
+    def get_data_from_hdata(self, stock_code=None, 
+                        start_date=None, 
+                        end_date=None,
+                        limit=0):#将数据库中的数据读取并转为dataframe格式返回
+        self.db_connect()
+        
+        and_flag = False
+
+
+        sql_temp = "select * from ( "
+
+        sql_temp += "select * from xq_d_table"
+
+        if stock_code is None and start_date is None and end_date is None:
+            pass
+        else:
+            sql_temp += " where "
+
+        if stock_code is None:
+            pass
+        else:
+            sql_temp += " stock_code="+"\'"+stock_code+"\'"                       
+            and_flag |= True
+
+        if start_date is None:
+            pass
+        else:
+            if and_flag:
+                sql_temp += " and record_date >="+"\'"+start_date+"\'"                       
+            else:
+                sql_temp += " record_date >="+"\'"+start_date+"\'"                       
+            
+            and_flag |= True
+
+
+        if end_date is None:
+            pass
+        else:
+            if and_flag:
+                sql_temp += " and record_date <="+"\'"+end_date+"\'"                       
+            else:
+                sql_temp += " record_date <="+"\'"+end_date+"\'"                       
+
+
+        sql_temp += " order by record_date desc "                 
+
+        if limit == 0:
+            pass
+        else:
+            sql_temp += " LIMIT "+"\'"+str(limit)+"\'" 
+
+        sql_temp +=" ) as tbl order by record_date asc"
+
+        sql_temp += ";"
+
+        if debug:
+            print("get_data_from_hdata, sql_temp:%s" % sql_temp)
+
+
+
+        #select * from (select * from hdata_hsgt_table where stock_code='000922' order by record_date desc LIMIT 5) as tbl order by record_date asc;
+        self.cur.execute(sql_temp)
+        rows = self.cur.fetchall()
+
+        self.conn.commit()
+        self.db_disconnect()
+
+        dataframe_cols=[tuple[0] for tuple in self.cur.description]#列名和数据库列一致
+        df = pd.DataFrame(rows, columns=dataframe_cols)
+        df['record_date'] = df['record_date'].apply(lambda x: x.strftime('%Y-%m-%d'))        
+
+        if debug:
+            print(type(df))
+            print(df.head(2))
+    
+        return df
+        pass
+ 
+    def delete_data_from_hdata(self, stock_code=None, 
+                        start_date=None, 
+                        end_date=None,
+                        ):
+        self.db_connect()
+        
+        and_flag = False
+
+        sql_temp = "delete from xq_d_table"
+
+        if stock_code is None and start_date is None and end_date is None:
+            self.db_disconnect()
+            pass
+            return
+        else:
+            sql_temp += " where "
+
+        if stock_code is None:
+            pass
+        else:
+            sql_temp += " stock_code="+"\'"+stock_code+"\'"                       
+            and_flag |= True
+
+        if start_date is None:
+            pass
+        else:
+            if and_flag:
+                sql_temp += " and record_date >="+"\'"+start_date+"\'"                       
+            else:
+                sql_temp += " record_date >="+"\'"+start_date+"\'"                       
+            
+            and_flag |= True
+
+
+        if end_date is None:
+            pass
+        else:
+            if and_flag:
+                sql_temp += " and record_date <="+"\'"+end_date+"\'"                       
+            else:
+                sql_temp += " record_date <="+"\'"+end_date+"\'"                       
+
+        sql_temp += ";"
+
+        if debug:
+            print("delete_data_from_hdata, sql_temp:%s" % sql_temp)
+
+        self.cur.execute(sql_temp)
+        self.conn.commit()
+        self.db_disconnect()
+        pass
+ 
 
 #alter table xq_d_table add  "up_days" int not null default 0;
 

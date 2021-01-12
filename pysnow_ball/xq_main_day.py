@@ -28,12 +28,14 @@ hdata_day=HData_xq_day("usr","usr")
 #print(stocks.db_stocks_update())#根据todayall的情况更新stocks表
 
 def handle_raw_df(df):
+    '''
     del df['volume_post']
     del df['amount_post']
     del df['hold_volume_hk']
     del df['hold_ratio_hk']
     del df['net_volume_hk']
     del df['balance']
+    '''
 
     #add is_peach is_zig is_quad
     df['is_peach'] = 0
@@ -62,7 +64,7 @@ def handle_raw_df(df):
             'amount', 'percent', 'chg',\
             'turnoverrate', 'pe', 'pb', 'ps', 'pcf', 'market_capital', \
             'hk_volume', 'hk_pct', 'hk_net', \
-            'is_quad', 'is_zig', 'is_quad']
+            'is_peach', 'is_zig', 'is_quad']
 
     #resort conlums
     df = df[new_cols]
@@ -84,7 +86,7 @@ def get_today_data():
             stock_code_new= 'SH' + nowcode
         else:
             stock_code_new= 'SZ' + nowcode
-        tmp_df = get_his_data(stock_code_new, 1)
+        tmp_df = get_his_data(stock_code_new, 2)
         #add stock_code
         tmp_df['symbol'] = stock_code_new
         df = pd.concat([df, tmp_df])
@@ -141,7 +143,7 @@ def check_table():
     table_exist = hdata_day.table_is_exist() 
     print('table_exist=%d' % table_exist)
     if table_exist:
-        hdata_day.db_hdata_xq_create()
+        #hdata_day.db_hdata_xq_create()
         print('table already exist')
     else:
         hdata_day.db_hdata_xq_create()
