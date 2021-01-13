@@ -76,6 +76,14 @@ def handle_raw_df(df):
     
 
 def get_today_data():
+    
+    #get A open date
+    a_code = 'SH000001'
+    a_df = get_his_data(a_code, 1)
+    a_df['symbol'] = a_code
+    a_df = handle_raw_df(a_df)
+    cur_date = a_df['timestamp'][0]
+
     df = pd.DataFrame()
     codestock_local=get_stock_list()
     length=len(codestock_local)
@@ -86,7 +94,7 @@ def get_today_data():
             stock_code_new= 'SH' + nowcode
         else:
             stock_code_new= 'SZ' + nowcode
-        tmp_df = get_his_data(stock_code_new, 2)
+        tmp_df = get_his_data(stock_code_new, 1)
         #add stock_code
         tmp_df['symbol'] = stock_code_new
         df = pd.concat([df, tmp_df])
@@ -98,8 +106,10 @@ def get_today_data():
     tt_2 = time.time()
     delta_t = tt_2 - tt_1
     print('get_today_data() delta_t=%d' % delta_t)
-    df = df.reset_index(drop=True)
+    #delete data not today
     df = handle_raw_df(df)
+    df = df[df['timestamp']==cur_date]
+    df = df.reset_index(drop=True)
 
     if debug:
         print(df.head(10))
@@ -162,14 +172,19 @@ if __name__ == '__main__':
     nowdate=nowdate-datetime.timedelta(int(para1))
     print("nowdate is %s"%(nowdate.strftime("%Y-%m-%d")))
 
-
+    #check table exist
     check_table()
+
     if int(para1):
         print('all data')
         get_all_his_data()
     else:
         print('today data')
         today_df = get_today_data()
+        hdata_day.delete_data_from_hdata(
+                start_date=datetime.datetime.now().date().strftime("%Y-%m-%d"),
+                end_date=datetime.datetime.now().date().strftime("%Y-%m-%d")
+                )
         hdata_day.copy_from_stringio(today_df)
         #hdata_day.insert_all_stock_data_3(today_df)
 

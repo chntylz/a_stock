@@ -52,7 +52,7 @@ class HData_xq_day(object):
         self.db_connect()
         self.cur.execute("select count(*) from pg_class where relname = 'xq_d_table' ;")
         ans=self.cur.fetchall()
-        print(list(ans[0])[0])
+        #print(list(ans[0])[0])
         if list(ans[0])[0]:
             self.conn.commit()
             self.db_disconnect()
@@ -404,29 +404,7 @@ class HData_xq_day(object):
 
         self.db_disconnect()
 
-    def delete_data_of_record_date(self, record_date):
 
-        self.db_connect()
-
-        sql_temp="delete from xq_d_table where record_date = " + "\'" + record_date + "\' ;"
-        self.cur.execute(sql_temp)
-
-        self.conn.commit()
-        self.db_disconnect()
-
-        pass
- 
-    def delete_data_of_stock_code(self, stock_code):
-        self.db_connect()
-
-        sql_temp="delete from xq_d_table where stock_code = " + "\'" + stock_code + "\' ;"
-        self.cur.execute(sql_temp)
-
-        self.conn.commit()
-        self.db_disconnect()
-
-        pass
- 
     #fix bug: delete zero when the stock is closed
     def delete_amount_is_zero(self):
         self.db_connect()
