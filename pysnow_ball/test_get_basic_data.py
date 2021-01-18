@@ -17,8 +17,7 @@ stocks=Stocks("usr","usr")
 import numpy as np
 import pandas as pd
 
-
-ball.set_token('xq_a_token=c833a63d6cd4b5033f1c789f2e08c2da787f32a3')
+from comm_interface import *
 
 debug = 0
 #debug = 1
@@ -27,6 +26,20 @@ debug = 0
 def get_stock_list():
     codestock_local=stocks.get_codestock_local()
     return codestock_local
+
+def get_holder_data(stock_code, def_cnt=10):
+
+    his_data = ball.holders(stock_code, def_cnt)
+
+    his_data = his_data['data']['items']
+    df = pd.DataFrame(his_data)
+    df = round(df, 2)
+    
+    if debug:
+        print(df.loc[len(df)-1])        #series
+        print(df[len(df)-2:len(df)-1])  #dataframe
+    return df
+
 
 
 def get_his_data(stock_code, def_cnt=1):
@@ -165,6 +178,9 @@ def convert_daily_data_list_to_df():
 
 if __name__ == '__main__':
     
+    token=get_cookie()
+    ball.set_token(token)
+
     print(time.localtime(time.time()))
     t1 = time.time()
     t2 = time.time()

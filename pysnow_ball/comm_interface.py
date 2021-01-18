@@ -19,3 +19,34 @@ def get_date_from_timestamp(timestamp):
 def get_snowball_timestamp():
     timestamp = time.time() * 1000
     return timestamp 
+
+
+
+import requests
+def get_cookie():
+    token_key = 'xq_a_token'
+    url = "https://xueqiu.com/S/SH000001"
+    Hostreferer = {
+        #'Host':'***',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) \
+                AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36'
+    }
+    #urllib或requests在打开https站点是会验证证书。 
+    #简单的处理办法是在get方法中加入verify参数，并设为False
+    html = requests.get(url, headers=Hostreferer,verify=False)
+    #获取cookie:DZSW_WSYYT_SESSIONID
+    if html.status_code == 200:
+        #print(html.cookies)
+        for cookie in html.cookies:
+            #print(cookie)
+            if token_key in str(cookie):
+                tmp = str(cookie)
+                tmp = tmp[tmp.find(token_key):len(tmp)]
+                tmp = tmp[:tmp.find(' ')]
+                return tmp
+
+    else:
+
+        return -1
+
+    
