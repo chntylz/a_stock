@@ -17,6 +17,7 @@ import os
 from test_get_basic_data import * 
 from file_interface import * 
 from comm_interface import * 
+import pysnowball as ball
 
 debug=0
 #debug=1
@@ -153,7 +154,7 @@ def check_table():
     table_exist = hdata_day.table_is_exist() 
     print('table_exist=%d' % table_exist)
     if table_exist:
-        #hdata_day.db_hdata_xq_create()
+        hdata_day.db_hdata_xq_create()
         print('table already exist')
     else:
         hdata_day.db_hdata_xq_create()
@@ -162,6 +163,10 @@ def check_table():
 
 
 if __name__ == '__main__':
+
+    token=get_cookie()
+    ball.set_token(token)
+
     
     cript_name, para1 = check_input_parameter()
     
