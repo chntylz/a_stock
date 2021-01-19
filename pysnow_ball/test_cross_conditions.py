@@ -394,10 +394,10 @@ def calculate_peach_zig_quad(nowdate):
 def update_peach_zig_quad(nowdate, df, df1):
 
     tmp_df = df.sort_values('stock_code', ascending=0)
-    tmp_df = df.reset_index(drop=True)
+    tmp_df = tmp_df.reset_index(drop=True)
 
     tmp_df1 = df1.sort_values('stock_code', ascending=0)
-    tmp_df1 = df1.reset_index(drop=True)
+    tmp_df1 = tmp_df1.reset_index(drop=True)
 
     tmp_df['is_peach'] = tmp_df1['is_peach']
     tmp_df['is_zig']   = tmp_df1['is_zig']
