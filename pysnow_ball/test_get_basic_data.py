@@ -27,6 +27,71 @@ def get_stock_list():
     codestock_local=stocks.get_codestock_local()
     return codestock_local
 
+
+def get_fina_data(stock_code, is_annuals=0, def_cnt=10):
+
+    fina_data = ball.indicator(stock_code, is_annuals, def_cnt)
+
+    fina_data = fina_data['data']['list']
+
+    df = pd.DataFrame() 
+    new_df = pd.DataFrame() 
+
+
+    if 0: 
+        #first think, drop later
+        s=str(fina_data)
+        s=s.replace('[', '\'')
+        s=s.replace(']', '\'')
+        s=s.replace('None', '0')
+        s1=s[1:len(s)-1]
+        d=eval(s1)
+        if debug:
+            print(d)
+        df = pd.DataFrame(d) 
+    else:
+        df = pd.DataFrame(fina_data) 
+
+
+    if debug:
+        print(df.loc[len(df)-1])        #series
+        print(df[len(df)-2:len(df)-1])  #dataframe
+
+
+    len_cols = len(list(df)) 
+    new_df = pd.DataFrame() 
+    i = 0
+    for i in range(3, len_cols):
+        tmp_df = pd.DataFrame(data=[x[i] for x in df.values])
+        col_name = list(df)[i]
+        tmp_df.rename(columns={0: col_name},inplace=True)
+        tmp_df.rename(columns={1: col_name+'_new'},inplace=True)
+        tmp_df.fillna(0, inplace=True)
+        tmp_df = round(tmp_df, 4)
+        if debug:
+            print('col_name=%s'% col_name)
+            print('tmp_df=%s\r'% tmp_df)
+
+        if i == 3:
+            new_df = tmp_df
+        else:
+            #new_df = pd.concat([new_df, tmp_df], axis=1, join_axes=[new_df.index])
+            new_df = pd.concat([new_df, tmp_df], axis=1)
+
+
+    if debug:
+        print(df.head(1))
+        print(list(df))
+        print(new_df.head(1))
+    
+    #保留前3列，连接拆分出来的新df
+    new_cols = ['report_date', 'report_name', 'ctime']
+    df = df[new_cols]
+    df = pd.concat([df, new_df], axis=1)
+
+    return df
+
+
 def get_holder_data(stock_code, def_cnt=10):
 
     his_data = ball.holders(stock_code, def_cnt)
