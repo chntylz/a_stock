@@ -240,7 +240,11 @@ class HData_day(object):
 
         #sql_temp="select * from (select * from hdata_d_table where stock_code='000922' order by record_date desc LIMIT 5) as tbl order by record_date asc;"
         #sql_temp="select " +  db_columns +"  from (select " + db_columns + " from hdata_d_table where stock_code="+"\'"+stock_code+"\'  and record_date <= "+"\'"+ end_day +"\'  order by record_date desc LIMIT "+"\'"+str(limit_number)+"\' ) as tbl order by record_date asc;"
-        sql_temp="select * from (select * from hdata_d_table where stock_code="+"\'"+stock_code+"\'  and record_date <= "+"\'"+ end_day +"\'  order by record_date desc LIMIT "+"\'"+str(limit_number)+"\' ) as tbl order by record_date asc;"
+        sql_temp="select * from (select * from hdata_d_table where stock_code="\
+                +"\'" +stock_code+"\'  and record_date <= "\
+                +"\'" + end_day +"\'  order by record_date desc LIMIT "\
+                +"\'"+str(limit_number)\
+                +"\' ) as tbl order by record_date asc;"
         #sql_temp="select * from hdata_d_table where stock_code="+"\'"+stock_code+"\';"
         if debug:
             print('sql_temp:%s'%sql_temp)

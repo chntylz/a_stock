@@ -5,22 +5,29 @@ sh shangzheng
 159994 5GETF
 512550 fushi_A50
 
-000651 gelidianqi
+601318 zhongguopingan
+600529 shandongyaobo
+300035 zhongkedianqi
+002230 kedaxunfei
 000401 jidongshuini
-002241 ge'ergufen
-000538 yunnanbaiyao
+000651 gelidianqi
 
+601933 yonghuichaoshi
+002241 ge'ergufen
+300676 huadajiyin
+002475 lixunjingmi
+601066 zhongxinjiantou
+002030 daanjiyin
+
+000538 yunnanbaiyao
 600460 shilanwei
 002352 shunfengkonggu
 600660 fuyaoboli
 002959 xiaoxiongdianqi
-002475 lixunjingmi
-300239 dongbaoshengwu
 300317 jiaweixinneng
 300142 wosengshengwu
 
 300724 jiejiaweichuang
-601933 yonghuichaoshi
 600585 hailuoshuini
 000877 tianshangufen
 003009 zhongtianhuojian
@@ -28,16 +35,12 @@ sh shangzheng
 002273 shuijingguangdian
 300638 guanghetong
 002049 ziguangguohui
-002230 kedaxunfei
-002030 da'an'ji'yin
 600196 fuxingyiyao
-300676 huadajiyin
 300664 pengyaohuanbao
 300761 lihuagufen
 603236 yiyuantongxin
 300603 li'angjishu
 603160 huidingkeji
-601318 zhongguopingan
 
 300256 xingxingkeji
 300556 silushijue
