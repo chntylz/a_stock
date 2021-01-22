@@ -12,6 +12,7 @@ sh shangzheng
 000401 jidongshuini
 000651 gelidianqi
 
+000977 langchaoxinxi
 601933 yonghuichaoshi
 002241 ge'ergufen
 300676 huadajiyin
