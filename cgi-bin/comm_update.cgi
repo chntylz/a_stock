@@ -13,6 +13,8 @@ hdata_hsgt=HData_hsgt("usr","usr")
 
 from comm_generate_html import *
 
+from get_daily_fund import *
+
 debug=0
 
 nowdate=datetime.datetime.now().date()
@@ -70,6 +72,8 @@ def show_realdata():
 
     real_df = ts.get_realtime_quotes(stock_list)
 
+    fund_df = handle_raw_data()
+
     for i in range(length):
         new_date        = str_date
         new_code        = my_list[i][0]
@@ -90,17 +94,26 @@ def show_realdata():
                 conti_day, money_total, \
                 is_zig, is_quad, is_peach = comm_handle_hsgt_data(hsgt_df)
         
+        tmp_fund_df = fund_df[fund_df['code'] == new_code]
+        tmp_fund_df = tmp_fund_df.reset_index(drop=True)
+        if debug:
+            print(new_code, len(tmp_fund_df))
+
+        zlje = 0
+        if len(tmp_fund_df):
+            zlje = tmp_fund_df['zlje'][0]
+
         data_list.append([new_date, new_code, new_name, new_pre_price, new_price, new_percent, \
                 is_peach, is_zig, is_quad  ,\
                 new_hsgt_date, new_hsgt_share_holding, new_hsgt_percent, \
-                new_hsgt_delta1, new_hsgt_deltam, conti_day, money_total])
+                new_hsgt_delta1, new_hsgt_deltam, conti_day, zlje, money_total])
 
 
         #data_list.append([str_date, my_list[i], my_list_cn[i], df['pre_close'][0], df['price'][0] ])
 
     data_column = ['curr_date', 'code', 'name', 'pre_price', 'price', 'a_pct', \
             'peach', 'zig', 'quad', \
-            'hk_date', 'hk_share', 'hk_pct', 'hk_delta1', 'hk_deltam', 'days', 'hk_m_total']
+            'hk_date', 'hk_share', 'hk_pct', 'hk_delta1', 'hk_deltam', 'days', 'zlje', 'hk_m_total']
 
     ret_df=pd.DataFrame(data_list, columns=data_column)
     ret_df['m_per_day'] = ret_df.hk_m_total / ret_df.days

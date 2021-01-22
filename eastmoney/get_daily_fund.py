@@ -10,6 +10,9 @@ import re
 import time
 import datetime
 
+debug = 0
+debug = 0
+
 url_1 = 'http://push2.eastmoney.com/api/qt/clist/get?cb=jQuery112308511204703039876_1610688047489&fid=f62 &po=1&pz=10000&pn=1&np=1&fltt=2&invt=2&ut=b2884a393a59ad64002292a3e90d46a5&fs=m%3A0%2Bt%3A6%2Bf%3A!2%2Cm%3A0%2Bt%3A13%2Bf%3A!2%2Cm%3A0%2Bt%3A80%2Bf%3A!2%2Cm%3A1%2Bt%3A2%2Bf%3A!2%2Cm%3A1%2Bt%3A23%2Bf%3A!2%2Cm%3A0%2Bt%3A7%2Bf%3A!2%2Cm%3A1%2Bt%3A3%2Bf%3A!2&fields=f12%2Cf14%2Cf2%2Cf3%2Cf62%2Cf184%2Cf66%2Cf69%2Cf72%2Cf75%2Cf78%2Cf81%2Cf84%2Cf87%2Cf204%2Cf205%2Cf124'
 url_3 = 'http://push2.eastmoney.com/api/qt/clist/get?cb=jQuery112309724568186220448_1610691602607&fid=f267&po=1&pz=10000&pn=1&np=1&fltt=2&invt=2&ut=b2884a393a59ad64002292a3e90d46a5&fs=m%3A0%2Bt%3A6%2Bf%3A!2%2Cm%3A0%2Bt%3A13%2Bf%3A!2%2Cm%3A0%2Bt%3A80%2Bf%3A!2%2Cm%3A1%2Bt%3A2%2Bf%3A!2%2Cm%3A1%2Bt%3A23%2Bf%3A!2%2Cm%3A0%2Bt%3A7%2Bf%3A!2%2Cm%3A1%2Bt%3A3%2Bf%3A!2&fields=f12%2Cf14%2Cf2%2Cf127%2Cf267%2Cf268%2Cf269%2Cf270%2Cf271%2Cf272%2Cf273%2Cf274%2Cf275%2Cf276%2Cf257%2Cf258%2Cf124'
 url_5 = 'http://push2.eastmoney.com/api/qt/clist/get?cb=jQuery112309724568186220448_1610691602607&fid=f164&po=1&pz=10000&pn=1&np=1&fltt=2&invt=2&ut=b2884a393a59ad64002292a3e90d46a5&fs=m%3A0%2Bt%3A6%2Bf%3A!2%2Cm%3A0%2Bt%3A13%2Bf%3A!2%2Cm%3A0%2Bt%3A80%2Bf%3A!2%2Cm%3A1%2Bt%3A2%2Bf%3A!2%2Cm%3A1%2Bt%3A23%2Bf%3A!2%2Cm%3A0%2Bt%3A7%2Bf%3A!2%2Cm%3A1%2Bt%3A3%2Bf%3A!2&fields=f12%2Cf14%2Cf2%2Cf109%2Cf164%2Cf165%2Cf166%2Cf167%2Cf168%2Cf169%2Cf170%2Cf171%2Cf172%2Cf173%2Cf257%2Cf258%2Cf124'
@@ -75,9 +78,8 @@ mapping = {
     "f124": "record_date"
 };
 
-#把时间戳转化为时间: 1479264792 to 2016-11-16 10:53:12
 def get_date_from_timestamp(timestamp):
-    d = datetime.datetime.fromtimestamp(timestamp / 1000, None)  # 时间戳转换成字符串日期时间
+    d = datetime.datetime.fromtimestamp(timestamp / 1000, None)  
     my_date = d.strftime("%Y-%m-%d %H:%M:%S.%f")
     my_date = my_date[:10]
     return my_date
@@ -88,7 +90,8 @@ def get_daily_fund():
     #url = 'http://push2.eastmoney.com/api/qt/clist/get?cb=jQuery112309724568186220448_1610691602607&fid=f62&po=1&pz=10000&pn=1&np=1&fltt=2&invt=2&ut=b2884a393a59ad64002292a3e90d46a5&fs=m%3A0%2Bt%3A6%2Bf%3A!2%2Cm%3A0%2Bt%3A13%2Bf%3A!2%2Cm%3A0%2Bt%3A80%2Bf%3A!2%2Cm%3A1%2Bt%3A2%2Bf%3A!2%2Cm%3A1%2Bt%3A23%2Bf%3A!2%2Cm%3A0%2Bt%3A7%2Bf%3A!2%2Cm%3A1%2Bt%3A3%2Bf%3A!2&fields=f12%2Cf14%2Cf2%2Cf3%2Cf62%2Cf184%2Cf66%2Cf69%2Cf72%2Cf75%2Cf78%2Cf81%2Cf84%2Cf87%2Cf204%2Cf205%2Cf124'
     url = 'http://push2.eastmoney.com/api/qt/clist/get?cb=jQuery112309724568186220448_'\
             + timestamp +'&fid=f62&po=1&pz=10000&pn=1&np=1&fltt=2&invt=2&ut=b2884a393a59ad64002292a3e90d46a5&fs=m%3A0%2Bt%3A6%2Bf%3A!2%2Cm%3A0%2Bt%3A13%2Bf%3A!2%2Cm%3A0%2Bt%3A80%2Bf%3A!2%2Cm%3A1%2Bt%3A2%2Bf%3A!2%2Cm%3A1%2Bt%3A23%2Bf%3A!2%2Cm%3A0%2Bt%3A7%2Bf%3A!2%2Cm%3A1%2Bt%3A3%2Bf%3A!2&fields=f12%2Cf14%2Cf2%2Cf3%2Cf62%2Cf184%2Cf66%2Cf69%2Cf72%2Cf75%2Cf78%2Cf81%2Cf84%2Cf87%2Cf204%2Cf205%2Cf124'
-    print(url)
+    if debug:
+        print(url)
 
    
     response = requests.get(url)
@@ -110,15 +113,18 @@ def handle_raw_data():
     del df['f205']
     del df['f206']
     
-    print(df)
+    if debug:
+        print(df)
 
     df_list = list(df)
     len_df = len(df_list)
     for i in range(0, len_df):
-        print(i, len_df,df_list[i])
+        if debug:
+            print(i, len_df,df_list[i])
         new_col_name = mapping[df_list[i]]
         df = df.rename(columns={df_list[i]:new_col_name})
 
+    
     #timestamp -> date
     df['record_date'] = nowdate.strftime("%Y-%m-%d")
 
@@ -143,23 +149,4 @@ if __name__ == '__main__':
     nowdate=datetime.datetime.now().date()
     df = handle_raw_data()
 
-    print(df.loc[0])
 
-    
-'''
-zxj             139.55                  最新价
-zdf               9.19                  涨跌幅
-code            002460                  代码
-name              赣锋锂业              名字
-zlje         9.082e+08                  今日主力净流入
-cddje      1.05757e+09                  今日超大单净流入
-cddjzb            15.7                  今日超大单净流入净占比
-ddje       -1.4937e+08                  今日大单净流入
-ddjzb            -2.22                  今日大单净流入占比
-zdje      -5.21636e+08                  今日中单净流入
-zdjzb            -7.75                  今日中单净流入占比
-xdje      -3.86564e+08                  今日小单净流入
-xdjzb            -5.74                  今日小单净流入占比
-record_date     1611299103
-zljzb            13.49                  今日主力净流入占比
-'''

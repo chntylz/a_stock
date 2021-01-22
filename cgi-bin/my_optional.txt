@@ -18,6 +18,7 @@ sh shangzheng
 002475 lixunjingmi
 601066 zhongxinjiantou
 002030 daanjiyin
+002106 laibaogaoke
 
 000538 yunnanbaiyao
 600460 shilanwei
