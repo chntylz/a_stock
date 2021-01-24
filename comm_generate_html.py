@@ -287,6 +287,8 @@ def comm_handle_hsgt_data(df):
 
     all_df =df 
 
+    unit_yi = 10000*10000
+
     del all_df['open']
     del all_df['high']
     del all_df['low']
@@ -296,7 +298,7 @@ def comm_handle_hsgt_data(df):
         #the_first_line - the_second_line
         all_df['delta1']  = all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-1))
         all_df['delta1_share'] = all_df.groupby('stock_code')['share_holding'].apply(lambda i:i.diff(-1))
-        all_df['delta1_m'] = all_df['close'] * all_df['delta1_share'] / 10000;
+        all_df['delta1_m'] = all_df['close'] * all_df['delta1_share'] / unit_yi;
         del all_df['delta1_share']
 
         #delete 
@@ -314,7 +316,7 @@ def comm_handle_hsgt_data(df):
         hsgt_percent        = hsgt_df['percent'][0]
         hsgt_delta1         = hsgt_df['percent'][0] - hsgt_df['percent'][1]
         hsgt_delta1         = round(hsgt_delta1, 2)
-        hsgt_deltam         = (hsgt_df['share_holding'][0] - hsgt_df['share_holding'][1]) * hsgt_df['close'][0] /10000.0
+        hsgt_deltam         = (hsgt_df['share_holding'][0] - hsgt_df['share_holding'][1]) * hsgt_df['close'][0] /unit_yi
         hsgt_deltam         = round(hsgt_deltam, 2)
         conti_day, money_total= comm_get_hsgt_continous_info(hsgt_df)
 
@@ -326,7 +328,7 @@ def comm_handle_hsgt_data(df):
         hsgt_share          = hsgt_df['share_holding'][0]
         hsgt_percent        = hsgt_df['percent'][0]
         hsgt_delta1         = hsgt_df['percent'][0]
-        hsgt_deltam         = hsgt_df['share_holding'][0] * hsgt_df['close'][0]/10000.0
+        hsgt_deltam         = hsgt_df['share_holding'][0] * hsgt_df['close'][0]/unit_yi
         hsgt_deltam         = round(hsgt_deltam, 2)
         conti_day             = 1
         money_total         = hsgt_deltam
@@ -348,7 +350,7 @@ def comm_handle_hsgt_data(df):
         is_peach            = 0
 
 
-    hsgt_share = round(hsgt_share / 10000, 2)
+    hsgt_share = round(hsgt_share / unit_yi, 2)
 
     return hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total, is_zig, is_quad, is_peach   
     
