@@ -77,6 +77,7 @@ def show_realdata():
 
     for i in range(length):
         new_date        = str_date
+        new_date        = new_date[5:]
         new_code        = my_list[i][0]
         new_name        = my_list[i][1]
         if debug:
@@ -94,6 +95,7 @@ def show_realdata():
                 new_hsgt_delta1, new_hsgt_deltam,\
                 conti_day, money_total, \
                 is_zig, is_quad, is_peach = comm_handle_hsgt_data(hsgt_df)
+        new_hsgt_date = new_hsgt_date[5:]
         
         tmp_fund_df = fund_df[fund_df['code'] == new_code]
         tmp_fund_df = tmp_fund_df.reset_index(drop=True)
