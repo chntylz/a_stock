@@ -108,16 +108,16 @@ def show_realdata():
             zlje = tmp_fund_df['zlje'][0]
 
         data_list.append([new_date, new_code, new_name, new_pre_price, new_price, new_percent, \
-                is_peach, is_zig, is_quad  ,\
+                is_peach, is_zig, is_quad, zlje,\
                 new_hsgt_date, new_hsgt_share_holding, new_hsgt_percent, \
-                new_hsgt_delta1, new_hsgt_deltam, conti_day, zlje, money_total])
+                new_hsgt_delta1, new_hsgt_deltam, conti_day, money_total])
 
 
         #data_list.append([str_date, my_list[i], my_list_cn[i], df['pre_close'][0], df['price'][0] ])
 
     data_column = ['curr_date', 'code', 'name', 'pre_price', 'price', 'a_pct', \
-            'peach', 'zig', 'quad', \
-            'hk_date', 'hk_share', 'hk_pct', 'hk_delta1', 'hk_deltam', 'days', 'zlje', 'hk_m_total']
+            'peach', 'zig', 'quad', 'zlje', \
+            'hk_date', 'hk_share', 'hk_pct', 'hk_delta1', 'hk_deltam', 'days', 'hk_m_total']
 
     ret_df=pd.DataFrame(data_list, columns=data_column)
     ret_df['m_per_day'] = ret_df.hk_m_total / ret_df.days
