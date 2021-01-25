@@ -165,6 +165,7 @@ def handle_raw_data(df):
 
     #delete suspend code
     df = df[df['zxj'] != '-']
+    df = df[df['zlje'] != '-']
     df = df.reset_index(drop=True)
 
 

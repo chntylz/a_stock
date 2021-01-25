@@ -73,7 +73,8 @@ def show_realdata():
     real_df = ts.get_realtime_quotes(stock_list)
 
     fund_df = get_daily_fund()
-    fund_df = handle_raw_data(fund_df)
+    if len(fund_df):
+        fund_df = handle_raw_data(fund_df)
 
     for i in range(length):
         new_date        = str_date
