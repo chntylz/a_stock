@@ -5,8 +5,9 @@ import tushare as ts
 import numpy as np
 import pandas as pd
 
+import sys
+sys.path.append("eastmoney")
 
-import time
 
 #keep 0.01 accrucy
 pd.set_option('display.float_format',lambda x : '%.2f' % x)
@@ -307,7 +308,7 @@ def comm_write_to_file(f, k, df, filename):
                             (xueqiu_url, element_value))
                 elif(j == 3):
                     f.write('           <a> %.2f%s</a>\n'%(element_value, '%'))
-                elif(j == 11):
+                elif(j == 15):
                     #fix bug:  must be real number, not datetime.date for holder function
                     if list(df)[j] == 'hk_date':
                         f.write('           <a> %s</a>\n'%(element_value))
@@ -581,6 +582,8 @@ def comm_handle_hsgt_data(df):
 
     all_df =df 
 
+    unit_yi = 10000 * 10000
+
     del all_df['open']
     del all_df['high']
     del all_df['low']
@@ -589,8 +592,9 @@ def comm_handle_hsgt_data(df):
     if len(all_df) > 0:
         #the_first_line - the_second_line
         all_df['delta1']  = all_df.groupby('stock_code')['percent'].apply(lambda i:i.diff(-1))
-        all_df['delta1_share'] = all_df.groupby('stock_code')['share_holding'].apply(lambda i:i.diff(-1))
-        all_df['delta1_m'] = all_df['close'] * all_df['delta1_share'] / 10000;
+        all_df['delta1_share'] = all_df.groupby('stock_code')['share_holding']\
+                .apply(lambda i:i.diff(-1))
+        all_df['delta1_m'] = all_df['close'] * all_df['delta1_share'] / unit_yi;
         del all_df['delta1_share']
 
         all_df=all_df[all_df['delta1_m'] != 0]
@@ -605,20 +609,23 @@ def comm_handle_hsgt_data(df):
     hsgt_df_len = len(hsgt_df)
     if hsgt_df_len > 1:
         hsgt_date           = hsgt_df['record_date'][0]
-        hsgt_share          = hsgt_df['share_holding'][0]
+        hsgt_date           = hsgt_date[5:] 
+        hsgt_share          = hsgt_df['share_holding'][0] / unit_yi
         hsgt_percent        = hsgt_df['percent'][0]
         hsgt_delta1         = hsgt_df['percent'][0] - hsgt_df['percent'][1]
         hsgt_delta1         = round(hsgt_delta1, 2)
-        hsgt_deltam         = (hsgt_df['share_holding'][0] - hsgt_df['share_holding'][1]) * hsgt_df['close'][0] /10000.0
+        hsgt_deltam         = (hsgt_df['share_holding'][0] - hsgt_df['share_holding'][1])\
+                * hsgt_df['close'][0] / unit_yi
         hsgt_deltam         = round(hsgt_deltam, 2)
         conti_day, money_total= comm_get_hsgt_continous_info(hsgt_df)
 
     elif hsgt_df_len > 0:
         hsgt_date           = hsgt_df['record_date'][0]
-        hsgt_share          = hsgt_df['share_holding'][0]
+        hsgt_date           = hsgt_date[5:] 
+        hsgt_share          = hsgt_df['share_holding'][0] / unit_yi
         hsgt_percent        = hsgt_df['percent'][0]
         hsgt_delta1         = hsgt_df['percent'][0]
-        hsgt_deltam         = hsgt_df['share_holding'][0] * hsgt_df['close'][0]/10000.0
+        hsgt_deltam         = hsgt_df['share_holding'][0] * hsgt_df['close'][0]/unit_yi
         hsgt_deltam         = round(hsgt_deltam, 2)
         conti_day           = 1
         money_total         = hsgt_deltam
@@ -641,6 +648,18 @@ def insert_industry(dict_name, key):
     else:
         dict_name[key]=dict_name[key] + 1
 
+    pass
+
+
+from HData_eastmoney_fund import *
+from HData_eastmoney_fund_3 import *
+from HData_eastmoney_fund_5 import *
+from HData_eastmoney_fund_10 import *
+
+from get_daily_fund import *
+
+
+
 
 def comm_generate_web_dataframe(curr_dir, images, curr_day, dict_industry):
     
@@ -648,6 +667,11 @@ def comm_generate_web_dataframe(curr_dir, images, curr_day, dict_industry):
     
     with open(txt_file,'w') as f:
         f.write('\n')
+
+    fund_df   = get_zlje_data_from_db(url='url',     curr_date=curr_day)
+    fund_3_df = get_zlje_data_from_db(url='url_3',   curr_date=curr_day)
+    fund_5_df = get_zlje_data_from_db(url='url_5',   curr_date=curr_day)
+    fund_10_df = get_zlje_data_from_db(url='url_10', curr_date=curr_day)
 
     data_list = []
     for image in images:
@@ -697,16 +721,22 @@ def comm_generate_web_dataframe(curr_dir, images, curr_day, dict_industry):
         industry_name = basic_df.loc[stock_code]['industry']
         insert_industry(dict_industry, industry_name)
 
+        zlje = get_zlje(fund_df, stock_code, curr_date=curr_day)
+        zlje_3 = get_zlje(fund_3_df, stock_code, curr_date=curr_day)
+        zlje_5 = get_zlje(fund_5_df, stock_code, curr_date=curr_day)
+        zlje_10 = get_zlje(fund_10_df, stock_code, curr_date=curr_day)
 
-        data_list.append([curr_day, stock_code, stock_name, close_p, C.value, image, \
+        data_list.append([curr_day[5:], stock_code, stock_name, close_p, C.value, image, \
                 hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, \
                 money_total, total_mv,\
-                is_peach, is_zig, is_quad])
+                is_peach, is_zig, is_quad,\
+                zlje, zlje_3, zlje_5, zlje_10 ])
 
     data_column = ['cur_date', 'code', 'name', 'a_pct', 'close', 'image_url',\
             'hk_date', 'hk_share', 'hk_pct', 'hk_delta1', 'hk_deltam', 'conti_day', \
             'hk_m_total', 'total_mv',\
-            'peach', 'zig', 'quad']
+            'peach', 'zig', 'quad', \
+            'zlje', 'zlje_3', 'zlje_5', 'zlje_10']
 
     ret_df=pd.DataFrame(data_list, columns=data_column)
     ret_df['m_per_day'] = ret_df.hk_m_total / ret_df.conti_day
@@ -717,6 +747,7 @@ def comm_generate_web_dataframe(curr_dir, images, curr_day, dict_industry):
 
     data_column = ['cur_date', 'code', 'name', 'a_pct', 'close', 'image_url',\
             'peach', 'zig', 'quad',\
+            'zlje', 'zlje_3', 'zlje_5', 'zlje_10',\
             'hk_date', 'hk_share', 'hk_pct', \
             'hk_delta1', 'hk_deltam', 'conti_day', \
             'hk_m_total', 'm_per_day', 'total_mv']

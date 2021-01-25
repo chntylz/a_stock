@@ -220,6 +220,48 @@ def check_table():
         hdata_fund_10.db_hdata_xq_create()
         print('table_10 not exist, create')
 
+    pass
+
+def get_zlje_data_from_db(url=None, curr_date=None):
+
+    hdata_db = hdata_fund
+
+    if curr_date is None:
+        nowdate=datetime.datetime.now().date()
+        curr_date = nowdate.strftime('%Y-%m-%d') 
+    
+    if url == 'url_3':
+        hdata_db = hdata_fund_3
+    elif url == 'url_5':
+        hdata_db = hdata_fund_5
+    elif url == 'url_10':
+        hdata_db = hdata_fund_10
+    else:
+        hdata_db = hdata_fund
+
+    df = hdata_db.get_data_from_hdata(start_date=curr_date, end_date=curr_date)
+    
+    return df
+
+
+def get_zlje(df, stock_code, url=None, curr_date=None):
+    zlje =  0
+
+    #fund_df = get_zlje_data_from_db(url, curr_date)
+    fund_df = df
+
+    tmp_fund_df = fund_df[fund_df['stock_code'] == stock_code]
+    tmp_fund_df = tmp_fund_df.reset_index(drop=True)
+    if debug:
+            print(new_code, len(tmp_fund_df))
+
+    if len(tmp_fund_df):
+        zlje = tmp_fund_df['zlje'][0]
+        zdf  = tmp_fund_df['zdf'][0]
+        zlje = str(zlje) + '  ' + str(zdf)
+
+    return zlje
+
 
 
 if __name__ == '__main__':
