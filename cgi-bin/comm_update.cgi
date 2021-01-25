@@ -9,7 +9,9 @@ import numpy as np
 import pandas as pd
 
 from HData_hsgt import *
+from HData_xq_fina import *
 hdata_hsgt=HData_hsgt("usr","usr")
+hdata_fina=HData_xq_fina("usr","usr")
 
 from comm_generate_html import *
 
@@ -71,7 +73,8 @@ def show_realdata():
         stock_list.append(my_list[i][0])
 
     real_df = ts.get_realtime_quotes(stock_list)
-
+    
+    ####get zlje start####
     fund_df = get_daily_fund()
     if len(fund_df):
         fund_df = handle_raw_data(fund_df)
@@ -87,6 +90,8 @@ def show_realdata():
     fund_10_df = get_daily_fund(url='url_10')
     if len(fund_10_df):
         fund_10_df = handle_raw_data(fund_10_df)
+    ####get zlje end####
+
 
 
     for i in range(length):
@@ -111,6 +116,7 @@ def show_realdata():
                 is_zig, is_quad, is_peach = comm_handle_hsgt_data(hsgt_df)
         new_hsgt_date = new_hsgt_date[5:]
         
+        #### zlje start ####
         tmp_fund_df = fund_df[fund_df['code'] == new_code]
         tmp_fund_df = tmp_fund_df.reset_index(drop=True)
         if debug:
@@ -154,6 +160,23 @@ def show_realdata():
             zlje_10 = tmp_fund_10_df['zlje'][0]
             zdf_10  = tmp_fund_10_df['zdf'][0]
             zlje_10 = str(zlje_10) + '  ' + str(zdf_10)
+        #### zlje end ####
+
+        if new_code[0:1] == '6':
+            stock_code_new= 'SH' + new_code 
+        else:
+            stock_code_new= 'SZ' + new_code 
+
+        fina_df = hdata_fina.get_data_from_hdata(stock_code = stock_code_new)
+        fina_df = fina_df.sort_values('record_date', ascending=0)
+        fina_df = fina_df.reset_index(drop=True)
+        op_yoy = net_yoy = 0
+        if len(fina_df):
+            op_yoy = fina_df['operating_income_yoy'][0]
+            net_yoy = fina_df['net_profit_atsopc_yoy'][0]
+        fina=str(round(op_yoy,2)) +'  ' + str(round(net_yoy,2))
+
+        new_date = new_date + '['+ fina + ']'
 
 
         data_list.append([new_date, new_code, new_name, new_pre_price, new_price, new_percent, \
