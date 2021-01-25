@@ -243,6 +243,28 @@ def get_zlje_data_from_db(url=None, curr_date=None):
     
     return df
 
+def delete_zlje_data_from_db(url=None, curr_date=None):
+
+    hdata_db = hdata_fund
+
+    if curr_date is None:
+        nowdate=datetime.datetime.now().date()
+        curr_date = nowdate.strftime('%Y-%m-%d') 
+    
+    if url == 'url_3':
+        hdata_db = hdata_fund_3
+    elif url == 'url_5':
+        hdata_db = hdata_fund_5
+    elif url == 'url_10':
+        hdata_db = hdata_fund_10
+    else:
+        hdata_db = hdata_fund
+
+    hdata_db.delete_data_from_hdata(start_date=curr_date, end_date=curr_date)
+    
+    pass
+
+
 
 def get_zlje(df, stock_code, url=None, curr_date=None):
     zlje =  0
@@ -267,33 +289,43 @@ def get_zlje(df, stock_code, url=None, curr_date=None):
 if __name__ == '__main__':
     
     nowdate=datetime.datetime.now().date()
+    date_string = nowdate.strftime('%Y-%m-%d')
 
     check_table()
 
     df = get_daily_fund()
     df = handle_raw_data(df)
-    print(list(df))
+    #print(list(df))
+    if len(df):
+        delete_zlje_data_from_db()
     hdata_fund.copy_from_stringio(df)
 
     df_3 = get_daily_fund(url='url_3')
     df_3 = handle_raw_data(df_3)
+    if len(df_3):
+        delete_zlje_data_from_db(url='url_3')
     hdata_fund_3.copy_from_stringio(df_3)
-    print(list(df_3))
+    #print(list(df_3))
 
     df_5 = get_daily_fund(url='url_5')
     df_5 = handle_raw_data(df_5)
+    if len(df_5):
+        delete_zlje_data_from_db(url='url_5')
     hdata_fund_5.copy_from_stringio(df_5)
-    print(list(df_5))
+    #print(list(df_5))
 
     df_10 = get_daily_fund(url='url_10')
     df_10 = handle_raw_data(df_10)
+    if len(df_10):
+        delete_zlje_data_from_db(url='url_10')
     hdata_fund_10.copy_from_stringio(df_10)
-    print(list(df_10))
+    #print(list(df_10))
 
-    print(list(df))
-    print(list(df_3))
-    print(list(df_5))
-    print(list(df_10))
+    if debug:
+        print(list(df))
+        print(list(df_3))
+        print(list(df_5))
+        print(list(df_10))
 
 
 
