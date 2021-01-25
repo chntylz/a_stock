@@ -76,6 +76,19 @@ def show_realdata():
     if len(fund_df):
         fund_df = handle_raw_data(fund_df)
 
+    fund_3_df = get_daily_fund(url='url_3')
+    if len(fund_3_df):
+        fund_3_df = handle_raw_data(fund_3_df)
+
+    fund_5_df = get_daily_fund(url='url_5')
+    if len(fund_5_df):
+        fund_5_df = handle_raw_data(fund_5_df)
+
+    fund_10_df = get_daily_fund(url='url_10')
+    if len(fund_10_df):
+        fund_10_df = handle_raw_data(fund_10_df)
+
+
     for i in range(length):
         new_date        = str_date
         new_date        = new_date[5:]
@@ -103,12 +116,48 @@ def show_realdata():
         if debug:
             print(new_code, len(tmp_fund_df))
 
-        zlje = 0
+        tmp_fund_3_df = fund_3_df[fund_3_df['code'] == new_code]
+        tmp_fund_3_df = tmp_fund_3_df.reset_index(drop=True)
+        if debug:
+            print(new_code, len(tmp_fund_3_df))
+
+        tmp_fund_5_df = fund_5_df[fund_5_df['code'] == new_code]
+        tmp_fund_5_df = tmp_fund_5_df.reset_index(drop=True)
+        if debug:
+            print(new_code, len(tmp_fund_5_df))
+
+        tmp_fund_10_df = fund_10_df[fund_10_df['code'] == new_code]
+        tmp_fund_10_df = tmp_fund_10_df.reset_index(drop=True)
+        if debug:
+            print(new_code, len(tmp_fund_3_df))
+
+
+        zlje = zlje_3 = zlje_5 = zlje_10 =  0
         if len(tmp_fund_df):
             zlje = tmp_fund_df['zlje'][0]
+            zdf  = tmp_fund_df['zdf'][0]
+            zlje = str(zlje) + '  ' + str(zdf)
+
+        if len(tmp_fund_3_df):
+            zlje_3 = tmp_fund_3_df['zlje'][0]
+            zdf_3  = tmp_fund_3_df['zdf'][0]
+            zlje_3 = str(zlje_3) + '  ' + str(zdf_3)
+
+
+        if len(tmp_fund_5_df):
+            zlje_5 = tmp_fund_5_df['zlje'][0]
+            zdf_5  = tmp_fund_5_df['zdf'][0]
+            zlje_5 = str(zlje_5) + '  ' + str(zdf_5)
+
+
+        if len(tmp_fund_10_df):
+            zlje_10 = tmp_fund_10_df['zlje'][0]
+            zdf_10  = tmp_fund_10_df['zdf'][0]
+            zlje_10 = str(zlje_10) + '  ' + str(zdf_10)
+
 
         data_list.append([new_date, new_code, new_name, new_pre_price, new_price, new_percent, \
-                is_peach, is_zig, is_quad, zlje,\
+                is_peach, is_zig, is_quad, zlje, zlje_3, zlje_5, zlje_10,\
                 new_hsgt_date, new_hsgt_share_holding, new_hsgt_percent, \
                 new_hsgt_delta1, new_hsgt_deltam, conti_day, money_total])
 
@@ -116,7 +165,7 @@ def show_realdata():
         #data_list.append([str_date, my_list[i], my_list_cn[i], df['pre_close'][0], df['price'][0] ])
 
     data_column = ['curr_date', 'code', 'name', 'pre_price', 'price', 'a_pct', \
-            'peach', 'zig', 'quad', 'zlje', \
+            'peach', 'zig', 'quad', 'zlje', 'zlje_3', 'zlje_5', 'zlje_10', \
             'hk_date', 'hk_share', 'hk_pct', 'hk_delta1', 'hk_deltam', 'days', 'hk_m_total']
 
     ret_df=pd.DataFrame(data_list, columns=data_column)
