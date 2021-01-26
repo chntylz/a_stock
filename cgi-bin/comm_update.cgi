@@ -98,7 +98,7 @@ def show_realdata():
 
     for i in range(length):
         new_date        = str_date
-        new_date        = new_date[5:]
+        new_date        = str_date[2:]
         new_code        = my_list[i][0]
         new_name        = my_list[i][1]
         if debug:
@@ -144,24 +144,24 @@ def show_realdata():
         if len(tmp_fund_df):
             zlje = tmp_fund_df['zlje'][0]
             zdf  = tmp_fund_df['zdf'][0]
-            zlje = str(zlje) + '  ' + str(zdf)
+            zlje = str(zlje) + '<br>' + str(zdf)+ '</br>' 
 
         if len(tmp_fund_3_df):
             zlje_3 = tmp_fund_3_df['zlje'][0]
             zdf_3  = tmp_fund_3_df['zdf'][0]
-            zlje_3 = str(zlje_3) + '  ' + str(zdf_3)
+            zlje_3 = str(zlje_3) + '<br>' + str(zdf_3)+ '</br>' 
 
 
         if len(tmp_fund_5_df):
             zlje_5 = tmp_fund_5_df['zlje'][0]
             zdf_5  = tmp_fund_5_df['zdf'][0]
-            zlje_5 = str(zlje_5) + '  ' + str(zdf_5)
+            zlje_5 = str(zlje_5) + '<br>' + str(zdf_5)+ '</br>' 
 
 
         if len(tmp_fund_10_df):
             zlje_10 = tmp_fund_10_df['zlje'][0]
             zdf_10  = tmp_fund_10_df['zdf'][0]
-            zlje_10 = str(zlje_10) + '  ' + str(zdf_10)
+            zlje_10 = str(zlje_10) + '<br>' + str(zdf_10)+ '</br>' 
         #### zlje end ####
 
 
@@ -179,8 +179,8 @@ def show_realdata():
         if len(fina_df):
             op_yoy = fina_df['operating_income_yoy'][0]
             net_yoy = fina_df['net_profit_atsopc_yoy'][0]
-        fina=str(round(op_yoy,2)) +'  ' + str(round(net_yoy,2))
-        new_date = new_date + '['+ fina + ']'
+        fina=str(round(op_yoy,2)) +' ' + str(round(net_yoy,2))
+        new_date = new_date + '<br>'+ fina + '</br>'
         #### fina end ####
         
         #### holder start ####
@@ -196,7 +196,7 @@ def show_realdata():
         if len(holder_df) > 2:
             h2 = holder_df['chg'][2]
         h_chg = str(h0) + ' ' + str(h1) + ' ' + str(h2)
-        new_code = new_code + '['+ h_chg + ']'
+        new_code = new_code + '<br>'+ h_chg + '</br>'
 
         #### holder start ####
 
