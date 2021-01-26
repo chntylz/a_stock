@@ -157,7 +157,9 @@ def cgi_handle_link(stock_code):
     xueqiu_url='https://xueqiu.com/S/' + stock_code_new
     hsgt_url='../../cgi-bin/hsgt-search.cgi?name=' + tmp_stock_code
     cgi_url = xueqiu_url + '/detail#/ZYCWZB'    
-    return xueqiu_url, hsgt_url, cgi_url
+    #holder_url = 'https://xueqiu.com/snowman/S/' + stock_code_new + '/detail#/GDRS'
+    holder_url = xueqiu_url + '/detail#/GDRS'
+    return xueqiu_url, hsgt_url, cgi_url, holder_url
     
     
 def cgi_write_to_file( df):
@@ -174,7 +176,8 @@ def cgi_write_to_file( df):
         print('    <tr>\n')
         a_array=df[i:i+1].values  #get line of df
         tmp_stock_code=a_array[0][1] 
-        xueqiu_url, hsgt_url, cgi_url = cgi_handle_link(tmp_stock_code)
+        tmp_stock_code=tmp_stock_code[:6]
+        xueqiu_url, hsgt_url, cgi_url, holder_url = cgi_handle_link(tmp_stock_code)
 
         col_len=len(list(df))
         for j in range(0, col_len): #loop column
@@ -187,9 +190,9 @@ def cgi_write_to_file( df):
             element_value = a_array[0][j] #get a[i][j] element
             #df_cgi_column=['record_date', 'stock_code', 'stock_name', 'or_yoy', 'netprofit_yoy', 'conti_day']
             if(j == 0): 
-                print('           <a href="%s" target="_blank"> %s[fina]</a>\n'%(cgi_url, element_value))
+                print('           <a href="%s" target="_blank"> %s</a>\n'%(cgi_url, element_value))
             elif(j == 1): 
-                print('           <a href="%s" target="_blank"> %s[hsgt]</a>\n'%(hsgt_url, element_value))
+                print('           <a href="%s" target="_blank"> %s</a>\n'%(holder_url, element_value))
             elif(j == 2):
                 print('           <a href="%s" target="_blank"> %s</a>\n'%(xueqiu_url, element_value))
             elif(j == col_len - 1):

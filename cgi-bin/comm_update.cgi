@@ -10,8 +10,10 @@ import pandas as pd
 
 from HData_hsgt import *
 from HData_xq_fina import *
+from HData_xq_holder import *
 hdata_hsgt=HData_hsgt("usr","usr")
 hdata_fina=HData_xq_fina("usr","usr")
+hdata_holder=HData_xq_holder("usr","usr")
 
 from comm_generate_html import *
 
@@ -162,6 +164,9 @@ def show_realdata():
             zlje_10 = str(zlje_10) + '  ' + str(zdf_10)
         #### zlje end ####
 
+
+        
+        #### fina start ####
         if new_code[0:1] == '6':
             stock_code_new= 'SH' + new_code 
         else:
@@ -175,8 +180,26 @@ def show_realdata():
             op_yoy = fina_df['operating_income_yoy'][0]
             net_yoy = fina_df['net_profit_atsopc_yoy'][0]
         fina=str(round(op_yoy,2)) +'  ' + str(round(net_yoy,2))
-
         new_date = new_date + '['+ fina + ']'
+        #### fina end ####
+        
+        #### holder start ####
+
+        holder_df = hdata_holder.get_data_from_hdata(stock_code = stock_code_new)
+        holder_df = holder_df .sort_values('record_date', ascending=0)
+        holder_df = holder_df .reset_index(drop=True)
+        h0 = h1 = h2 = 0
+        if len(holder_df) > 0:
+            h0 = holder_df['chg'][0]
+        if len(holder_df) > 1:
+            h1 = holder_df['chg'][1]
+        if len(holder_df) > 2:
+            h2 = holder_df['chg'][2]
+        h_chg = str(h0) + ' ' + str(h1) + ' ' + str(h2)
+        new_code = new_code + '['+ h_chg + ']'
+
+        #### holder start ####
+
 
 
         data_list.append([new_date, new_code, new_name, new_pre_price, new_price, new_percent, \

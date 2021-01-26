@@ -6,6 +6,7 @@ cp -rf ../comm_generate_html.py .
 cp ../eastmoney/get_daily_fund.py .
 cp ../eastmoney/HData_eastmoney_fund*.py .
 cp ../pysnow_ball/HData_xq_fina.py .
+cp ../pysnow_ball/HData_xq_holder.py .
 
 #rm    file_interface.py
 #rm    HData_day.py     

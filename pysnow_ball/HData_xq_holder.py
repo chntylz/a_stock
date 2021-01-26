@@ -14,7 +14,7 @@ from io import StringIO
 
 
 debug = 0
-debug = 1
+#debug = 1
 
 db_columns = " record_date , stock_code , open , close , high , low , volume ,  amount , p_change "
 
