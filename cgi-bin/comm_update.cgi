@@ -17,7 +17,13 @@ hdata_holder=HData_xq_holder("usr","usr")
 
 from comm_generate_html import *
 
+from HData_eastmoney_fund import *
+from HData_eastmoney_fund_3 import *
+from HData_eastmoney_fund_5 import *
+from HData_eastmoney_fund_10 import *
+
 from get_daily_fund import *
+
 
 debug=0
 
@@ -77,21 +83,11 @@ def show_realdata():
     real_df = ts.get_realtime_quotes(stock_list)
     
     ####get zlje start####
-    fund_df = get_daily_fund()
-    if len(fund_df):
-        fund_df = handle_raw_data(fund_df)
+    fund_df   = get_zlje_data_from_db(url='url',     curr_date=str_date)
+    fund_3_df = get_zlje_data_from_db(url='url_3',   curr_date=str_date)
+    fund_5_df = get_zlje_data_from_db(url='url_5',   curr_date=str_date)
+    fund_10_df = get_zlje_data_from_db(url='url_10', curr_date=str_date)
 
-    fund_3_df = get_daily_fund(url='url_3')
-    if len(fund_3_df):
-        fund_3_df = handle_raw_data(fund_3_df)
-
-    fund_5_df = get_daily_fund(url='url_5')
-    if len(fund_5_df):
-        fund_5_df = handle_raw_data(fund_5_df)
-
-    fund_10_df = get_daily_fund(url='url_10')
-    if len(fund_10_df):
-        fund_10_df = handle_raw_data(fund_10_df)
     ####get zlje end####
 
 
@@ -119,49 +115,10 @@ def show_realdata():
         new_hsgt_date = new_hsgt_date[5:]
         
         #### zlje start ####
-        tmp_fund_df = fund_df[fund_df['code'] == new_code]
-        tmp_fund_df = tmp_fund_df.reset_index(drop=True)
-        if debug:
-            print(new_code, len(tmp_fund_df))
-
-        tmp_fund_3_df = fund_3_df[fund_3_df['code'] == new_code]
-        tmp_fund_3_df = tmp_fund_3_df.reset_index(drop=True)
-        if debug:
-            print(new_code, len(tmp_fund_3_df))
-
-        tmp_fund_5_df = fund_5_df[fund_5_df['code'] == new_code]
-        tmp_fund_5_df = tmp_fund_5_df.reset_index(drop=True)
-        if debug:
-            print(new_code, len(tmp_fund_5_df))
-
-        tmp_fund_10_df = fund_10_df[fund_10_df['code'] == new_code]
-        tmp_fund_10_df = tmp_fund_10_df.reset_index(drop=True)
-        if debug:
-            print(new_code, len(tmp_fund_3_df))
-
-
-        zlje = zlje_3 = zlje_5 = zlje_10 =  0
-        if len(tmp_fund_df):
-            zlje = tmp_fund_df['zlje'][0]
-            zdf  = tmp_fund_df['zdf'][0]
-            zlje = str(zlje) + '<br>' + str(zdf)+ '</br>' 
-
-        if len(tmp_fund_3_df):
-            zlje_3 = tmp_fund_3_df['zlje'][0]
-            zdf_3  = tmp_fund_3_df['zdf'][0]
-            zlje_3 = str(zlje_3) + '<br>' + str(zdf_3)+ '</br>' 
-
-
-        if len(tmp_fund_5_df):
-            zlje_5 = tmp_fund_5_df['zlje'][0]
-            zdf_5  = tmp_fund_5_df['zdf'][0]
-            zlje_5 = str(zlje_5) + '<br>' + str(zdf_5)+ '</br>' 
-
-
-        if len(tmp_fund_10_df):
-            zlje_10 = tmp_fund_10_df['zlje'][0]
-            zdf_10  = tmp_fund_10_df['zdf'][0]
-            zlje_10 = str(zlje_10) + '<br>' + str(zdf_10)+ '</br>' 
+        zlje    = get_zlje(fund_df,     new_code, curr_date=str_date)
+        zlje_3  = get_zlje(fund_3_df,   new_code, curr_date=str_date)
+        zlje_5  = get_zlje(fund_5_df,   new_code, curr_date=str_date)
+        zlje_10 = get_zlje(fund_10_df,  new_code, curr_date=str_date)
         #### zlje end ####
 
 
