@@ -179,7 +179,8 @@ def cgi_write_to_file( df):
         tmp_stock_code=tmp_stock_code[:6]
         xueqiu_url, hsgt_url, cgi_url, holder_url = cgi_handle_link(tmp_stock_code)
 
-        col_len=len(list(df))
+        col_name = list(df)
+        col_len=len(col_name)
         for j in range(0, col_len): #loop column
             #set align right begin from the third column
             if j>2:
@@ -192,14 +193,15 @@ def cgi_write_to_file( df):
             if(j == 0): 
                 print('           <a href="%s" target="_blank"> %s</a>\n'%(cgi_url, element_value))
             elif(j == 1): 
-                print('           <a href="%s" target="_blank"> %s</a>\n'%(holder_url, element_value))
+                print('           <a href="%s" target="_blank"> %s</a>\n'%(hsgt_url, element_value))
             elif(j == 2):
                 print('           <a href="%s" target="_blank"> %s</a>\n'%(xueqiu_url, element_value))
             elif(j == col_len - 1):
                 print('           <a> %.2f</a>\n'%(element_value))
+            elif 'holder_change' in col_name[j]:
+                print('           <a href="%s" target="_blank"> %s</a>\n'%(holder_url, element_value))
             else:
                 print('           <a> %s</a>\n'%(element_value))
-                     
                                 
             print('        </td>\n')
 

@@ -280,7 +280,7 @@ def get_zlje(df, stock_code, url=None, curr_date=None):
     if len(tmp_fund_df):
         zlje = tmp_fund_df['zlje'][0]
         zdf  = tmp_fund_df['zdf'][0]
-        zlje = str(zlje) + '  ' + str(zdf)
+        zlje = str(zlje) + '<br>' + str(zdf) + '</br>'
 
     return zlje
 
