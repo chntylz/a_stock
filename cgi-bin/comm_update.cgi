@@ -196,14 +196,14 @@ def show_realdata():
         if len(holder_df) > 2:
             h2 = holder_df['chg'][2]
         h_chg = str(h0) + ' ' + str(h1) + ' ' + str(h2)
-        new_code = new_code + '<br>'+ h_chg + '</br>'
+        #new_code = new_code + '<br>'+ h_chg + '</br>'
 
         #### holder start ####
 
 
 
         data_list.append([new_date, new_code, new_name, new_pre_price, new_price, new_percent, \
-                is_peach, is_zig, is_quad, zlje, zlje_3, zlje_5, zlje_10,\
+                is_peach, is_zig, is_quad, zlje, zlje_3, zlje_5, zlje_10, h_chg,\
                 new_hsgt_date, new_hsgt_share_holding, new_hsgt_percent, \
                 new_hsgt_delta1, new_hsgt_deltam, conti_day, money_total])
 
@@ -211,7 +211,7 @@ def show_realdata():
         #data_list.append([str_date, my_list[i], my_list_cn[i], df['pre_close'][0], df['price'][0] ])
 
     data_column = ['curr_date', 'code', 'name', 'pre_price', 'price', 'a_pct', \
-            'peach', 'zig', 'quad', 'zlje', 'zlje_3', 'zlje_5', 'zlje_10', \
+            'peach', 'zig', 'quad', 'zlje', 'zlje_3', 'zlje_5', 'zlje_10', 'holder_change', \
             'hk_date', 'hk_share', 'hk_pct', 'hk_delta1', 'hk_deltam', 'days', 'hk_m_total']
 
     ret_df=pd.DataFrame(data_list, columns=data_column)
