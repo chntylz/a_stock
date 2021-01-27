@@ -200,6 +200,12 @@ def cgi_write_to_file( df):
                 print('           <a> %.2f</a>\n'%(element_value))
             elif 'holder_change' in col_name[j]:
                 print('           <a href="%s" target="_blank"> %s</a>\n'%(holder_url, element_value))
+            elif ('a_pct' in col_name[j]) or ('hk_deltam' in col_name[j]):
+                if float(element_value) > 0:
+                    print('           <a> <font color="red"> %s </font></a>\n'%(element_value))
+                else:
+                    print('           <a>  <font color="green"> %s </font></a>\n'%(element_value))
+
             else:
                 print('           <a> %s</a>\n'%(element_value))
                                 
