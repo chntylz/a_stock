@@ -123,6 +123,8 @@ if __name__ == '__main__':
 
     if int(para1):
         print('all data')
+        today_df = get_fina()
+        hdata_fina.copy_from_stringio(today_df)
     else:
         print('today data')
         today_df = get_fina()

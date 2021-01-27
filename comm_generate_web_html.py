@@ -615,7 +615,7 @@ def comm_handle_hsgt_data(df):
         hsgt_delta1         = hsgt_df['percent'][0] - hsgt_df['percent'][1]
         hsgt_delta1         = round(hsgt_delta1, 2)
         hsgt_deltam         = (hsgt_df['share_holding'][0] - hsgt_df['share_holding'][1])\
-                * hsgt_df['close'][0] / unit_yi
+                * hsgt_df['close'][0] / 10000
         hsgt_deltam         = round(hsgt_deltam, 2)
         conti_day, money_total= comm_get_hsgt_continous_info(hsgt_df)
 
@@ -625,7 +625,7 @@ def comm_handle_hsgt_data(df):
         hsgt_share          = hsgt_df['share_holding'][0] / unit_yi
         hsgt_percent        = hsgt_df['percent'][0]
         hsgt_delta1         = hsgt_df['percent'][0]
-        hsgt_deltam         = hsgt_df['share_holding'][0] * hsgt_df['close'][0]/unit_yi
+        hsgt_deltam         = hsgt_df['share_holding'][0] * hsgt_df['close'][0]/10000
         hsgt_deltam         = round(hsgt_deltam, 2)
         conti_day           = 1
         money_total         = hsgt_deltam
