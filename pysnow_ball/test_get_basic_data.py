@@ -151,6 +151,20 @@ def get_his_data(stock_code, def_cnt=1):
 
     return df
 
+
+def get_real_data(stock_code):
+    rt_data = ball.quotec(stock_code)
+    rawdata = rt_data['data']
+    if rawdata[0] is None:
+        df = pd.DataFrame()
+    else:
+        df = pd.DataFrame(rawdata)
+        df=df.fillna(0)
+        if 'timestamp' in df.columns:
+            df['timestamp'] = df['timestamp'].apply(lambda x: get_date_from_timestamp(x))
+    return df
+
+
 def get_realtime_data(data_list, stock_code):
     rt_data = ball.quotec(stock_code)
 

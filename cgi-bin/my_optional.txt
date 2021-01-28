@@ -1,96 +1,95 @@
 #There must be 1 space after stock code!!!
-sh shangzheng
-399001 shenzheng
-399006 chuangyeban
-159994 5GETF
-512550 fushi_A50
+SH000001 shangzheng
+SZ399001 shenzheng
+SZ399006 chuangyeban
+SZ159994 5GETF
 
-601318 zhongguopingan
-600529 shandongyaobo
-300035 zhongkedianqi
-002230 kedaxunfei
-000401 jidongshuini
-000651 gelidianqi
+SH601318 zhongguopingan
+SH600529 shandongyaobo
+SZ300035 zhongkedianqi
+SZ002230 kedaxunfei
+SZ000401 jidongshuini
+SZ000651 gelidianqi
 
-000977 langchaoxinxi
-601933 yonghuichaoshi
-002241 ge'ergufen
-300676 huadajiyin
-002475 lixunjingmi
-601066 zhongxinjiantou
-002030 daanjiyin
-002106 laibaogaoke
+SZ000977 langchaoxinxi
+SZ601933 yonghuichaoshi
+SZ002241 ge'ergufen
+SZ300676 huadajiyin
+SZ002475 lixunjingmi
+SH601066 zhongxinjiantou
+SZ002030 daanjiyin
+SZ002106 laibaogaoke
 
-000538 yunnanbaiyao
-600460 shilanwei
-002352 shunfengkonggu
-600660 fuyaoboli
-002959 xiaoxiongdianqi
-300317 jiaweixinneng
-300142 wosengshengwu
+SZ000538 yunnanbaiyao
+SH600460 shilanwei
+SZ002352 shunfengkonggu
+SH600660 fuyaoboli
+SZ002959 xiaoxiongdianqi
+SZ300317 jiaweixinneng
+SZ300142 wosengshengwu
 
-300724 jiejiaweichuang
-600585 hailuoshuini
-000877 tianshangufen
-003009 zhongtianhuojian
-600745 wentaikeji
-002273 shuijingguangdian
-300638 guanghetong
-002049 ziguangguohui
-600196 fuxingyiyao
-300664 pengyaohuanbao
-300761 lihuagufen
-603236 yiyuantongxin
-300603 li'angjishu
-603160 huidingkeji
+SZ300724 jiejiaweichuang
+SH600585 hailuoshuini
+SZ000877 tianshangufen
+SZ003009 zhongtianhuojian
+SH600745 wentaikeji
+SZ002273 shuijingguangdian
+SZ300638 guanghetong
+SZ002049 ziguangguohui
+SH600196 fuxingyiyao
+SZ300664 pengyaohuanbao
+SZ300761 lihuagufen
+SH603236 yiyuantongxin
+SZ300603 li'angjishu
+SH603160 huidingkeji
 
-300256 xingxingkeji
-300556 silushijue
-603313 mengbaihe
+SZ300256 xingxingkeji
+SZ300556 silushijue
+SH603313 mengbaihe
 
-600352 zhejianglongsheng
+SH600352 zhejianglongsheng
 
-002572 suofeiya
-603113 jin'nengkeji
+SZ002572 suofeiya
+SH603113 jin'nengkeji
 
-603717 tianyugufen
-002050 sanhuazhikong
+SH603717 tianyugufen
+SH002050 sanhuazhikong
 
-600048 baolidichan
+SH600048 baolidichan
 
-002463 hudiankeji
+SZ002463 hudiankeji
 
-300253 weiningjiankang
-000513 lizhujituan
-002271 dongfangyuhong
-002304 yanghegufen
+SZ300253 weiningjiankang
+SZ000513 lizhujituan
+SZ002271 dongfangyuhong
+SZ002304 yanghegufen
 
-002332 xianjuzhiyao
-603229 ao'xiangyaoye
-601601 zhongguotaibao
+SZ002332 xianjuzhiyao
+SH603229 ao'xiangyaoye
+SH601601 zhongguotaibao
 
-600438 tongweigufen
-
-
-300750 ningdeshidai
-300552 wanjikeji
-300458 quanzhikeji
-300014 yiweilineng
-600588 yongyouwangluo
-
-603713 mi'erkewei
-300406 jiuqiangshengwu
-600201 shengwugufen
-601117 zhongguohuaxue
-002568 bairungufen
-600298 an'qijiaomu
+SH600438 tongweigufen
 
 
+SZ300750 ningdeshidai
+SZ300552 wanjikeji
+SZ300458 quanzhikeji
+SZ300014 yiweilineng
+SH600588 yongyouwangluo
 
-300249 yimikang
+SH603713 mi'erkewei
+SZ300406 jiuqiangshengwu
+SH600201 shengwugufen
+SH601117 zhongguohuaxue
+SZ002568 bairungufen
+SH600298 an'qijiaomu
 
-600309 wanhuahuaxue
 
-002123 mengwangjituan
 
-600584 changdiankeji
+SZ300249 yimikang
+
+SH600309 wanhuahuaxue
+
+SZ002123 mengwangjituan
+
+SH600584 changdiankeji

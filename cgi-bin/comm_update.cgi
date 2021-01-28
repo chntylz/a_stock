@@ -23,9 +23,11 @@ from HData_eastmoney_fund_5 import *
 from HData_eastmoney_fund_10 import *
 
 from get_daily_fund import *
+from test_get_basic_data import *
 
 
 debug=0
+
 
 nowdate=datetime.datetime.now().date()
 str_date= nowdate.strftime("%Y-%m-%d")
@@ -74,36 +76,64 @@ def show_realdata():
     if debug:
         print(my_list)
     length=len(my_list)
-    
-    stock_list = []
-
-    for i in range(length):
-        stock_list.append(my_list[i][0])
-
-    real_df = ts.get_realtime_quotes(stock_list)
+   
+    real_fund_df = get_daily_fund()
+    real_fund_df = handle_raw_data(real_fund_df)
     
     ####get zlje start####
     fund_df   = get_zlje_data_from_db(url='url',     curr_date=str_date)
     fund_3_df = get_zlje_data_from_db(url='url_3',   curr_date=str_date)
     fund_5_df = get_zlje_data_from_db(url='url_5',   curr_date=str_date)
     fund_10_df = get_zlje_data_from_db(url='url_10', curr_date=str_date)
-
     ####get zlje end####
-
-
-
+    i = 0
+    eastmoney_begin = 10
     for i in range(length):
         new_date        = str_date
         new_date        = str_date[2:]
-        new_code        = my_list[i][0]
+        stock_code_new  = my_list[i][0]
+        new_code        = stock_code_new[2:]
         new_name        = my_list[i][1]
         if debug:
-            print("new_code:%s" % new_code)
+            print("i=%d,  new_code:%s" %(i, new_code))
+
+        new_pre_price = new_price = new_percent = 0
         
-        new_pre_price   = real_df['pre_close'][i]
-        new_price       = real_df['price'][i]
-        new_percent     = ((float(new_price) - float(new_pre_price)) / float(new_pre_price)) * 100
-        new_percent     = round (new_percent, 2)
+        if new_name == '5GETF':
+            eastmoney_begin = i
+
+        if i > eastmoney_begin:
+            if debug: 
+                print('use eastmoney data')
+
+            real_df = real_fund_df[real_fund_df['code'] == new_code]
+            if len(real_df):
+                real_df = real_df.reset_index(drop=True)
+                new_price       = real_df['zxj'][0]
+                new_percent     = real_df['zdf'][0]
+                new_pre_price   = round(new_price/(1+(new_percent/100)), 2)
+        else:
+            if debug: 
+                print('use snowball data')
+
+            real_df  =  get_real_data(stock_code_new)
+            if len(real_df):
+                new_pre_price   = real_df['last_close'][0]
+                new_price       = real_df['current'][0]
+                new_percent     = real_df['percent'][0]
+
+
+        '''
+        real_df  =  get_his_data(stock_code_new, def_cnt=2)
+        if len(real_df) > 1:
+            new_pre_price   = real_df['close'][0]
+            new_price       = real_df['close'][1]
+            new_percent     = real_df['percent'][1]
+        elif len(real_df) > 0:
+            new_pre_price   = 0
+            new_price       = real_df['close'][0]
+            new_percent     = real_df['percent'][0]
+        '''
       
         hsgt_df = hdata_hsgt.get_data_from_hdata(stock_code=new_code, limit=60)
         

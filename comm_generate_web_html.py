@@ -273,7 +273,8 @@ def comm_write_to_file(f, k, df, filename):
         tmp_stock_code=a_array[0][1] 
         xueqiu_url, hsgt_url, fina_url = comm_handle_link(tmp_stock_code)
 
-        col_len=len(list(df))
+        col_name = list(df)
+        col_len=len(col_name)
         for j in range(0, col_len): #loop column
             f.write('        <td>\n')
             element_value = a_array[0][j] #get a[i][j] element
