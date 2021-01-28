@@ -1,0 +1,223 @@
+import pysnowball as ball
+from pysnowball import utls
+from comm_interface import *
+import pandas as pd
+
+token=get_cookie()
+
+ball.set_token(token)
+
+stock_code_new='SZ002475'
+
+ret = ball.balance(stock_code_new, count=20)
+ret = ball.income(stock_code_new, count=20)
+#ret = ball.cash_flow(stock_code_new, count=20)
+rawdata=ret['data']['list']
+
+df = pd.DataFrame(rawdata)
+df.insert(1, 'symbol' , stock_code_new, allow_duplicates=False)
+df=df.fillna(0)
+
+
+df ['report_date'] = df ['report_date'].apply(lambda x: get_date_from_timestamp(x))
+df ['ctime'] = df ['ctime'].apply(lambda x: get_date_from_timestamp(x))
+df = df[df['report_date'] != '1970-01-01']
+
+y_df = df[df['report_name'].str.contains('年报')]
+y_df.to_html('./' + stock_code_new+ '_xianjinliu_df.html')
+y_df = y_df.reset_index(drop=True)
+
+
+
+
+https://xueqiu.com/3613448164/169143310
+
+1.1 先看总资产 看总资产，判断公司实力及扩张能力
+总资产			total_assets 
+总资产增长率		total_assets_new
+
+1.2 看资产负债率，判断公司的债务风险
+资产负债率大于 60%的公司，债务风险较大需要注意
+总负债                                      total_liab
+资产负债率                               asset_liab_ratio
+
+1.3 看有息负债和货币资金，排除偿债风险
+有息负债和货币资金主要看两者大小，对于资产负债率大于40%的公司，我们要看货币资金是否大于有息负债。货币资金小于有息负债的公司淘汰。
+
+货币资金 			currency_funds
+短期借款			st_loan
+应付利息			interest_payable
+一年内到期的非流动负债	noncurrent_liab_due_in1y
+长期借款			lt_loan
+应付债券			bond_payable
+长期应付款		lt_payable
+有息负债总额		st_loan + interest_payable + noncurrent_liab_due_in1y + lt_loan + bond_payable + lt_payable
+
+货币资金 - 有息负债总额  必须大于0
+
+1.4 看“应收应付”和“预付预收”，判断公司的行业地位
+
+“应收应付”和“预付预收”主要看两点，一是看（应付票据+应付账款+预收款项）与（应收票据+应收账款+预付款项）的大小；二是看应收账款与总资产的比率。（应付票据+应付账款+预收款项）-（应收票据+应收账款+预付款项）小于 0，说明在经营过程中，公司的自有资金会被其他公司无偿占用，这样的公司竞争力相对较弱。在实践中，我们把（应付票据+应付账款+预收款项）-（应收票据+应收账款+预付款项）小于 0 的公司淘汰掉。另外应收账款与总资产的比率大于 20%的公司，说明公司应收账款的规模较大，经营风险自然也较大。
+
+总资产			total_assets 
+应付票据			bill_payable
+应付账款			accounts_payable
+预收款项			pre_receivable
+应付预收合计		bill_payable + accounts_payable - pre_receivable
+
+应收票据			bills_receivable
+应收账款			account_receivable
+预付款项			pre_payment
+应收预付合计		bills_receivable + account_receivable + pre_payment
+
+应付预收 -  应收预付  
+
+应收账款 / 总资产
+
+1.5 看固定资产，判断公司的轻重
+
+固定资产，只要看一点，那就是（固定资产+在建工程+工程物资）与总资产的比率，（固定资产+在建工程+工程物资）与总资产的比率大于 40%的公司为重资产型公司。重资产型公司保持竞争力的成本比较高，风险比较大，当我们遇到重资产型公司，安全起见还是淘汰。
+
+总资产			total_assets 
+固定资产			fixed_asset_sum
+在建工程			construction_in_process_sum
+工程物资			project_goods_and_material
+
+固定资产合计   		fixed_asset_sum + construction_in_process_sum + project_goods_and_material
+固定资产/总资产  > 40% 淘汰		
+
+1.6 看投资类资产，判断公司的专注程度
+
+投资类资产我们只看一点，那就是与公司主业无关的投资类资产与总资产的比率。优秀的公司一定是专注于主业的公司，与主业无关的投资类资产占总资产的比例应当很低才对，最好为 0，在实践中，与主业无关的投资类资产占总资产比率大于 10%的公司不够专注。淘汰。
+
+以公允价值计量的资产		tradable_fnncl_assets
+可供出售的金融资产			saleable_finacial_assets
+长期股权投资			lt_equity_invest
+投资性房地产			invest_property
+总投资				tradable_fnncl_assets + saleable_finacial_assets + lt_equity_invest + invest_property
+总资产				total_assets 
+与主业无关的投资类资产占比		总投资 /  总资产
+
+
+
+利润表 income
+
+1.7 看归母净利润，判断公司自有资本的获利能力
+归母净利润主要看两点，一是规模，二是增长率。
+用“归母净利润”和“归母股东权益”可以计算出公司的净资产收益率，也叫 ROE。 
+净资产收益率是一个综合性最强的财务比率，是杜邦分析系统的核心。它反映所有者投入资本的获利能力，同时反映企业筹资、投资、运营的效率。一般来说净资产收益率在 15%-39%比较合适。
+
+归母净利润			net_profit_atsopc
+归母净利润增长率			net_profit_atsopc_new
+归属母公司股东权益合计		balance total_quity_atsopc
+净资产收益率 ROE		               net_profit_atsopc / total_quity_atsopc
+
+
+
+2 利润表
+2.1 看营业收入，判断公司的行业地位及成长能力
+我们通过营业收入的金额和含金量看公司的行业地位；通过营业收入增长率看公司的成长能力。营业收入金额较大且“销售商品、提供劳务收到的现金”与“营业收入”的比率大于 110%的公司行业地位高，产品竞争力强。“营业收入”增长率大于 10%的公司，成长性较好。销售商品、提供劳务收到的现金”与“营业收入”的比率小于 100%的公司、营业收入增长率小于10%的公司淘汰掉。
+
+营业收入				total_revenue
+营业收入增长率			total_revenue_new
+销售商品、提供劳务收到的现金		cash_flow   cash_received_of_sales_service
+现金占比	= 销售商品、提供劳务收到的现金 /  营业收入			
+
+
+2.2 看毛利率，判断公司产品的竞争力
+高毛利率说明公司的产品或服务有很强的竞争力。低毛利率则说明公司的产品或服务竞争力较差。一般来说，毛利率大于 40%的公司都有某种核心竞争力。毛利率小于 40%的公司一般面临的竞争压力都较大，风险也较大。毛利率高的公司，风险相对较小。
+
+营业收入				total_revenue
+营业成本				operating_cost
+毛利				total_revenue - operating_cost
+毛利率	= 毛利 / 	营业收入
+
+2.3 看费用率，判断公司成本管控能力
+毛利率高，费用率低，经营成果才可能好。优秀公司的费用率与毛利率的比率一般小于 40%。费用率与毛利率的比率大于 60%的公司需要注意风险。
+		
+营业收入				total_revenue
+销售费用				sales_fee
+管理费用				manage_fee
+财务费用				financing_expenses
+研发费用				rad_cost
+四费合计				sales_fee + manage_fee + financing_expenses + rad_cost		
+费用率 = 	四费合计 /  营业收入			
+毛利率 = 毛利 / 营业收入
+费用率/毛利率 
+
+
+2.4 看主营利润，判断公司的盈利能力及利润质量
+主营利润是一家公司最主要的利润来源，主营利润小于 0 的公司，直接淘汰。毛利率大于 40%的公司，主营利润率至少应该大于 15%。主营利润率小于 15%的公司，淘汰。另外优秀公司的“主营利润”与“利润总额”的比率至少要大于 80%。“主营利润”与“利润总额”的比率小于 80%的公司，要注意。
+
+营业收入				total_revenue
+营业成本				operating_cost
+营业税金及附加			operating_taxes_and_surcharge
+四费合计				sales_fee + manage_fee + financing_expenses + rad_cost
+主营利润				
+利润总额				y_df.profit_total_amt[0][0]
+主营利润率
+主营利润/利润总额
+
+
+投资收益				y_df.invest_income[0][0]
+公允价值变动损益		y_df.income_from_chg_in_fv[0][0]
+资产减值				-y_df.asset_impairment_loss[0][0]
+营业外收入				y_df.non_operating_income[0][0]
+营业外支出 				-y_df.non_operating_payout[0][0]
+信用减值损失 			-y_df.credit_impairment_loss[0][0]
+其他收益				y_df.other_income[0][0]
+资产处置收益 			y_df.asset_disposal_income[0][0]
+
+所有其他收益  all_other_income = y_df.invest_income[0][0] + y_df.income_from_chg_in_fv[0][0]-y_df.asset_impairment_loss[0][0]+y_df.non_operating_income[0][0] - y_df.non_operating_payout[0][0] - y_df.credit_impairment_loss[0][0] + y_df.other_income[0][0] + y_df.asset_disposal_income[0][0] 
+
+主营利润 =  利润总额 - 所有其他收益
+
+y_df.profit_total_amt[1][0] - (y_df.invest_income[1][0] + y_df.income_from_chg_in_fv[1][0]-y_df.asset_impairment_loss[1][0]+y_df.non_operating_income[1][0] - y_df.non_operating_payout[1][0] - y_df.credit_impairment_loss[1][0] + y_df.other_income[1][0] + y_df.asset_disposal_income[1][0])
+
+
+2.5 看净利润，判断公司的经营成果及含金量
+
+净利润金额越大越好。净利润小于 0 的公司，直接淘汰掉。
+
+优秀的公司不但净利润金额大而且含金量高。优秀公司的“净利润现金比率”会持续的大于 100%。过去 5 年的“净利润现金比率（过去 5 年的“经营活动产生的现金流量净额”总和/过去 5 年的净利润总和*100%）”小于 100%的公司，要注意
+
+经营活动产生的现金流量净额		 		cash_flow ncf_from_oa	
+经营活动产生的现金流量净额增长率  		cash_flow ncf_from_oa_new
+净利润									net_profit
+净利润现金比率  						ncf_from_oa / net_profit  和 sum(ncf_from_oa,5) / sum(net_profit , 5)
+
+3 现金流量表 cash_flow
+3.1 看经营活动产生的现金流量净额，判断公司的造血能力经营活动产生的现金流量净额越大，公司的造血能力越强。优秀的公司造血能力都很强大。优秀的公司满足经营活动产生的现金流量净额>固定资产折旧+无形资产摊销+借款利息+现金股利这个条件。
+“经营活动产生的现金流量净额”持续小于（固定资产折旧和无形资产摊销+借款利息+现金股利）的公司，淘汰
+
+经营活动产生的现金流量净额				ncf_from_oa
+经营活动产生的现金流量净额增长率		ncf_from_oa_new
+
+
+
+3.2 看“购买固定资产、无形资产和其他长期资产支付的现金”，判断公司未来的成长能力
+“购买固定资产、无形资产和其他长期资产支付的现金”金额越大，公司未来成长能力越强。成长能力较强的公司，“购买固定资产、无形资产和其他长期资产支付的现金”与“经营活动现金流量净额”比率一般在 10%-60%之间。这个比率连续 2 年高于 100%或低于 10%的公司，淘汰。
+
+经营活动产生的现金流量净额							ncf_from_oa
+购建固定资产、无形资产和其他长期资产支付的现金		cash_paid_for_assets
+处置固定资产、无形资产和其他长期资产收回的现金净额  net_cash_of_disposal_assets	
+购建固定资产、无形资产和其他长期资产支付的现金占比		cash_paid_for_assets / ncf_from_oa
+处置固定资产、无形资产和其他长期资产收回的现金净额占比  net_cash_of_disposal_assets / ncf_from_oa
+
+3.3 看“分配给普通股股东及限制性股票持有者股利支付的现金”判断公司的品质
+
+优秀的公司应当每年分红而且分红率一般会大于净利润的 30%。连续高分红的公司财务造假的概率很小。分红率低于 30%的公司要么能力有问题，要么品质有问题。
+
+
+3.4 看三大活动现金流量净额的组合类型，选出最佳类型的公司
+优秀的公司一般是“正负负”和“正正负”类型。公司经营活动产生的现金流量净额为正，说明公司主业经营赚钱；投资活动产生的现金流量净额为负，说明公司在继续投资，公司处于扩张之中。筹资活动现金流量净额为负，说明公司在还钱或者分红。
+
+经营活动产生的现金流量净额			ncf_from_oa
+投资活动产生的现金流量净额			ncf_from_ia
+筹资活动现金流量净额				ncf_from_fa
+
+3.5	看“现金及现金等价物的净增加额”，判断公司的稳定性
+“现金及现金等价物的净增加额”持续小于 0 的公司，很难稳定持续的保持现有的竞争力。优秀公司的“现金及现金等价物的净增加额”一般都是持续大于 0 的。去掉分红，“现金及现金等价物的净增加额”小于 0 的公司，淘汰。
+
+现金及现金等价物净增加额			net_increase_in_cce
+期末现金及现金等价物余额			final_balance_of_cce

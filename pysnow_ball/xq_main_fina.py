@@ -42,7 +42,7 @@ def handle_raw_df(df):
     return df
     
 
-def get_fina():
+def get_fina(datatype=None):
 
     df = pd.DataFrame()
     codestock_local=get_stock_list()
@@ -58,14 +58,14 @@ def get_fina():
             stock_code_new= 'SH' + nowcode
         else:
             stock_code_new= 'SZ' + nowcode
-        tmp_df = get_fina_data(stock_code_new, def_cnt=12)
+        tmp_df = get_fina_data(stock_code_new, datatype, def_cnt=12)
         #add stock_code
         #tmp_df['symbol'] = stock_code_new
         tmp_df.insert(1, 'symbol' , stock_code_new, allow_duplicates=False)
         df = pd.concat([df, tmp_df])
 
         #debug
-        if( 0 ):
+        if( 1 ):
             if i > 5:
                 break
 

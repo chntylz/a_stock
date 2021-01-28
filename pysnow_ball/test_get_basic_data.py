@@ -27,16 +27,30 @@ def get_stock_list():
     codestock_local=stocks.get_codestock_local()
     return codestock_local
 
+def get_raw_data(stock_code, datatype=None, is_annuals=0, def_cnt=10):
+    
+    fina_data = None
+    
+    if datatype == 'income':
+        fina_data = ball.income(stock_code, is_annuals, def_cnt)
+    elif datatype == 'balance':
+        fina_data = ball.balance(stock_code, is_annuals, def_cnt)
+    elif datatype == 'cashflow':
+        fina_data = ball.cash_flow(stock_code, is_annuals, def_cnt)
+    else :
+        fina_data = ball.indicator(stock_code, is_annuals, def_cnt)
 
-def get_fina_data(stock_code, is_annuals=0, def_cnt=10):
+    return fina_data
 
-    fina_data = ball.indicator(stock_code, is_annuals, def_cnt)
 
+
+def get_fina_data(stock_code, datatype=None, is_annuals=0, def_cnt=10):
+
+    fina_data = get_raw_data(stock_code, datatype, is_annuals, def_cnt)
     fina_data = fina_data['data']['list']
 
     df = pd.DataFrame() 
     new_df = pd.DataFrame() 
-
 
     if 0: 
         #first think, drop later
