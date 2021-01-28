@@ -16,10 +16,10 @@ from io import StringIO
 debug = 0
 #debug = 1
 
-class HData_xq_fina(object):
+class HData_xq_cashflow(object):
     def __init__(self,user,password):
         # self.aaa = aaa
-        self.xq_fina_table=[]
+        self.xq_cashflow_table=[]
         self.user=user
         self.password=password
 
@@ -39,7 +39,7 @@ class HData_xq_fina(object):
 
     def table_is_exist(self):
         self.db_connect()
-        self.cur.execute("select count(*) from pg_class where relname = 'xq_fina_table' ;")
+        self.cur.execute("select count(*) from pg_class where relname = 'xq_cashflow_table' ;")
         ans=self.cur.fetchall()
         #print(list(ans[0])[0])
         if list(ans[0])[0]:
@@ -62,8 +62,8 @@ class HData_xq_fina(object):
 
         # 创建stocks表
         self.cur.execute('''
-            drop table if exists xq_fina_table;
-            create table xq_fina_table(
+            drop table if exists xq_cashflow_table;
+            create table xq_cashflow_table(
                 record_date date,
                 stock_code varchar,
                 report_name varchar,
@@ -159,12 +159,12 @@ class HData_xq_fina(object):
 		goods_buy_and_service_cash_pay float, 
 		goods_buy_and_service_cash_pay_new float
                 );
-            alter table xq_fina_table add primary key(stock_code,record_date);
+            alter table xq_cashflow_table add primary key(stock_code,record_date);
             ''')
         self.conn.commit()
         self.db_disconnect()
 
-        print("db_xq_fina_table_create finish")
+        print("db_xq_cashflow_table_create finish")
         pass
 
     def copy_from_stringio(self, df):
@@ -183,7 +183,7 @@ class HData_xq_fina(object):
 
         self.db_connect()
         try:
-            self.cur.copy_from(buffer, table='xq_fina_table', sep=",")
+            self.cur.copy_from(buffer, table='xq_cashflow_table', sep=",")
             self.conn.commit()
         except (Exception, psycopg2.DatabaseError) as error:
             print("Error: %s" % error)
@@ -198,7 +198,7 @@ class HData_xq_fina(object):
     def db_get_maxdate_of_stock(self,stock_code):#获取某支股票的最晚日期
 
         self.db_connect()
-        self.cur.execute("select max(record_date) from xq_fina_table \
+        self.cur.execute("select max(record_date) from xq_cashflow_table \
                 where stock_code=\'" + stock_code+ "\' ;")
         ans=self.cur.fetchall()
         if(len(ans)==0):
@@ -223,7 +223,7 @@ class HData_xq_fina(object):
 
         sql_temp = "select * from ( "
 
-        sql_temp += "select * from xq_fina_table"
+        sql_temp += "select * from xq_cashflow_table"
 
         if stock_code is None and start_date is None and end_date is None:
             pass
@@ -298,7 +298,7 @@ class HData_xq_fina(object):
         
         and_flag = False
 
-        sql_temp = "delete from xq_fina_table"
+        sql_temp = "delete from xq_cashflow_table"
 
         if stock_code is None and start_date is None and end_date is None:
             self.db_disconnect()
@@ -343,10 +343,3 @@ class HData_xq_fina(object):
         pass
  
 
-#alter table xq_fina_table add  "up_days" int not null default 0;
-
-
-#update xq_fina_table set is_zig=0 where record_date = '2018-10-08' and stock_code = '002732';
-
-#UPDATE xq_fina_table SET is_zig = tmp.is_zig, is_quad=tmp.is_quad FROM    (VALUES ( DATE  '2018-06-13', '600647', 11, 1), ( DATE  '2018-06-12', '600647', 12, 1) ) AS tmp (record_date, stock_code, is_zig, is_quad ) WHERE xq_fina_table.record_date = tmp.record_date and xq_fina_table.stock_code = tmp.stock_code;
-#select * from xq_fina_table where stock_code ='600647' and (record_date='2018-06-13' or record_date='2018-06-12' ); 

@@ -3,6 +3,9 @@
 
 import psycopg2 #使用的是PostgreSQL数据库
 from HData_xq_fina import *
+from HData_xq_income import *
+from HData_xq_balance import *
+from HData_xq_cashflow import *
 
 import time 
 import datetime
@@ -25,6 +28,9 @@ debug=0
 
 
 hdata_fina=HData_xq_fina("usr","usr")
+hdata_income=HData_xq_income("usr","usr")
+hdata_balance=HData_xq_balance("usr","usr")
+hdata_cashflow=HData_xq_cashflow("usr","usr")
 
 #stocks.db_stocks_create()#如果还没有表则需要创建
 #print(stocks.db_stocks_update())#根据todayall的情况更新stocks表
@@ -72,9 +78,10 @@ def get_fina(datatype=None):
         if i % (mod-1) == 0:
             t_2 = time.time()
             d_t = t_2 - t_1
-            print(t_1, t_2)
-            print('get_fina() i=%d, stock_code_new =%s ,d_t=%f, len(tmp_df)=%d' % \
-                    (i, stock_code_new, d_t, len(tmp_df)))
+            if debug:
+                print(t_1, t_2)
+                print('get_fina() i=%d, stock_code_new =%s ,d_t=%f, len(tmp_df)=%d' % \
+                        (i, stock_code_new, d_t, len(tmp_df)))
 
     tt_2 = time.time()
     delta_t = tt_2 - tt_1
@@ -118,22 +125,31 @@ if __name__ == '__main__':
     nowdate=nowdate-datetime.timedelta(int(para1))
     print("nowdate is %s"%(nowdate.strftime("%Y-%m-%d")))
 
-    #check table exist
-    check_table()
 
-    if int(para1):
-        print('all data')
-        today_df = get_fina()
-        hdata_fina.copy_from_stringio(today_df)
-    else:
-        print('today data')
-        today_df = get_fina()
-        #today_df = today_df.head(1)
-        hdata_fina.copy_from_stringio(today_df)
-        #hdata_fina.insert_all_stock_data_3(today_df)
+    #indicator zhuyao caiwu zhibiao
+    df_indicator = get_fina()
+    if len(df_indicator):
+        hdata_fina.db_hdata_xq_create()
+        hdata_fina.copy_from_stringio(df_indicator)
 
-    #delete closed stock data according amount=0
-    #hdata_fina.delete_amount_is_zero()
+    #income  net profit
+    df_income = get_fina(datatype='income')
+    if len(df_income):
+        hdata_income.db_hdata_xq_create()
+        hdata_income.copy_from_stringio(df_income)
+
+    #balance zichan fuzhai biao
+    df_balance = get_fina(datatype='balance')
+    if len(df_income):
+        hdata_balance.db_hdata_xq_create()
+        hdata_balance.copy_from_stringio(df_balance)
+    
+    #cashflow xianjinliuliang biao
+    df_cashflow = get_fina(datatype='cashflow')
+    if len(df_cashflow):
+        hdata_cashflow.db_hdata_xq_create()
+        hdata_cashflow.copy_from_stringio(df_cashflow)
+
 
     last_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     print("start_time: %s, last_time: %s" % (start_time, last_time))
