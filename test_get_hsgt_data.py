@@ -3,6 +3,8 @@
 import os,sys,gzip
 import json
 
+import sys
+sys.path.append("pysnow_ball")
 
 from file_interface import *
 
@@ -11,7 +13,7 @@ import psycopg2 #使用的是PostgreSQL数据库
 import tushare as ts
 
 from HData_hsgt import *
-from HData_day import *
+from HData_xq_day import *
 
 import  datetime
 
@@ -26,8 +28,7 @@ debug=0
 #debug=1
 
 #file_path='/home/ubuntu/tmp/a_stock/hkexnews_scrapy/hkexnews_scrapy/json/20190823.json.gz'
-hdata_day=HData_day("usr","usr")
-hdata_day.db_connect()
+hdata_day=HData_xq_day("usr","usr")
 
 hdata_hsgt=HData_hsgt("usr","usr")
 #hdata_hsgt.db_hdata_date_create()
@@ -80,8 +81,6 @@ def hsgt_get_day_item_from_json(file_path):
         shgt_cname=shgt_cname[pos_s+1: pos_e]
         #print(shgt_cname)
 
-
-
         #get share_holding
         shgt_holding=float(line['share_holding'])
         
@@ -90,8 +89,14 @@ def hsgt_get_day_item_from_json(file_path):
         position=shgt_ename.rfind('%')
         shgt_percent=float(shgt_percent[:position])
 
+        if shgt_code[0:1] == '6':
+            stock_code_new= 'SH' + shgt_code
+        else:
+            stock_code_new= 'SZ' + shgt_code
+
         #get open, close, high, low, and volume
-        day_df=hdata_day.get_data_accord_code_and_date(shgt_code, shgt_date)
+        day_df=hdata_day.get_data_from_hdata(stock_code=stock_code_new, 
+                start_date=shgt_date, end_date=shgt_date)
         if debug:
             print("line_num:%d, shgt_date:%s, shgt_code:%s, shgt_holding:%s, shgt_percent:%s,shgt_ename:%s, shgt_cname:%s"% \
                  (line_num, shgt_date, shgt_code, shgt_holding, shgt_percent, shgt_ename, shgt_cname))
@@ -105,9 +110,9 @@ def hsgt_get_day_item_from_json(file_path):
             shgt_high=day_dict['high'][0]
             shgt_low=day_dict['low'][0]
             shgt_volume=day_dict['volume'][0]
-            shgt_is_zig=day_dict['is_zig'][0]
-            shgt_is_quad=day_dict['is_quad'][0]
-            shgt_is_peach=day_dict['is_peach'][0]
+            shgt_is_zig=int(day_dict['is_zig'][0])
+            shgt_is_quad=int(day_dict['is_quad'][0])
+            shgt_is_peach=int(day_dict['is_peach'][0])
 
 
 
@@ -129,6 +134,8 @@ def hsgt_get_day_item_from_json(file_path):
     
     if debug:
         print(df)
+
+    df.to_csv('./hsgt_debug.csv', encoding='utf-8')
 
     hdata_hsgt.insert_optimize_stock_hdatadate(df)
 
@@ -184,4 +191,3 @@ def hsgt_get_all_data():
 hsgt_get_all_data()
 
 hdata_hsgt.db_disconnect()
-hdata_day.db_disconnect()
