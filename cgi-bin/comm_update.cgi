@@ -159,13 +159,21 @@ def show_realdata():
         else:
             stock_code_new= 'SZ' + new_code 
 
+        
         fina_df = hdata_fina.get_data_from_hdata(stock_code = stock_code_new)
+        
         fina_df = fina_df.sort_values('record_date', ascending=0)
         fina_df = fina_df.reset_index(drop=True)
+        
         op_yoy = net_yoy = 0
         if len(fina_df):
             op_yoy = fina_df['operating_income_yoy'][0]
             net_yoy = fina_df['net_profit_atsopc_yoy'][0]
+            
+            if debug:
+                print(stock_code_new)
+                print(fina_df)
+
         fina=str(round(op_yoy,2)) +' ' + str(round(net_yoy,2))
         new_date = new_date + '<br>'+ fina + '</br>'
         #### fina end ####
