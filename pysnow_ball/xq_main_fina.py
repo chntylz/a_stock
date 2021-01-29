@@ -26,6 +26,8 @@ import pysnowball as ball
 debug=0
 #debug=1
 
+token=get_cookie()
+ball.set_token(token)
 
 hdata_fina=HData_xq_fina("usr","usr")
 hdata_income=HData_xq_income("usr","usr")
@@ -48,7 +50,7 @@ def handle_raw_df(df):
     return df
     
 
-def get_fina(datatype=None):
+def get_original_data(datatype=None):
 
     df = pd.DataFrame()
     codestock_local=get_stock_list()
@@ -57,6 +59,8 @@ def get_fina(datatype=None):
     t_1 = t_2 = 0
     mod = 1000
     for i in range(0,length):
+        
+
         if i % mod == 0:
             t_1 = time.time()
         nowcode=codestock_local[i][0]
@@ -65,16 +69,19 @@ def get_fina(datatype=None):
         else:
             stock_code_new= 'SZ' + nowcode
         tmp_df = get_fina_data(stock_code_new, datatype, def_cnt=12)
+
+        if debug:
+            print(i, stock_code_new)
+            print(tmp_df)
         #add stock_code
         #tmp_df['symbol'] = stock_code_new
         tmp_df.insert(1, 'symbol' , stock_code_new, allow_duplicates=False)
-
-        df = pd.concat([df, tmp_df], axis=1)
+        df = pd.concat([df, tmp_df])
 
         #debug
         if( 0 ):
             if i > 5:
-                break
+                return df
 
         if i % (mod-1) == 0:
             t_2 = time.time()
@@ -90,6 +97,13 @@ def get_fina(datatype=None):
         print('get_fina() delta_t=%f' % delta_t)
         print('len(list(df))=%d' % len(list(df)))
         print('list(df)=%s' % list(df))
+
+    return df
+
+def get_fina(datatype=None):
+
+    df = get_original_data(datatype)
+
     df = handle_raw_df(df)
     df = df.reset_index(drop=True)
 
@@ -114,8 +128,6 @@ def check_table():
 
 if __name__ == '__main__':
     
-    token=get_cookie()
-    ball.set_token(token)
 
     cript_name, para1 = check_input_parameter()
     
