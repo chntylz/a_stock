@@ -68,10 +68,11 @@ def get_fina(datatype=None):
         #add stock_code
         #tmp_df['symbol'] = stock_code_new
         tmp_df.insert(1, 'symbol' , stock_code_new, allow_duplicates=False)
-        df = pd.concat([df, tmp_df])
+
+        df = pd.concat([df, tmp_df], axis=1)
 
         #debug
-        if( 1 ):
+        if( 0 ):
             if i > 5:
                 break
 
