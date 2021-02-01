@@ -25,7 +25,7 @@ from Stocks import *
 from HData_hsgt import *
 from HData_dailybasic import *
 from HData_select import *
-from HData_day import *
+from pysnow_ball.HData_xq_day import *
 
 from file_interface import *
 
@@ -33,7 +33,7 @@ hsgtdata=HData_hsgt("usr","usr")
 stocks=Stocks("usr","usr")
 db_daily=HData_dailybasic("usr", "usr")
 sdata=HData_select("usr","usr")
-hdata_day=HData_day("usr","usr")
+hdata_day=HData_xq_day("usr","usr")
 
 token='21dddafc47513ea46b89057b2c4edf7b44882b3e92274b431f199552'
 pro = ts.pro_api(token)
@@ -674,6 +674,8 @@ def comm_generate_web_dataframe(curr_dir, images, curr_day, dict_industry):
     fund_5_df = get_zlje_data_from_db(url='url_5',   curr_date=curr_day)
     fund_10_df = get_zlje_data_from_db(url='url_10', curr_date=curr_day)
 
+    daily_df = hdata_day.get_data_from_hdata(start_date=curr_day, end_date=curr_day)
+
     data_list = []
     for image in images:
 
@@ -694,6 +696,11 @@ def comm_generate_web_dataframe(curr_dir, images, curr_day, dict_industry):
         with open(txt_file,'a') as f:
             f.write('%s \n' % stock_code)
 
+        if stock_code[0:1] == '6':
+            stock_code_new = 'SH' + stock_code
+        else:
+            stock_code_new = 'SZ' + stock_code
+
         #funcat call
         T(curr_day)
         S(stock_code)
@@ -711,10 +718,13 @@ def comm_generate_web_dataframe(curr_dir, images, curr_day, dict_industry):
         hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total \
                 = comm_handle_hsgt_data(hsgt_df)
         
-        daily_df = hdata_day.get_day_hdata_of_stock(curr_day)
-        is_zig=daily_df[daily_df['stock_code']==stock_code]['is_zig'][0]
-        is_quad=daily_df[daily_df['stock_code']==stock_code]['is_quad'][0]
-        is_peach=daily_df[daily_df['stock_code']==stock_code]['is_peach'][0]
+        tmp_df=daily_df[daily_df['stock_code']==stock_code_new]
+        tmp_df=tmp_df.reset_index(drop=True)
+        if debug:
+            print(tmp_df)
+        is_zig=tmp_df['is_zig'][0]
+        is_quad=tmp_df['is_quad'][0]
+        is_peach=tmp_df['is_peach'][0]
 
 
         total_mv =  comm_get_total_mv(stock_code)
