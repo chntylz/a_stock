@@ -42,10 +42,14 @@ def handle_raw_df(df):
     df=df.fillna(0)
    
     #timestamp -> date
-    df['report_date'] = df['report_date'].apply(lambda x: get_date_from_timestamp(x))
-    df['ctime'] = df['ctime'].apply(lambda x: get_date_from_timestamp(x))
+    if 'report_date' in df.columns:
+        df['report_date'] = df['report_date'].apply(lambda x: get_date_from_timestamp(x))
 
-    df = df[df['report_date'] != '1970-01-01']
+    if 'ctime' in df.columns:
+        df['ctime'] = df['ctime'].apply(lambda x: get_date_from_timestamp(x))
+
+    if 'report_date' in df.columns:
+        df = df[df['report_date'] != '1970-01-01']
     
     return df
     
@@ -139,26 +143,31 @@ if __name__ == '__main__':
     print("nowdate is %s"%(nowdate.strftime("%Y-%m-%d")))
 
 
-    #indicator zhuyao caiwu zhibiao
+    '''
+    print('indicator zhuyao caiwu zhibiao')
     df_indicator = get_fina()
     if len(df_indicator):
         hdata_fina.db_hdata_xq_create()
         hdata_fina.copy_from_stringio(df_indicator)
+    '''
 
-    #income  net profit
+    print('#income  net profit')
     df_income = get_fina(datatype='income')
+    df_income.to_csv('./test_income.csv', encoding='utf-8')
     if len(df_income):
         hdata_income.db_hdata_xq_create()
         hdata_income.copy_from_stringio(df_income)
 
-    #balance zichan fuzhai biao
+    print('#balance zichan fuzhai biao')
     df_balance = get_fina(datatype='balance')
+    df_balance.to_csv('./test_balance.csv', encoding='utf-8')
     if len(df_income):
         hdata_balance.db_hdata_xq_create()
         hdata_balance.copy_from_stringio(df_balance)
     
-    #cashflow xianjinliuliang biao
+    print('#cashflow xianjinliuliang biao')
     df_cashflow = get_fina(datatype='cashflow')
+    df_cashflow.to_csv('./test_cashflow.csv', encoding='utf-8')
     if len(df_cashflow):
         hdata_cashflow.db_hdata_xq_create()
         hdata_cashflow.copy_from_stringio(df_cashflow)

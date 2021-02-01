@@ -32,6 +32,7 @@ debug=0
 #debug=1
 
 yesterday=0
+#yesterday=1
 
 stocks=Stocks("usr","usr")
 hdata_day=HData_day("usr","usr")
@@ -202,8 +203,16 @@ def get_daily_data(codestock_local, nowdate, div_df):
                 e_date =  nowdate.strftime("%Y%m%d")
 
 
+            if debug or nowdate == '002475':
+                print("yesterday: i=%d, nowcode:%s, nowname:%s , s_date=%s, e_date=%s" \
+                        %(i,nowcode,codestock_local[i][1], s_date, e_date))
             #hist_data = ts.pro_bar(ts_code=stock_code_new, start_date='20200422', end_date=str(nowdate), adj='qfq', freq='D')
-            hist_data = ts.pro_bar(ts_code=stock_code_new, start_date=s_date, end_date=e_date, adj='qfq', freq='D')
+            hist_data = ts.pro_bar(ts_code=stock_code_new, \
+                    start_date=s_date, end_date=e_date, adj='qfq', freq='D')
+
+            if debug:
+                print(hist_data)
+
 
             if hist_data is None:
                 if debug:
@@ -214,6 +223,9 @@ def get_daily_data(codestock_local, nowdate, div_df):
                 if debug:
                     print("hist_data length is 0: i=%d, nowcode:%s, nowname:%s " %(i,nowcode,codestock_local[i][1]))
                 continue
+
+            if yesterday:
+                hist_data = hist_data[hist_data.trade_date == e_date]
 
             hist_data=hist_data.fillna(0)
 

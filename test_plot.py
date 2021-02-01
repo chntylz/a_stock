@@ -123,7 +123,7 @@ def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name
     today_p = round (today_p.value, 4)
 
 
-    detail_info.index = detail_info.index.format(formatter=lambda x: x.strftime('%Y-%m-%d'))
+    #detail_info.index = detail_info.index.format(formatter=lambda x: x.strftime('%Y-%m-%d'))
     #print(detail_info.index[2])
     
     detail_info['close'].fillna(value=0, inplace=True)   
@@ -174,7 +174,7 @@ def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name
         x1 = z_peers[i]
         y1 = z_df[z_peers[i]]
 
-        text1=z_d[x1] + '-' + str(z_k[x1])
+        text1=str(z_d[x1]) + '-' + str(z_k[x1])
         ax05.annotate(text1, xy=(x1, y1 ), xytext=(x1+2 , y1), color="b",arrowprops=dict(facecolor='red', shrink=0.05))
 
         if i is 0 or i is (z_len - 1):

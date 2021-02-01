@@ -64,10 +64,10 @@ class HData_xq_income(object):
         self.cur.execute('''
             drop table if exists xq_income_table;
             create table xq_income_table(
-                record_date date,
-                stock_code  varchar,
-                report_name varchar,
-                report_date date,
+                report_date varchar, 
+                symbol varchar, 
+                report_name varchar, 
+                ctime varchar, 
                 net_profit float, 
                 net_profit_new float, 
                 net_profit_atsopc float, 
@@ -167,7 +167,42 @@ class HData_xq_income(object):
                 net_profit_bi float, 
                 net_profit_bi_new float, 
                 continous_operating_np float, 
-                continous_operating_np_new float
+                continous_operating_np_new float, 
+                net_income_from_brokerage float, 
+                net_income_from_brokerage_new float, 
+                net_income_from_invest_banking float, 
+                net_income_from_invest_banking_new float, 
+                asset_manage_service_charge_ni float, 
+                asset_manage_service_charge_ni_new float, 
+                earned_premium float, 
+                earned_premium_new float, 
+                insurance_income float, 
+                insurance_income_new float, 
+                rein_premium_income float, 
+                rein_premium_income_new float, 
+                ceded_out_premium float, 
+                ceded_out_premium_new float, 
+                draw_undueduty_deposit float, 
+                draw_undueduty_deposit_new float, 
+                refunded_premium float, 
+                refunded_premium_new float, 
+                compen_payout float, 
+                compen_payout_new float, 
+                compen_expense float, 
+                compen_expense_new float, 
+                draw_duty_deposit float, 
+                draw_duty_deposit_new float, 
+                amortized_deposit_for_duty float, 
+                amortized_deposit_for_duty_new float, 
+                commi_on_insurance_policy float, 
+                commi_on_insurance_policy_new float, 
+                rein_expenditure float, 
+                rein_expenditure_new float, 
+                amortized_rein_expenditure float, 
+                amortized_rein_expenditure_new float, 
+                operating_total_cost_si float, 
+                operating_total_cost_si_new float
+
                 );
             alter table xq_income_table add primary key(stock_code,record_date);
             ''')

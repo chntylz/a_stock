@@ -76,6 +76,7 @@ def get_fina_data(stock_code, datatype=None, is_annuals=0, def_cnt=10):
     new_df = pd.DataFrame() 
     i = 0
     for i in range(3, len_cols):
+        #split
         tmp_df = pd.DataFrame(data=[x[i] for x in df.values])
         col_name = list(df)[i]
         tmp_df.rename(columns={0: col_name},inplace=True)
