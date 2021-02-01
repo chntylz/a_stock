@@ -112,7 +112,7 @@ print("start_time: %s, end_time: %s" % (start_time, end_time))
 
 #debug switch
 debug = 0
-debug = 1
+#debug = 1
 
 clean_flag = True
 
@@ -130,8 +130,8 @@ ax00 = fig.add_axes([0, 0,   1, 0.2])
 '''
 
 stock_len=len(codestock_local)
-#for i in range(0,stock_len):
-for i in range(0,2):
+for i in range(0,stock_len):
+#for i in range(0,2):
 #if (True):
     #i = 0
     draw_flag = False

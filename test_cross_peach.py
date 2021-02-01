@@ -2,14 +2,17 @@
 # -*- coding: utf-8 -*-
 # 2019-05-24, aaron
 
+import datetime as datetime
+import time
+import os
+import sys
+sys.path.append('pwsnow_ball')
 
 import psycopg2 #使用的是PostgreSQL数据库
-import tushare as ts
 from Stocks import *
-from HData import *
 from HData_day import *
 from HData_select import *
-from HData_60m import *
+from pysnow_ball.HData_xq_day import *
 import  datetime
 
 
@@ -36,10 +39,6 @@ import mplfinance as mpf
 #%matplotlib inline
 
 #time
-import datetime as datetime
-import time
-import os
-import sys
 
 #talib
 import talib
@@ -68,7 +67,7 @@ today_date = time.strftime("%Y-%m-%d", time.localtime())
 start = datetime.datetime(2018,10,1)
 
 stocks=Stocks("usr","usr")
-hdata=HData_day("usr","usr")
+hdata=HData_xq_day("usr","usr")
 sdata=HData_select("usr","usr")
 
 # stocks.db_stocks_create()#如果还没有表则需要创建
@@ -103,7 +102,6 @@ print("nowdate is %s"%(nowdate.strftime("%Y-%m-%d")))
 codestock_local=stocks.get_codestock_local()
 #print(codestock_local)
 
-hdata.db_connect()#由于每次连接数据库都要耗时0.0几秒，故获取历史数据时统一连接
 sdata.db_connect()#由于每次连接数据库都要耗时0.0几秒，故获取历史数据时统一连接
 
 start_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -141,10 +139,10 @@ for i in range(0,stock_len):
     nowname=codestock_local[i][1]
     log.debug("code:%s, name:%s" % (nowcode, nowname ))
     if debug:
-        #print("code:%s, name:%s" % (nowcode, nowname ))
+        print("code:%s, name:%s" % (nowcode, nowname ))
         pass
 
-    if (False):
+    if 0:
         if nowcode == '001896' or nowcode == '600810':
             pass
         else:
@@ -158,10 +156,12 @@ for i in range(0,stock_len):
             print("skip code: code:%s, name:%s" % (nowcode, nowname ))
         continue
 
-    detail_info = hdata.get_limit_hdata_of_stock(nowcode, nowdate.strftime("%Y-%m-%d"), 600)
-    #detail_info = hdata.get_limit_hdata_of_stock('000029',100) # test 'Exception: inputs are all NaN'
-    #detail_info = all_info[all_info['stock_code'].isin([nowcode])]  #get date if nowcode == all_info['stock_code']
-    #detail_info = detail_info.tail(100)
+    if nowcode[0:1] == '6':
+        stock_code_new= 'SH' + nowcode
+    else:
+        stock_code_new= 'SZ' + nowcode
+    detail_info = hdata.get_data_from_hdata(stock_code=stock_code_new, \
+            end_date=nowdate.strftime("%Y-%m-%d"), limit=600)
     if debug:
         print(detail_info)
    
@@ -171,7 +171,8 @@ for i in range(0,stock_len):
         # print('NaN: code:%s, name:%s' % (nowcode, nowname ))
         continue
  
-    db_max_date = detail_info['record_date'][len(detail_info)-1].strftime("%Y%m%d")
+    db_max_date = detail_info['record_date'][len(detail_info)-1]
+    db_max_date = db_max_date.replace('-','')
 
     if time_is_equal(db_max_date, nowdate.strftime("%Y%m%d")):
         if debug:
@@ -338,7 +339,6 @@ if debug:
 
 plt.close('all')
 
-hdata.db_disconnect()
 sdata.db_disconnect()
 last_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 print("start_time: %s, last_time: %s" % (start_time, last_time))
