@@ -8,7 +8,7 @@ import tushare as ts
 import numpy as np
 
 from HData_hsgt import *
-from HData_day import *
+from HData_xq_day import *
 from zig import *
 from test_plot import *
 
@@ -26,8 +26,7 @@ debug=0
 nowdate=datetime.datetime.now().date()
 #nowdate=nowdate-datetime.timedelta(1)
 
-hdata_day=HData_day("usr","usr")
-hdata_day.db_connect()
+hdata_day=HData_xq_day("usr","usr")
 
 hdata_hsgt=HData_hsgt("usr","usr")
 hdata_hsgt.db_connect()
@@ -64,8 +63,16 @@ def plot_stock_picture(nowcode, nowname):
     #define canvas out of loop
     plt.style.use('bmh')
     fig = plt.figure(figsize=(24, 30),dpi=80)
+    new_nowcode = nowcode
+    if nowcode[0:1] == '6':
+        new_nowcode = 'SH' + nowcode
+    else:
+        new_nowcode = 'SZ' + nowcode
 
-    detail_info = hdata_day.get_limit_hdata_of_stock(nowcode, nowdate.strftime("%Y-%m-%d"), 600)
+    detail_info = hdata_day.get_data_from_hdata(stock_code=nowcode, \
+            state_date=nowdate.strftime("%Y-%m-%d"), \
+            end_date=nowdate.strftime("%Y-%m-%d"), \
+            limit=600)
     #print(detail_info)
     save_dir = 'stock_data'
     sub_name = ''
