@@ -22,6 +22,8 @@ from comm_interface import *
 debug = 0
 #debug = 1
 
+token=get_cookie()
+ball.set_token(token)
 
 def get_stock_list():
     codestock_local=stocks.get_codestock_local()
@@ -272,8 +274,6 @@ def convert_daily_data_list_to_df():
 
 if __name__ == '__main__':
     
-    token=get_cookie()
-    ball.set_token(token)
 
     print(time.localtime(time.time()))
     t1 = time.time()

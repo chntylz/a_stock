@@ -129,6 +129,61 @@ def check_table():
         print('table not exist, create')
 
 
+def update_database_indicator():
+    print('indicator zhuyao caiwu zhibiao')
+    df_indicator = get_fina()
+    if len(df_indicator):
+        hdata_fina.db_hdata_xq_create()
+        hdata_fina.copy_from_stringio(df_indicator)
+    pass
+
+
+def spilt_df(df, key_word):
+    df_colunms = df.columns
+    index = len(df_colunms) - 1
+    try:
+        index = df_colunms.get_loc(key_word)
+    except:
+        print('error: %s not found' % key_word)
+    else:
+        pass
+
+    #cut 0-[index+1] column
+    df_tmp = df.iloc[:, :index+1]
+
+    return df_tmp
+
+def update_database_income():
+    print('#income  net profit')
+    df_income = get_fina(datatype='income')
+    df_income.to_csv('./test_income.csv', encoding='utf-8')
+    df_income = spilt_df(df_income,'continous_operating_np_new')
+    if len(df_income):
+        hdata_income.db_hdata_xq_create()
+        hdata_income.copy_from_stringio(df_income)
+    pass
+
+def update_database_balance():
+    print('#balance zichan fuzhai biao')
+    df_balance = get_fina(datatype='balance')
+    df_balance.to_csv('./test_balance.csv', encoding='utf-8')
+    df_balance = spilt_df(df_balance,'lt_staff_salary_payable_new')
+    if len(df_income):
+        hdata_balance.db_hdata_xq_create()
+        hdata_balance.copy_from_stringio(df_balance)
+    pass
+    
+def update_database_cashflow():
+    print('#cashflow xianjinliuliang biao')
+    df_cashflow = get_fina(datatype='cashflow')
+    df_cashflow.to_csv('./test_cashflow.csv', encoding='utf-8')
+    df_cashflow = spilt_df(df_cashflow,'net_increase_in_pledge_loans_new')
+    if len(df_cashflow):
+        hdata_cashflow.db_hdata_xq_create()
+        hdata_cashflow.copy_from_stringio(df_cashflow)
+    pass
+
+
 
 if __name__ == '__main__':
     
@@ -142,40 +197,13 @@ if __name__ == '__main__':
     nowdate=nowdate-datetime.timedelta(int(para1))
     print("nowdate is %s"%(nowdate.strftime("%Y-%m-%d")))
 
-
-    '''
-    print('indicator zhuyao caiwu zhibiao')
-    df_indicator = get_fina()
-    if len(df_indicator):
-        hdata_fina.db_hdata_xq_create()
-        hdata_fina.copy_from_stringio(df_indicator)
-    '''
-
-    print('#income  net profit')
-    df_income = get_fina(datatype='income')
-    df_income.to_csv('./test_income.csv', encoding='utf-8')
-    if len(df_income):
-        hdata_income.db_hdata_xq_create()
-        hdata_income.copy_from_stringio(df_income)
-
-    print('#balance zichan fuzhai biao')
-    df_balance = get_fina(datatype='balance')
-    df_balance.to_csv('./test_balance.csv', encoding='utf-8')
-    if len(df_income):
-        hdata_balance.db_hdata_xq_create()
-        hdata_balance.copy_from_stringio(df_balance)
-    
-    print('#cashflow xianjinliuliang biao')
-    df_cashflow = get_fina(datatype='cashflow')
-    df_cashflow.to_csv('./test_cashflow.csv', encoding='utf-8')
-    if len(df_cashflow):
-        hdata_cashflow.db_hdata_xq_create()
-        hdata_cashflow.copy_from_stringio(df_cashflow)
-
+    update_database_indicator()
+    update_database_income()
+    update_database_balance()
+    update_database_cashflow()
 
     last_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     print("start_time: %s, last_time: %s" % (start_time, last_time))
-
 
     t2 = time.time()
     print("t1:%s, t2:%s, delta=%s"%(t1, t2, t2-t1))
