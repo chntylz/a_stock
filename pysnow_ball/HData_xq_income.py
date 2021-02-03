@@ -64,10 +64,10 @@ class HData_xq_income(object):
         self.cur.execute('''
             drop table if exists xq_income_table;
             create table xq_income_table(
-                report_date varchar, 
-                symbol varchar, 
+                record_date date, 
+                stock_code varchar, 
                 report_name varchar, 
-                ctime varchar, 
+                report_date date, 
                 net_profit float, 
                 net_profit_new float, 
                 net_profit_atsopc float, 
@@ -202,7 +202,6 @@ class HData_xq_income(object):
                 amortized_rein_expenditure_new float, 
                 operating_total_cost_si float, 
                 operating_total_cost_si_new float
-
                 );
             alter table xq_income_table add primary key(stock_code,record_date);
             ''')
