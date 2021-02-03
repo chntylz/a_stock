@@ -26,6 +26,8 @@ from HData_hsgt import *
 from HData_dailybasic import *
 from HData_select import *
 from pysnow_ball.HData_xq_day import *
+from pysnow_ball.HData_xq_holder import *
+from pysnow_ball.HData_xq_fina import *
 
 from file_interface import *
 
@@ -34,6 +36,8 @@ stocks=Stocks("usr","usr")
 db_daily=HData_dailybasic("usr", "usr")
 sdata=HData_select("usr","usr")
 hdata_day=HData_xq_day("usr","usr")
+hdata_holder=HData_xq_holder("usr","usr")
+hdata_fina=HData_xq_fina("usr","usr")
 
 token='21dddafc47513ea46b89057b2c4edf7b44882b3e92274b431f199552'
 pro = ts.pro_api(token)
@@ -299,7 +303,7 @@ def comm_write_to_file(f, k, df, filename):
             if k is -1: # normal case
                 #data_column=['record_date', 'stock_code', 'stock_cname', 'hk_pct', 'close', 'delta1', 'delta1_m', 'conti_day', 'money_total']
                 if(j == 0): 
-                    f.write('           <a href="%s" target="_blank"> %s[fina]</a>\n'%\
+                    f.write('           <a href="%s" target="_blank"> %s</a>\n'%\
                             (fina_url, element_value))
                 elif(j == 1): 
                     f.write('           <a href="%s" target="_blank"> %s[hsgt]</a>\n'%\
@@ -375,7 +379,7 @@ def comm_write_to_file(f, k, df, filename):
                     f.write('           <a style="color: #FF0000"> %s</a>\n'%(element_value))
                 else:
                     if(j == 0): 
-                        f.write('           <a href="%s" target="_blank"> %s[fina]</a>\n'%(fina_url, element_value))
+                        f.write('           <a href="%s" target="_blank"> %s </a>\n'%(fina_url, element_value))
                     elif(j == 1): 
                         f.write('           <a href="%s" target="_blank"> %s[hsgt]</a>\n'%(hsgt_url, element_value))
                     elif(j == 2):
@@ -737,17 +741,59 @@ def comm_generate_web_dataframe(curr_dir, images, curr_day, dict_industry):
         zlje_5 = get_zlje(fund_5_df, stock_code, curr_date=curr_day)
         zlje_10 = get_zlje(fund_10_df, stock_code, curr_date=curr_day)
 
-        data_list.append([curr_day[5:], stock_code, stock_name, close_p, C.value, image, \
+        #### fina start ####
+        if stock_code[0:1] == '6':
+            stock_code_new= 'SH' + stock_code 
+        else:
+            stock_code_new= 'SZ' + stock_code 
+
+        fina_df = hdata_fina.get_data_from_hdata(stock_code = stock_code_new)
+        fina_df = fina_df.sort_values('record_date', ascending=0)
+        fina_df = fina_df.reset_index(drop=True)
+        
+        op_yoy = net_yoy = 0
+        if len(fina_df):
+            op_yoy = fina_df['operating_income_yoy'][0]
+            net_yoy = fina_df['net_profit_atsopc_yoy'][0]
+            
+            if debug:
+                print(stock_code_new)
+                print(fina_df)
+
+        fina=str(round(op_yoy,2)) +' ' + str(round(net_yoy,2))
+        new_date = curr_day[5:] + '<br>'+ fina + '</br>'
+        #### fina end ####
+ 
+        #### holder start ####
+
+        holder_df = hdata_holder.get_data_from_hdata(stock_code = stock_code_new)
+        holder_df = holder_df .sort_values('record_date', ascending=0)
+        holder_df = holder_df .reset_index(drop=True)
+        h0 = h1 = h2 = 0
+        if len(holder_df) > 0:
+            h0 = holder_df['chg'][0]
+        if len(holder_df) > 1:
+            h1 = holder_df['chg'][1]
+        if len(holder_df) > 2:
+            h2 = holder_df['chg'][2]
+        h_chg = str(h0) + ' ' + str(h1) + ' ' + str(h2)
+        #stock_code = stock_code + '<br>'+ h_chg + '</br>'
+
+        #### holder start ####
+
+
+
+        data_list.append([new_date, stock_code, stock_name, close_p, C.value, image, \
                 hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, \
                 money_total, total_mv,\
                 is_peach, is_zig, is_quad,\
-                zlje, zlje_3, zlje_5, zlje_10 ])
+                zlje, zlje_3, zlje_5, zlje_10,h_chg ])
 
     data_column = ['cur_date', 'code', 'name', 'a_pct', 'close', 'image_url',\
             'hk_date', 'hk_share', 'hk_pct', 'hk_delta1', 'hk_deltam', 'conti_day', \
             'hk_m_total', 'total_mv',\
             'peach', 'zig', 'quad', \
-            'zlje', 'zlje_3', 'zlje_5', 'zlje_10']
+            'zlje', 'zlje_3', 'zlje_5', 'zlje_10', 'holder_change' ]
 
     ret_df=pd.DataFrame(data_list, columns=data_column)
     ret_df['m_per_day'] = ret_df.hk_m_total / ret_df.conti_day
@@ -758,7 +804,7 @@ def comm_generate_web_dataframe(curr_dir, images, curr_day, dict_industry):
 
     data_column = ['cur_date', 'code', 'name', 'a_pct', 'close', 'image_url',\
             'peach', 'zig', 'quad',\
-            'zlje', 'zlje_3', 'zlje_5', 'zlje_10',\
+            'zlje', 'zlje_3', 'zlje_5', 'zlje_10', 'holder_change',\
             'hk_date', 'hk_share', 'hk_pct', \
             'hk_delta1', 'hk_deltam', 'conti_day', \
             'hk_m_total', 'm_per_day', 'total_mv']
