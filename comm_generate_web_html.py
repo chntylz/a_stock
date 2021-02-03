@@ -217,7 +217,7 @@ def comm_handle_link(stock_code):
 
     holder_url = xueqiu_url + '/detail#/GDRS'    
     add_url    = xueqiu_url + '/detail#/GGZJC'    
-    return xueqiu_url, hsgt_url, fina_url
+    return xueqiu_url, hsgt_url, fina_url, holder_url
 
 #image_name='2019-09-23-1-002436-兴森科技-814-878-891-796-840.png'
 def get_conti_day_from_s_db(image_name):
@@ -275,7 +275,7 @@ def comm_write_to_file(f, k, df, filename):
         f.write('    <tr>\n')
         a_array=df[i:i+1].values  #get line of df
         tmp_stock_code=a_array[0][1] 
-        xueqiu_url, hsgt_url, fina_url = comm_handle_link(tmp_stock_code)
+        xueqiu_url, hsgt_url, fina_url, holder_url = comm_handle_link(tmp_stock_code)
 
         col_name = list(df)
         col_len=len(col_name)
@@ -313,6 +313,9 @@ def comm_write_to_file(f, k, df, filename):
                             (xueqiu_url, element_value))
                 elif(j == 3):
                     f.write('           <a> %.2f%s</a>\n'%(element_value, '%'))
+                elif list(df)[j] == 'holder_change':
+                    f.write('           <a href="%s" target="_blank"> %s</a>\n'%\
+                            (holder_url, element_value))
                 elif(j == 15):
                     #fix bug:  must be real number, not datetime.date for holder function
                     if list(df)[j] == 'hk_date':
