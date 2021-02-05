@@ -102,6 +102,8 @@ def hsgt_handle_all_data(df):
     all_df['delta21'] =all_df.groupby('stock_code')['hk_pct'].apply(lambda i:i.diff(-21))
     all_df['delta120']=all_df.groupby('stock_code')['hk_pct'].apply(lambda i:i.diff(-120))
     
+    
+    all_df['share_holding'] = all_df['share_holding'].apply(lambda i: i/10000/10000)
 
     max_number=21
     #temp column added
