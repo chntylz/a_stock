@@ -181,8 +181,8 @@ def show_realdata():
         #### holder start ####
 
         holder_df = hdata_holder.get_data_from_hdata(stock_code = stock_code_new)
-        holder_df = holder_df .sort_values('record_date', ascending=0)
-        holder_df = holder_df .reset_index(drop=True)
+        holder_df = holder_df.sort_values('record_date', ascending=0)
+        holder_df = holder_df.reset_index(drop=True)
         h0 = h1 = h2 = 0
         if len(holder_df) > 0:
             h0 = holder_df['chg'][0]

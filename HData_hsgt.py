@@ -10,7 +10,12 @@ pd.set_option('display.float_format',lambda x : '%.2f' % x)
 
 debug=0
 
-cur_culumn=" record_date , stock_code, stock_cname, share_holding, percent, open, close, high, low, volume, is_zig, is_quad, is_peach "
+cur_culumn=" record_date , stock_code, stock_cname, share_holding, percent,\
+        open, close, high, low, volume, \
+        is_zig, is_quad, is_peach,  \
+        op_yoy, net_yoy,\
+        zlje, zlje_3, zlje_5, zlje_10, \
+        holder_0, holder_1, holder_2 "
 class HData_hsgt(object):
     def __init__(self,user,password):
         # self.aaa = aaa
@@ -47,7 +52,19 @@ class HData_hsgt(object):
                     close float,
                     high float,
                     low float,
-                    volume float
+                    volume float,
+                    is_zig int, 
+                    is_quad int, 
+                    is_peach int,
+                    op_yoy float, 
+                    net_yoy float, 
+                    zlje float, 
+                    zlje_3 float, 
+                    zlje_5 float, 
+                    zlje_10 float, 
+                    holder_0 float, 
+                    holder_1 float, 
+                    holder_2 float
                     );
                 alter table hdata_hsgt_table add primary key(stock_code,record_date);
                 ''')
