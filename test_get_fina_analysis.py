@@ -1,30 +1,31 @@
 #!/usr/bin/env python  
 # -*- coding: utf-8 -*-
 
+import sys
+import os
+import time
+sys.path.append("pysnow_ball")
+
 import psycopg2 #使用的是PostgreSQL数据库
-import tushare as ts
 from Stocks import *
-from HData_fina import *
+from HData_xq_fina import *
 from HData_hsgt import *
-from HData_day import *
+from HData_xq_day import *
 from comm_generate_web_html import *
 import  datetime
 
 from time import clock
 
 
-import sys
-import os
-import time
 
 #funcat
 from funcat import *
 from funcat.data.aaron_backend import AaronDataBackend
 set_data_backend(AaronDataBackend())
 
-hdata_fina=HData_fina("usr","usr")
+hdata_fina=HData_xq_fina("usr","usr")
 hsgtdata=HData_hsgt("usr","usr")
-hdata_day=HData_day("usr","usr")
+hdata_day=HData_xq_day("usr","usr")
 
 debug = 0 
 #debug = 1
@@ -35,19 +36,27 @@ def get_fina_data():
     lastdate = nowdate - datetime.timedelta(365 * 2) #two years ago
 
     print('nowdate:%s, lastdate:%s' % (nowdate, lastdate))
-    fina_data  =  hdata_fina.get_all_hdata_of_stock_accord_time( lastdate.strftime("%Y%m%d"), nowdate.strftime("%Y%m%d"))
+    fina_data = hdata_fina.get_data_from_hdata( \
+            start_date=lastdate.strftime("%Y-%m-%d"), \
+            end_date=nowdate.strftime("%Y-%m-%d"))
     
     return fina_data
 
-def fina_get_continuous_info(df, curr_day, select='or_yoy', net_percent=20):
+def fina_get_continuous_info(df, curr_day, select='operating_income_yoy', net_percent=20):
     all_df = df
     data_list = []
-    group_by_stock_code_df=all_df.groupby('ts_code')
+    group_by_stock_code_df=all_df.groupby('stock_code')
     for stock_code, group_df in group_by_stock_code_df:
+
+        group_df=group_df.sort_values('record_date', ascending=0) #reset index
+        group_df=group_df.reset_index(drop=True) #reset index
+        max_date=group_df.loc[0, 'record_date']
+
         if debug:
             print(stock_code)
-            print(group_df.head(1))
+            print(group_df)
 
+        stock_code = stock_code[2:] 
    
         
         #get stock_cname
@@ -62,15 +71,13 @@ def fina_get_continuous_info(df, curr_day, select='or_yoy', net_percent=20):
             continue
  
         
-        group_df=group_df.reset_index(drop=True) #reset index
-        max_date=group_df.loc[0, 'ann_date']
-        or_yoy=group_df.loc[0, 'or_yoy']
-        netprofit_yoy=group_df.loc[0, 'netprofit_yoy']
+        operating_income_yoy=group_df.loc[0, 'operating_income_yoy']
+        net_profit_atsopc_yoy=group_df.loc[0, 'net_profit_atsopc_yoy']
 
         length=len(group_df)
         for i in range(length):
-            or_item = group_df.loc[i]['or_yoy']
-            netprofit_item = group_df.loc[i]['netprofit_yoy']
+            or_item = group_df.loc[i]['operating_income_yoy']
+            netprofit_item = group_df.loc[i]['net_profit_atsopc_yoy']
             if debug:
                 print('netprofit_item =%f'%(netprofit_item))
 
@@ -82,7 +89,7 @@ def fina_get_continuous_info(df, curr_day, select='or_yoy', net_percent=20):
         #algorithm
         if(i > 1):
             pass
-            #if group_df.loc[0]['or_yoy'] < group_df.loc[1]['or_yoy']:  #decline, skip
+            #if group_df.loc[0]['operating_income_yoy'] < group_df.loc[1]['operating_income_yoy']:  #decline, skip
             #   continue
         else:
             continue
@@ -90,15 +97,20 @@ def fina_get_continuous_info(df, curr_day, select='or_yoy', net_percent=20):
         #funcat call
         T(curr_day)
         S(stock_code)
-        pre_close = REF(C, 1)
-        open_p = (O - pre_close)/pre_close
-        open_p = round (open_p.value, 4)
-        open_jump=open_p - 0.02
-        if debug:
-            print(str(nowdate), stock_code, O, H, L, C, open_p)
 
-        close_p = (C - pre_close)/pre_close
-        close_p = round (close_p.value, 4) * 100
+
+        open_p = close_p = 0
+
+        pre_close = REF(C, 1)
+        if pre_close != 0:
+            open_p = (O - pre_close)/pre_close
+            open_p = round (open_p.value, 4)
+            open_jump=open_p - 0.02
+            if debug:
+                print( curr_day, stock_code, O, H, L, C, open_p)
+
+            close_p = (C - pre_close)/pre_close
+            close_p = round (close_p.value, 4) * 100
 
         all_df = hsgtdata.get_data_from_hdata(stock_code=stock_code, end_date=curr_day, limit=60)
         hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total \
@@ -106,12 +118,12 @@ def fina_get_continuous_info(df, curr_day, select='or_yoy', net_percent=20):
                 
         now_hour = int(datetime.datetime.now().strftime("%H"))
         if now_hour > 12:
-            daily_df = hdata_day.get_day_hdata_of_stock(curr_day)
+            daily_df = hdata_day.get_data_from_hdata(start_date=curr_day, end_date=curr_day)
         else:
             nowdate=datetime.datetime.now().date()
             lastdate=nowdate-datetime.timedelta(1)
             last_day=nowdate.strftime("%Y-%m-%d")
-            daily_df = hdata_day.get_day_hdata_of_stock(last_day)
+            daily_df = hdata_day.get_data_from_hdata(start_date=last_day, end_date=last_day)
 
 
         tmp_df  = daily_df[daily_df['stock_code']==stock_code]
@@ -137,32 +149,32 @@ def fina_get_continuous_info(df, curr_day, select='or_yoy', net_percent=20):
 
 
         if debug:
-            print(curr_day, max_date, stock_code, stock_name, or_yoy,  netprofit_yoy, i, \
+            print(curr_day, max_date, stock_code, stock_name, operating_income_yoy,  net_profit_atsopc_yoy, i, \
                     close_p, C.value, hsgt_share, hsgt_date, hsgt_percent, hsgt_delta1, hsgt_deltam,\
                     conti_day, money_total,\
                     is_peach, is_zig, is_quad )
 
-        data_list.append([ max_date, stock_code, stock_name, or_yoy, netprofit_yoy,  i, \
+        data_list.append([ max_date, stock_code, stock_name, operating_income_yoy, net_profit_atsopc_yoy,  i, \
                 close_p, C.value, hsgt_share, hsgt_date, hsgt_percent, hsgt_delta1, hsgt_deltam,\
                 conti_day, money_total,\
                 is_peach, is_zig, is_quad])  #i  is conti_day
         #break
 
-    data_column=['record_date', 'stock_code', 'stock_name', 'or_yoy', 'netprofit_yoy', 'conti_day', \
+    data_column=['record_date', 'stock_code', 'stock_name', 'operating_income_yoy', 'net_profit_atsopc_yoy', 'conti_day', \
             'a_pct', 'close', 'hk_share', 'hk_date', 'hk_pct', 'hk_delta1', 'hk_deltam', \
             'conti_day', 'hk_m_total',\
             'peach', 'zig', 'quad']
 
     ret_df = pd.DataFrame(data_list, columns=data_column)
-    if select is 'or_yoy':
-        ret_df = ret_df.sort_values('or_yoy', ascending=0)
-    elif select is 'netprofit_yoy':
-        ret_df = ret_df.sort_values('netprofit_yoy', ascending=0)
+    if select is 'operating_income_yoy':
+        ret_df = ret_df.sort_values('operating_income_yoy', ascending=0)
+    elif select is 'net_profit_atsopc_yoy':
+        ret_df = ret_df.sort_values('net_profit_atsopc_yoy', ascending=0)
 
     ret_df = ret_df.fillna(0)
     ret_df=ret_df.round(2)
 
-    data_column=['record_date', 'stock_code', 'stock_name', 'or_yoy', 'netprofit_yoy', 'conti_day', \
+    data_column=['record_date', 'stock_code', 'stock_name', 'operating_income_yoy', 'net_profit_atsopc_yoy', 'conti_day', \
             'a_pct', 'close', \
             'peach', 'zig', 'quad',\
             'hk_share', 'hk_date', 'hk_pct', 'hk_delta1', 'hk_deltam', \
@@ -179,9 +191,9 @@ def fina_handle_html_special(newfile):
     with open(newfile,'a') as f:
         f.write('\n')
         f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
-        f.write('<p  style="color:blue;"> or_yoy:        营业收入同比增长</p>')
-        f.write('<p  style="color:blue;"> netprofit_yoy: 净利润同比增长</p>')
-        f.write('<p  style="color:blue;"> conti_day:       连续增长次数，并且or_yoy不低于上一次 </p>')
+        f.write('<p  style="color:blue;"> operating_income_yoy:        营业收入同比增长</p>')
+        f.write('<p  style="color:blue;"> net_profit_atsopc_yoy: 净利润同比增长</p>')
+        f.write('<p  style="color:blue;"> conti_day:       连续增长次数，并且operating_income_yoy不低于上一次 </p>')
         f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
         f.write('\n')
         f.write('\n')
@@ -207,10 +219,8 @@ def fina_generate_html(df):
     
 def get_example_data(curr_day):
 
-    hdata_fina.db_connect()#由于每次连接数据库都要耗时0.0几秒，故获取历史数据时统一连接
     df = get_fina_data()
-    df_fina =  fina_get_continuous_info(df, curr_day, 'or_yoy')
-    hdata_fina.db_disconnect()
+    df_fina =  fina_get_continuous_info(df, curr_day, select='operating_income_yoy')
 
     return df, df_fina
 
