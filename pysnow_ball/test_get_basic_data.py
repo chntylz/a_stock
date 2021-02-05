@@ -68,6 +68,12 @@ def get_fina_data(stock_code, datatype=None, is_annuals=0, def_cnt=10):
     else:
         df = pd.DataFrame(fina_data) 
 
+    if len(df):
+        pass
+    else:
+        print('stock_code=%s, len(df)=0, #error# abnormal' \
+                % stock_code)
+        return df
 
     if debug:
         print(df.loc[len(df)-1])        #series
@@ -79,7 +85,16 @@ def get_fina_data(stock_code, datatype=None, is_annuals=0, def_cnt=10):
     i = 0
     for i in range(3, len_cols):
         #split
-        tmp_df = pd.DataFrame(data=[x[i] for x in df.values])
+        try:
+            tmp_df = pd.DataFrame(data=[x[i] for x in df.values])
+        except:
+            print('try stock_code=%s, len(df)=%d, i=%d, #error# abnormal' \
+                    % (stock_code, len(df), i))
+            new_df = pd.DataFrame() 
+            return new_df
+        else:
+            pass
+
         col_name = list(df)[i]
         tmp_df.rename(columns={0: col_name},inplace=True)
         tmp_df.rename(columns={1: col_name+'_new'},inplace=True)

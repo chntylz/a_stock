@@ -73,6 +73,13 @@ def get_original_data(datatype=None):
         else:
             stock_code_new= 'SZ' + nowcode
         tmp_df = get_fina_data(stock_code_new, datatype, def_cnt=12)
+        
+        if len(tmp_df):
+            pass
+        else:
+            print('stock_code_new=%s, len(df)=0, #error# abnormal'\
+                    % stock_code_new)
+            continue
 
         if debug:
             print(i, stock_code_new)
@@ -130,8 +137,9 @@ def check_table():
 
 
 def update_database_indicator():
-    print('indicator zhuyao caiwu zhibiao')
+    print('#indicator zhuyao caiwu zhibiao')
     df_indicator = get_fina()
+    df_indicator.to_csv('./test_indicator.csv', encoding='utf-8')
     if len(df_indicator):
         hdata_fina.db_hdata_xq_create()
         hdata_fina.copy_from_stringio(df_indicator)
@@ -157,7 +165,7 @@ def update_database_income():
     print('#income  net profit')
     df_income = get_fina(datatype='income')
     df_income.to_csv('./test_income.csv', encoding='utf-8')
-    df_income = spilt_df(df_income,'continous_operating_np_new')
+    df_income = spilt_df(df_income,'operating_total_cost_si_new')
     if len(df_income):
         hdata_income.db_hdata_xq_create()
         hdata_income.copy_from_stringio(df_income)
@@ -168,7 +176,7 @@ def update_database_balance():
     df_balance = get_fina(datatype='balance')
     df_balance.to_csv('./test_balance.csv', encoding='utf-8')
     df_balance = spilt_df(df_balance,'lt_staff_salary_payable_new')
-    if len(df_income):
+    if len(df_balance):
         hdata_balance.db_hdata_xq_create()
         hdata_balance.copy_from_stringio(df_balance)
     pass
@@ -197,8 +205,8 @@ if __name__ == '__main__':
     nowdate=nowdate-datetime.timedelta(int(para1))
     print("nowdate is %s"%(nowdate.strftime("%Y-%m-%d")))
 
-    update_database_indicator()
-    update_database_income()
+    #update_database_indicator()
+    #update_database_income()
     update_database_balance()
     update_database_cashflow()
 
