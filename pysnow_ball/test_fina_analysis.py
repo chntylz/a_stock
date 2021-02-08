@@ -95,7 +95,7 @@ def income_analysis_assets(df):
     #total_assets_new
     i = 0
     list = []
-    list.append([df.stock_name[0], 'total_assests', 'total_assests_pct', 'result'])
+    list.append([df.stock_name[0], 'total_assets', 'total_assets_pct', 'result'])
     for i in range(df_len):
         if debug:
             print('record_date=%s, i=%d, total_assets=%f, total_assets_new=%f'\
@@ -113,7 +113,7 @@ def income_analysis_liab(df):
     #asset_liab_ratio_x
     i = 0
     list = []
-    list.append([df.stock_name[0], 'total_assests', 'total_liab', 'asset_liab_ratio_x', 'result'])
+    list.append([df.stock_name[0], 'total_assets', 'total_liab', 'asset_liab_ratio_x', 'result'])
     for i in range(df_len):
         if debug:
             print('record_date=%s, i=%d, total_assets, total_liab=%f, asset_liab_ratio_x=%f, '\
@@ -179,13 +179,37 @@ def income_analysis_payable_receivable(df):
     return df_ret
 
 
+def income_analysis_fixed_assets(df):
+    y_unit=10000*10000
+    df_len=len(df)
+    #gudingzichan  < 40%
+    #
+    i = 0
+    list = []
+    list.append([df.stock_name[0],'fixed_asset_sum', 'construction_in_process_sum',\
+        'project_goods_and_material', 'total_fixed', 'total_assets', \
+        'total_fixed/total_asset', 'result'])
+    for i in range(df_len):
+        total_fixed = df.fixed_asset_sum[i] + df.construction_in_process_sum[i] \
+            + df.project_goods_and_material[i]
+        list.append([df.record_date[i], df.fixed_asset_sum[i]/y_unit, \
+            df.construction_in_process_sum[i]/y_unit,\
+            df.project_goods_and_material[i]/y_unit,\
+            total_fixed/y_unit, df.total_assets[i]/y_unit, \
+            total_fixed/df.total_assets[i] * 100, \
+            total_fixed/df.total_assets[i] * 100 < 40 \
+            ])
+    df_ret = pd.DataFrame(list)
+    df_ret= df_ret.T
+    return df_ret
+
 
 def fina_data_analysis(df):
     all_df = df
     group_by_stock_code_df=all_df.groupby('stock_code')
     for stock_code, group_df in group_by_stock_code_df:
-        #if stock_code != 'SZ002475':
-        #    continue
+        if stock_code != 'SZ002475':
+            continue
         group_df = group_df.reset_index(drop=True)
         if debug:
             print(stock_code)
@@ -197,12 +221,12 @@ def fina_data_analysis(df):
         pos_e=stock_name.rfind(']')
         stock_name=stock_name[pos_s+1: pos_e]
         group_df.insert(1, 'stock_name' , stock_name, allow_duplicates=False)
-        asset_pct = income_analysis_assets(group_df)
-        liab_pct  = income_analysis_liab(group_df)
-        loan_pct  = income_analysis_loan(group_df)
-        if asset_pct and liab_pct and loan_pct:
-            print(stock_code_new, stock_name, asset_pct, liab_pct)
-        #return group_df
+        #asset_pct = income_analysis_assets(group_df)
+        #liab_pct  = income_analysis_liab(group_df)
+        #loan_pct  = income_analysis_loan(group_df)
+        #if asset_pct and liab_pct and loan_pct:
+        #    print(stock_code_new, stock_name, asset_pct, liab_pct)
+        return group_df
     pass
 
 
