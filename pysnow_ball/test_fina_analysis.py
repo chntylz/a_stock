@@ -66,6 +66,11 @@ df = df_y_income_balance = pd.merge(df_tmp, df_y_cashflow, how='outer', \
         on=['record_date', 'stock_code', 'report_name'])
 
 
+df.total_loan = 0
+df.total_loan = df.st_loan+ df.interest_payable \
+    + df.noncurrent_liab_due_in1y + df.lt_loan \
+    + df.bond_payable + df.lt_payable
+
 len(df_y_fina)
 len(df_y_income)  
 len(df_y_balance)
@@ -108,12 +113,13 @@ def income_analysis_liab(df):
     #asset_liab_ratio_x
     i = 0
     list = []
-    list.append([df.stock_name[0], 'total_liab', 'asset_liab_ratio_x', 'result'])
+    list.append([df.stock_name[0], 'total_assests', 'total_liab', 'asset_liab_ratio_x', 'result'])
     for i in range(df_len):
         if debug:
-            print('record_date=%s, i=%d, total_liab=%f, asset_liab_ratio_x=%f, '\
-                    %(df.record_date[i], i, df.total_liab[i]/y_unit, df.asset_liab_ratio_x[i]))
-        list.append([df.record_date[i], df.total_liab[i]/y_unit,\
+            print('record_date=%s, i=%d, total_assets, total_liab=%f, asset_liab_ratio_x=%f, '\
+                    %(df.record_date[i], i, df.total_assets[i]/y_unit, \
+                    df.total_liab[i]/y_unit, df.asset_liab_ratio_x[i]))
+        list.append([df.record_date[i], df.total_assets[i]/y_unit, df.total_liab[i]/y_unit,\
                 df.asset_liab_ratio_x[i], df.asset_liab_ratio_x[i] < 60 ])
     df_ret = pd.DataFrame(list)
     df_ret= df_ret.T
