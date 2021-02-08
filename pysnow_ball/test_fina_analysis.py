@@ -126,36 +126,30 @@ def income_analysis_liab(df):
     return df_ret
 
 def income_analysis_loan(df):
-    ret = False
     y_unit=10000*10000
     df_len=len(df)
     #youxifuzhai > huobijijin  
     #fuzhai vs zichan
     i = 0
+    list = []
+    list.append([df.stock_name[0], 'currency_funds', 'st_loan', \
+                'interest_payable', 'noncurrent_liab_due_in1y', \
+                'lt_loan', 'bond_payable', 'lt_payable', 'total_loan','result'])
     for i in range(df_len):
         if debug:
             print('record_date=%s, i=%d, currency_funds=%f, st_loan=%f, interest_payable=%f, \
-                noncurrent_liab_due_in1y=%f, lt_loan=%f, bond_payable=%f, lt_payable=%f '\
+                noncurrent_liab_due_in1y=%f, lt_loan=%f, bond_payable=%f, lt_payable=%f, \
+                total_lian=%f '\
                 %(df.record_date[i], i, df.currency_funds[i], df.st_loan[i], \
                 df.interest_payable[i], df.noncurrent_liab_due_in1y[i], \
-                df.lt_loan[i], df.bond_payable[i], df.lt_payable[i]))
-        t_loan = df.st_loan[i] + df.interest_payable[i] \
-                    + df.noncurrent_liab_due_in1y[i] + df.lt_loan[i], \
-                    + df.bond_payable[i] + df.lt_payable[i]
-        if debug:
-            print(t_loan)
-        if (df.currency_funds[i] < t_loan[0]) :
-            break
-    if i == df_len-1 :
-        if debug:
-            print('record_date=%s, i=%d, currency_funds=%f, st_loan=%f, interest_payable=%f, \
-                noncurrent_liab_due_in1y=%f, lt_loan=%f, bond_payable=%f, lt_payable=%f '\
-                %(df.record_date[i], i, df.currency_funds[i], df.st_loan[i], \
-                df.interest_payable[i], df.noncurrent_liab_due_in1y[i], \
-                df.lt_loan[i], df.bond_payable[i], df.lt_payable[i]))
-        ret = True 
-    return ret
-
+                df.lt_loan[i], df.bond_payable[i], df.lt_payable[i], df.total_loan[i]))
+        list.append([df.record_date[i], df.currency_funds[i]/y_unit, df.st_loan[i]/y_unit, \
+                df.interest_payable[i]/y_unit, df.noncurrent_liab_due_in1y[i]/y_unit, \
+                df.lt_loan[i]/y_unit, df.bond_payable[i]/y_unit, df.lt_payable[i]/y_unit, \
+                df.total_loan[i]/y_unit, df.currency_funds[i] > df.total_loan[i] ])
+    df_ret = pd.DataFrame(list)
+    df_ret= df_ret.T
+    return df_ret
 
 
 
