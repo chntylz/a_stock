@@ -90,18 +90,17 @@ def income_analysis_assets(df):
     #zong zi chan zengzhanglv  > 20%
     #total_assets_new
     i = 0
+    list = []
+    list.append([df.stock_name[0], 'total_assests', 'total_assests_pct', 'result'])
     for i in range(df_len):
         if debug:
             print('record_date=%s, i=%d, total_assets=%f, total_assets_new=%f'\
                     %(df.record_date[i], i, df.total_assets[i]/y_unit, df.total_assets_new[i]))
-        if df.total_assets_new[i] < 0.2:
-            break
-    if i == df_len-1 :
-        if debug:
-            print('record_date=%s, i=%d, total_assets=%f, total_assets_new=%f'\
-                    %(df.record_date[i], i, df.total_assets[i]/y_unit, df.total_assets_new[i]))
-        ret = True
-    return ret
+        list.append([df.record_date[i], df.total_assets[i]/y_unit, \
+                df.total_assets_new[i], df.total_assets_new[i] >= 0.2])
+    df_ret = pd.DataFrame(list)
+    df_ret= df_ret.T
+    return df_ret
 
 def income_analysis_liab(df):
     ret = False
@@ -173,6 +172,7 @@ def fina_data_analysis(df):
         pos_s=stock_name.rfind('[')
         pos_e=stock_name.rfind(']')
         stock_name=stock_name[pos_s+1: pos_e]
+        group_df.insert(1, 'stock_name' , stock_name, allow_duplicates=False)
         asset_pct = income_analysis_assets(group_df)
         liab_pct  = income_analysis_liab(group_df)
         loan_pct  = income_analysis_loan(group_df)
