@@ -84,7 +84,6 @@ df_y_balance[df_y_balance.stock_code=='SH600519'].total_assets
 
 
 def income_analysis_assets(df):
-    ret = False
     y_unit=10000*10000
     df_len=len(df)
     #zong zi chan zengzhanglv  > 20%
@@ -103,24 +102,22 @@ def income_analysis_assets(df):
     return df_ret
 
 def income_analysis_liab(df):
-    ret = False
     y_unit=10000*10000
     df_len=len(df)
     #zong zi chan fuzhailv  < 60%
     #asset_liab_ratio_x
     i = 0
+    list = []
+    list.append([df.stock_name[0], 'total_liab', 'asset_liab_ratio_x', 'result'])
     for i in range(df_len):
         if debug:
             print('record_date=%s, i=%d, total_liab=%f, asset_liab_ratio_x=%f, '\
                     %(df.record_date[i], i, df.total_liab[i]/y_unit, df.asset_liab_ratio_x[i]))
-        if df.asset_liab_ratio_x[i] > 60:
-            break
-    if i == df_len-1 :
-        if debug:
-            print('record_date=%s, i=%d, total_liab=%f, asset_liab_ratio_x=%f, '\
-                    %(df.record_date[i], i, df.total_liab[i]/y_unit, df.asset_liab_ratio_x[i]))
-        ret = True
-    return ret
+        list.append([df.record_date[i], df.total_liab[i]/y_unit,\
+                df.asset_liab_ratio_x[i], df.asset_liab_ratio_x[i] < 60 ])
+    df_ret = pd.DataFrame(list)
+    df_ret= df_ret.T
+    return df_ret
 
 def income_analysis_loan(df):
     ret = False
