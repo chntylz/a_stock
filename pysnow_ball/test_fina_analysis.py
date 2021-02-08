@@ -151,6 +151,33 @@ def income_analysis_loan(df):
     df_ret= df_ret.T
     return df_ret
 
+def income_analysis_payable_receivable(df):
+    y_unit=10000*10000
+    df_len=len(df)
+    #
+    # yingfuyushou vs yingshouyufu
+    i = 0
+    list = []
+    list.append([df.stock_name[0], 'total_assets', 'bill_payable', 'accounts_payable', \
+            'pre_receivable', 'total_payable',\
+            'bills_receivable', 'account_receivable', 'pre_payment', 'total_receivable', \
+            'payable-receivable', 'reveivable/total_assets'\
+            ])
+    for i in range(df_len):
+        total_payable =  df.bill_payable[i] + df.accounts_payable[i] + df.pre_receivable[i]
+        total_receivable = df.bills_receivable[i] + df.account_receivable[i] + df.pre_payment[i]
+        list.append([df.record_date[i], \
+            df.total_assets[i]/y_unit, df.bill_payable[i]/y_unit, df.accounts_payable[i]/y_unit,\
+            df.pre_receivable[i]/y_unit, total_payable/y_unit, \
+            df.bills_receivable[i]/y_unit,df.account_receivable[i]/y_unit,df.pre_payment[i]/y_unit,\
+            total_receivable/y_unit,\
+            (total_payable - total_receivable)/y_unit,\
+            total_receivable / df.total_assets[i] * 100 \
+            ])
+    df_ret = pd.DataFrame(list)
+    df_ret= df_ret.T
+    return df_ret
+
 
 
 def fina_data_analysis(df):
