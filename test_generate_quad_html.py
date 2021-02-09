@@ -8,6 +8,8 @@ from HData_select import *
 from HData_day import *
 from HData_hsgt import *
 import  datetime
+import time
+from pysnow_ball.HData_xq_day import *
 
 from comm_generate_web_html import *
 
@@ -22,7 +24,7 @@ from funcat import *
 from funcat.data.aaron_backend import AaronDataBackend
 set_data_backend(AaronDataBackend())
 
-hdata=HData_day("usr","usr")
+hdata=HData_xq_day("usr","usr")
 sdata=HData_select("usr","usr")
 hsgtdata=HData_hsgt("usr","usr")
 
@@ -72,18 +74,20 @@ def quad_continue_handle_html_body_special(newfile, date):
         f.write('\n')
         f.write('<p> 日期 %s </p>\n' %(curr_day))
 
+        t1 = time.time()
         df = get_today_item(curr_day)
+        print('delta time= %s ' % (time.time() - t1))
 
         # 找出上涨的股票
-        df_up = df[df['p_change'] > 0.00]
+        df_up = df[df['percent'] > 0.00]
         # 走平股数
-        df_even = df[df['p_change'] == 0.00]
+        df_even = df[df['percent'] == 0.00]
         # 找出下跌的股票
-        df_down = df[df['p_change'] < 0.00]
+        df_down = df[df['percent'] < 0.00]
 
         # 找出涨停的股票
-        limit_up = df[df['p_change'] >= 9.70]
-        limit_down = df[df['p_change'] <= -9.70]
+        limit_up = df[df['percent'] >= 9.70]
+        limit_down = df[df['percent'] <= -9.70]
 
         s_debug= ('<p> A股上涨个数： %d,  A股下跌个数： %d,  A股走平个数:  %d</p>' % (df_up.shape[0], df_down.shape[0], df_even.shape[0]))
         print(s_debug)
@@ -147,7 +151,7 @@ def showImageInHTML(imageTypes,savedir):
         print("%s"% newfile)
     
     #get continuous stock_code
-    last_day = get_valid_last_day(nowdate)
+    last_day = get_valid_last_day(lastdate)
 
     if debug:
         print("last_day:%s, curr_day:%s curr_dir:%s" % (last_day, curr_day, curr_dir))
@@ -189,7 +193,7 @@ def cur_file_dir():
         return os.path.dirname(path)
 
 def get_today_item(today):
-    df=hdata.get_day_hdata_of_stock(today)
+    df=hdata.get_data_from_hdata(start_date=today, end_date=today)
     # print(len(df))
     return df
 
@@ -203,15 +207,21 @@ def get_valid_last_day(nowdate):
     stopdate=nowdate-datetime.timedelta(item_number) #get 7 item from hdata_day(db)
     stop_day=stopdate.strftime("%Y-%m-%d")
     curr_day=nowdate.strftime("%Y-%m-%d")
+    if debug:
+        print('stop_day=%s, curr_day=%s' % (stop_day, curr_day))
     start_day=curr_day
     last_day=curr_day
-    df=hdata.my2_get_valid_last_day_hdata_of_stock(stop_day, curr_day, item_number)
+    df=hdata.get_data_from_hdata(start_date=stop_day, \
+            end_date=curr_day, limit=item_number)
+    if debug:
+        print(df)
     while poll_flag:
         lastdate=nowdate-datetime.timedelta(i)
         i = i+1        
         last_day=lastdate.strftime("%Y-%m-%d")
         list_df = list(df['record_date'].apply(lambda x: str(x)))
-        print("list_df:%s"%(list_df))
+        print("last_day:%s" % (last_day))
+        print("list_df:%s i=%d"%(list_df, i))
         if last_day in list_df:
             poll_flag = False;
             break
