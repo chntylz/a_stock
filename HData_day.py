@@ -308,7 +308,10 @@ class HData_day(object):
                                 port="5432")
         cur = conn.cursor()
         #select * from (select * from hdata_d_table where stock_code='000922' order by record_date desc LIMIT 5) as tbl order by record_date asc;
-        sql_temp="select record_date from hdata_d_table where record_date between " + "\'" + stop_day + "\'  and  " + "\'" + curr_day + "\'  group by record_date order by record_date desc limit " + "\'" + str(number) + "\' ;"
+        sql_temp="select record_date from hdata_d_table where record_date between " \
+                + "\'" + stop_day + "\'  and  " + "\'" + curr_day \
+                + "\'  group by record_date order by record_date desc limit " \
+                + "\'" + str(number) + "\' ;"
         cur.execute(sql_temp)
         rows = cur.fetchall()
 

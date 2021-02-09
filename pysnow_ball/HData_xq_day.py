@@ -25,7 +25,11 @@ xq_cols = " record_date, stock_code, volume, open, high, low,\
         is_peach, is_zig, is_quad "
 
 
-
+xq_cols = " record_date, stock_code, open, close, high, low,\
+        volume, amount, percent, chg, turnoverrate,\
+        pe, pb, ps, pcf, market_capital, \
+        hk_volume , hk_pct , hk_net ,\
+        is_peach , is_zig , is_quad "
 
 class HData_xq_day(object):
     def __init__(self,user,password):
@@ -424,9 +428,13 @@ class HData_xq_day(object):
         and_flag = False
 
 
-        sql_temp = "select * from ( "
+        sql_temp = "select"  
+        sql_temp += xq_cols 
+        sql_temp += "from ( "
 
-        sql_temp += "select * from xq_d_table"
+        sql_temp += "select"
+        sql_temp += xq_cols
+        sql_temp += "from xq_d_table"
 
         if stock_code is None and start_date is None and end_date is None:
             pass
