@@ -19,7 +19,7 @@ SZ002475 lixunjingmi
 SH601066 zhongxinjiantou
 SZ002030 daanjiyin
 SZ002106 laibaogaoke
-
+SZ000922 jiadiangufen
 SZ000538 yunnanbaiyao
 SH600460 shilanwei
 SZ002352 shunfengkonggu

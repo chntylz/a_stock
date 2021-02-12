@@ -150,12 +150,6 @@ def showImageInHTML(imageTypes,savedir):
     if debug:
         print("%s"% newfile)
     
-    #get continuous stock_code
-    last_day = get_valid_last_day(lastdate)
-
-    if debug:
-        print("last_day:%s, curr_day:%s curr_dir:%s" % (last_day, curr_day, curr_dir))
-    
     real_dir = savedir + '/' + curr_dir 
     if debug:
         print('real_dir:%s'% real_dir)
@@ -198,50 +192,8 @@ def get_today_item(today):
     return df
 
 
-def get_valid_last_day(nowdate):
-    poll_flag = True
-    i = 1
-    item_number = 10
-    #test
-    #nowdate=nowdate-datetime.timedelta(1)
-    stopdate=nowdate-datetime.timedelta(item_number) #get 7 item from hdata_day(db)
-    stop_day=stopdate.strftime("%Y-%m-%d")
-    curr_day=nowdate.strftime("%Y-%m-%d")
-    if debug:
-        print('stop_day=%s, curr_day=%s' % (stop_day, curr_day))
-    start_day=curr_day
-    last_day=curr_day
-    df=hdata.get_data_from_hdata(start_date=stop_day, \
-            end_date=curr_day, limit=item_number)
-    if debug:
-        print(df)
-    while poll_flag:
-        lastdate=nowdate-datetime.timedelta(i)
-        i = i+1        
-        last_day=lastdate.strftime("%Y-%m-%d")
-        list_df = list(df['record_date'].apply(lambda x: str(x)))
-        print("last_day:%s" % (last_day))
-        print("list_df:%s i=%d"%(list_df, i))
-        if last_day in list_df:
-            poll_flag = False;
-            break
-    print("last_day:%s" % (last_day))
-    return last_day
-    
     
 if __name__ == '__main__':
-    '''
-    nowdate=datetime.datetime.now().date()
-    yesterday=nowdate-datetime.timedelta(1)
-    
-    today = nowdate.strftime("%Y-%m-%d")
-    yesterday = yesterday.strftime("%Y-%m-%d")
-    today_df=get_today_item(today)
-    
-    last_day = get_valid_last_day(nowdate)
-    print('last_day:%s' %  (last_day))
-    '''
-
     savedir=cur_file_dir()#获取当前.py脚本文件的文件路径
     savedir= savedir + '/' + stock_data_dir 
     showImageInHTML(('jpg','png','gif'), savedir)#浏览所有jpg,png,gif文件

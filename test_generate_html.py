@@ -192,7 +192,7 @@ def showImageInHTML(imageTypes,savedir):
         print("%s"% newfile_2)
     
     #get continuous stock_code
-    last_day = get_valid_last_day(lastdate)
+    last_day = get_valid_last_day(nowdate)
     conti_df = get_continuous_item(last_day, curr_day)
     conti_list = list(conti_df['stock_code'])
     if debug:
@@ -272,29 +272,17 @@ def get_continuous_item(today, yesterday):
 
 def get_valid_last_day(nowdate):
     poll_flag = True
+    last_day=nowdate.strftime("%Y-%m-%d")
     i = 1
-    item_number = 10
-    #test
-    #nowdate=nowdate-datetime.timedelta(1)
-    stopdate=nowdate-datetime.timedelta(item_number) #get 7 item from hdata_day(db)
-    stop_day=stopdate.strftime("%Y-%m-%d")
-    curr_day=nowdate.strftime("%Y-%m-%d")
-    if debug:
-        print('stop_day=%s, curr_day=%s' % (stop_day, curr_day))
-    start_day=curr_day
-    last_day=curr_day
-    df=hdata.get_data_from_hdata(start_date=stop_day, \
-            end_date=curr_day, limit=item_number)
-    if debug:
-        print(df)
     while poll_flag:
         lastdate=nowdate-datetime.timedelta(i)
         i = i+1        
-        last_day=lastdate.strftime("%Y-%m-%d")
-        list_df = list(df['record_date'].apply(lambda x: str(x)))
-        print("last_day:%s" % (last_day))
-        print("list_df:%s i=%d"%(list_df, i))
-        if last_day in list_df:
+        last_day=stop_day=curr_day=lastdate.strftime("%Y-%m-%d")
+        if debug:
+            print('stop_day=%s, curr_day=%s, i=%d' % (stop_day, curr_day, i))
+        df=hdata.get_data_from_hdata(start_date=stop_day, \
+            end_date=curr_day, limit=1)
+        if len(df):
             poll_flag = False;
             break
     print("last_day:%s" % (last_day))
@@ -302,20 +290,6 @@ def get_valid_last_day(nowdate):
     
     
 if __name__ == '__main__':
-    '''
-    nowdate=datetime.datetime.now().date()
-    yesterday=nowdate-datetime.timedelta(1)
-    
-    today = nowdate.strftime("%Y-%m-%d")
-    yesterday = yesterday.strftime("%Y-%m-%d")
-    today_df=get_today_item(today)
-    #continuous_df = get_continuous_item(yesterday, today)
-    continuous_df = get_continuous_item('2019-07-08', '2019-07-09')
-    
-    last_day = get_valid_last_day(nowdate)
-    print('last_day:%s' %  (last_day))
-    '''
-
     savedir=cur_file_dir()#获取当前.py脚本文件的文件路径
     savedir= savedir + '/' + stock_data_dir 
     showImageInHTML(('jpg','png','gif'), savedir)#浏览所有jpg,png,gif文件

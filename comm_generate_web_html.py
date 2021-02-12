@@ -690,13 +690,9 @@ from HData_eastmoney_fund_10 import *
 
 from get_daily_fund import *
 
-
-
-
 def comm_generate_web_dataframe(curr_dir, images, curr_day, dict_industry):
     
     txt_file = curr_dir + '/' + curr_day +'.txt'
-    
     with open(txt_file,'w') as f:
         f.write('\n')
 
@@ -830,6 +826,137 @@ def comm_generate_web_dataframe(curr_dir, images, curr_day, dict_industry):
         print(ret_df)
 
     data_column = ['cur_date', 'code', 'name', 'a_pct', 'close', 'image_url',\
+            'peach', 'zig', 'quad',\
+            'zlje', 'zlje_3', 'zlje_5', 'zlje_10', 'holder_change',\
+            'hk_date', 'hk_share', 'hk_pct', \
+            'hk_delta1', 'hk_deltam', 'conti_day', \
+            'hk_m_total', 'm_per_day', 'total_mv']
+
+    ret_df=ret_df.loc[:,data_column]
+
+    ret_df = ret_df.sort_values('hk_m_total', ascending=0)
+ 
+    return ret_df
+
+
+
+
+def comm_generate_web_dataframe_new(input_df, curr_dir, curr_day, dict_industry):
+    
+    shell_cmd = 'mkdir -p ' + curr_dir
+    os.system(shell_cmd)
+
+    txt_file = curr_dir + '/' + curr_day +'.txt'
+    
+    with open(txt_file,'w') as f:
+        f.write('\n')
+
+    fund_df   = get_zlje_data_from_db(url='url',     curr_date=curr_day)
+    fund_3_df = get_zlje_data_from_db(url='url_3',   curr_date=curr_day)
+    fund_5_df = get_zlje_data_from_db(url='url_5',   curr_date=curr_day)
+    fund_10_df = get_zlje_data_from_db(url='url_10', curr_date=curr_day)
+
+    daily_df = input_df
+
+    data_list = []
+    len_df = len(daily_df)
+    i = 0
+    for i in range(len_df):
+        stock_code_new=daily_df.stock_code[i]
+        stock_code=stock_code_new[2:]
+        stock_name = symbol(stock_code)
+        pos_s=stock_name.rfind('[')
+        pos_e=stock_name.rfind(']')
+        stock_name=stock_name[pos_s+1: pos_e]
+        
+        #save stock_code to txt_file
+        with open(txt_file,'a') as f:
+            f.write('%s \n' % stock_code)
+
+        #funcat call
+        T(curr_day)
+        S(stock_code)
+        pre_close = REF(C, 1)
+        open_p = (O - pre_close)/pre_close
+        open_p = round (open_p.value, 4)
+        open_jump=open_p - 0.02
+        if debug:
+            print(str(curr_day), stock_code, O, H, L, C, open_p)
+
+        close_p = (C - pre_close)/pre_close
+        close_p = round (close_p.value, 4) * 100
+
+        hsgt_df = hsgtdata.get_data_from_hdata(stock_code=stock_code, end_date=curr_day, limit=60)
+        hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total \
+                = comm_handle_hsgt_data(hsgt_df)
+        
+        is_zig  =daily_df.is_zig[i]
+        is_quad =daily_df.is_quad[i]
+        is_peach=daily_df.is_peach[i]
+        total_mv=daily_df.market_capital[i]
+
+        industry_name = basic_df.loc[stock_code]['industry']
+        insert_industry(dict_industry, industry_name)
+
+        zlje = get_zlje(fund_df, stock_code, curr_date=curr_day)
+        zlje_3 = get_zlje(fund_3_df, stock_code, curr_date=curr_day)
+        zlje_5 = get_zlje(fund_5_df, stock_code, curr_date=curr_day)
+        zlje_10 = get_zlje(fund_10_df, stock_code, curr_date=curr_day)
+
+        #### fina start ####
+        fina_df = hdata_fina.get_data_from_hdata(stock_code = stock_code_new)
+        fina_df = fina_df.sort_values('record_date', ascending=0)
+        fina_df = fina_df.reset_index(drop=True)
+        
+        op_yoy = net_yoy = 0
+        if len(fina_df):
+            op_yoy = fina_df['operating_income_yoy'][0]
+            net_yoy = fina_df['net_profit_atsopc_yoy'][0]
+            
+            if debug:
+                print(stock_code_new)
+                print(fina_df)
+
+        fina=str(round(op_yoy,2)) +' ' + str(round(net_yoy,2))
+        new_date = curr_day[5:] + '<br>'+ fina + '</br>'
+        #### fina end ####
+ 
+        #### holder start ####
+        holder_df = hdata_holder.get_data_from_hdata(stock_code = stock_code_new)
+        holder_df = holder_df .sort_values('record_date', ascending=0)
+        holder_df = holder_df .reset_index(drop=True)
+        h0 = h1 = h2 = 0
+        if len(holder_df) > 0:
+            h0 = holder_df['chg'][0]
+        if len(holder_df) > 1:
+            h1 = holder_df['chg'][1]
+        if len(holder_df) > 2:
+            h2 = holder_df['chg'][2]
+        h_chg = str(h0) + ' ' + str(h1) + ' ' + str(h2)
+        #stock_code = stock_code + '<br>'+ h_chg + '</br>'
+
+        #### holder start ####
+
+        data_list.append([new_date, stock_code, stock_name, close_p, C.value, \
+                hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, \
+                money_total, total_mv,\
+                is_peach, is_zig, is_quad,\
+                zlje, zlje_3, zlje_5, zlje_10,h_chg ])
+
+    data_column = ['cur_date', 'code', 'name', 'a_pct', 'close', \
+            'hk_date', 'hk_share', 'hk_pct', 'hk_delta1', 'hk_deltam', 'conti_day', \
+            'hk_m_total', 'total_mv',\
+            'peach', 'zig', 'quad', \
+            'zlje', 'zlje_3', 'zlje_5', 'zlje_10', 'holder_change' ]
+
+    ret_df=pd.DataFrame(data_list, columns=data_column)
+    ret_df['m_per_day'] = ret_df.hk_m_total / ret_df.conti_day
+    ret_df = ret_df.fillna(0)
+    ret_df=ret_df.round(2)
+    if debug:
+        print(ret_df)
+
+    data_column = ['cur_date', 'code', 'name', 'a_pct', 'close', \
             'peach', 'zig', 'quad',\
             'zlje', 'zlje_3', 'zlje_5', 'zlje_10', 'holder_change',\
             'hk_date', 'hk_share', 'hk_pct', \
