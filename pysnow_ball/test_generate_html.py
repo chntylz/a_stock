@@ -138,7 +138,33 @@ def handle_zig_to_html(df):
     zig_df = zig_df.reset_index(drop=True)
     html_df = comm_generate_web_dataframe_new(zig_df, curr_day_w, curr_day, dict_industry )
     return html_df
-    
+ 
+def handle_quad_to_html(df):
+    if len(df) < 1:
+        print('#error, df data len < 1, return')
+        return
+    quad_df = df[(df.is_quad == 1)]
+    quad_df = quad_df.reset_index(drop=True)
+    if  len(quad_df):
+        html_df = comm_generate_web_dataframe_new(quad_df, curr_day_w, curr_day, dict_industry )
+    else:
+        html_df = None
+        print('#error, html_df data len < 1, return None')
+    return html_df
+ 
+def handle_peach_to_html(df):
+    if len(df) < 1:
+        print('#error, df data len < 1, return')
+        return
+    peach_df = df[(df.is_peach == 1)]
+    peach_df = peach_df.reset_index(drop=True)
+    if  len(peach_df):
+        html_df = comm_generate_web_dataframe_new(peach_df, curr_day_w, curr_day, dict_industry )
+    else:
+        html_df = None
+        print('#error, html_df data len < 1, return None')
+    return html_df
+
 if __name__ == '__main__':
 
     script_name, para1 = check_input_parameter()
@@ -155,11 +181,32 @@ if __name__ == '__main__':
     last_day=lastdate.strftime("%Y-%m-%d")
     print("curr_day:%s, last_day:%s"%(curr_day, last_day))
 
-    curr_dir=curr_day_w+'-zig'
     df = get_current_data(curr_day)
 
+    '''
+    curr_dir=curr_day_w+'-zig'
     html_zig_df = handle_zig_to_html(df)
+    if len(html_zig_df):
+        generate_zig_html(html_zig_df)
+    else:
+        print('#error, html_zig_df len < 1')
 
-    generate_zig_html(html_zig_df)
+    curr_dir=curr_day_w+'-quad'
+    html_quad_df = handle_quad_to_html(df)
+    if len(html_zig_df):
+        generate_zig_html(html_quad_df)
+    else:
+        print('#error, html_quad_df len < 1')
 
+    '''
+
+    curr_dir=curr_day_w+'-peach'
+    html_peach_df = handle_peach_to_html(df)
+    if len(html_peach_df):
+        generate_zig_html(html_peach_df)
+    else:
+        print('#error, html_peach_df len < 1')
+
+
+    
 

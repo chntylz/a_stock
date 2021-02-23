@@ -73,9 +73,10 @@ def calculate_peach_zig_quad(nowdate):
         is_peach = 0
         is_zig = 0
         is_quad = 0
-        is_boll_cross = False
-        is_macd_cross = False
-        is_ema_cross = False
+        is_boll = 0
+        is_macd = 0
+        is_ema = 0
+        is_2d3pct  = 0
         is_up_days  = 0
 
         nowcode=codestock_local[i][0]
@@ -104,7 +105,7 @@ def calculate_peach_zig_quad(nowdate):
         '''
         #database table item list
         record_date | stock_code |  open   |  close  |  high   |   low   | volume |  amount  | p_change 
-        | is_zig | is_quad | is_macd_cross | is_ema_cross | is_boll_cross | up_days
+        | is_zig | is_quad | is_macd | is_ema | is_boll_cross | up_days
         '''
         detail_info = hdata.get_data_from_hdata(stock_code=nowcode_new,
                 end_date=nowdate.strftime("%Y-%m-%d"),
@@ -116,7 +117,8 @@ def calculate_peach_zig_quad(nowdate):
         # if len(detail_info) == 0 or (detail_info is None):
         if len(detail_info) < 6  or (detail_info is None):
             # print('NaN: code:%s, name:%s' % (nowcode, nowname ))
-            update_list.append([nowdate.strftime("%Y-%m-%d"), nowcode_new, is_peach, is_zig, is_quad])
+            update_list.append([nowdate.strftime("%Y-%m-%d"), nowcode_new, is_peach, is_zig, is_quad,\
+                    is_macd, is_2d3pct, is_up_days])
             continue
          
         db_max_date = detail_info['record_date'][len(detail_info)-1]
@@ -361,26 +363,38 @@ def calculate_peach_zig_quad(nowdate):
 
 
         ###############################################################################################
+        #is_macd
+
+        ###############################################################################################
+        #is_2d3pct
+
+        ###############################################################################################
+        #is_up_days
+        ###############################################################################################
         
-        update_list.append([nowdate.strftime("%Y-%m-%d"), nowcode_new, is_peach, is_zig, is_quad])
+        update_list.append([nowdate.strftime("%Y-%m-%d"), nowcode_new, is_peach, is_zig, is_quad, \
+                is_macd, is_2d3pct, is_up_days])
 
         if debug:
-            print('final nowdate=%s, code:%s, name:%s,is_peach=%s, is_zig=%s,is_quad=%s'% \
-                    (nowdate.strftime("%Y-%m-%d"), nowcode, nowname, is_peach, is_zig, is_quad))
+            print('final nowdate=%s, code:%s, name:%s,is_peach=%s, is_zig=%s,is_quad=%s, \
+                    is_macd=%s, is_2d3pct=%s, is_up_days=%s'% \
+                    (nowdate.strftime("%Y-%m-%d"), nowcode, nowname, is_peach, is_zig, is_quad,\
+                    is_macd, is_2d3pct, is_up_days))
         
         if (is_peach or is_quad) and (is_zig > 0):
-            print('final real code:%s, name:%s,is_peach=%s, is_zig=%s,is_quad=%s'% \
-                    (nowcode, nowname, is_peach, is_zig, is_quad))
+            print('final real code:%s, name:%s,is_peach=%s, is_zig=%s,is_quad=%s, \
+                    is_macd=%s, is_2d3pct=%s, is_up_days=%s'% \
+                    (nowcode, nowname, is_peach, is_zig, is_quad, \
+                    is_macd, is_2d3pct, is_up_days))
         
         if debug:
             print('#############################################################################')
 
-
-
     if debug:
         print('update_list:%s'% update_list)
 
-    data_column=['record_date', 'stock_code', 'is_peach', 'is_zig', 'is_quad']
+    data_column=['record_date', 'stock_code', 'is_peach', 'is_zig', 'is_quad', \
+            'is_macd', 'is_2d3pct' ,'is_up_days']
     update_df=pd.DataFrame(update_list, columns=data_column)
     if debug:
         print(update_df)
@@ -402,6 +416,9 @@ def update_peach_zig_quad(nowdate, df, df1):
     tmp_df['is_peach'] = tmp_df1['is_peach']
     tmp_df['is_zig']   = tmp_df1['is_zig']
     tmp_df['is_quad']  = tmp_df1['is_quad']
+    tmp_df['is_macd']  = tmp_df1['is_macd']
+    tmp_df['is_2d3pct']  = tmp_df1['is_2d3pct']
+    tmp_df['is_up_days']  = tmp_df1['is_up_days']
 
     if debug:
         print(tmp_df)

@@ -29,7 +29,8 @@ xq_cols = " record_date, stock_code, open, close, high, low,\
         volume, amount, percent, chg, turnoverrate,\
         pe, pb, ps, pcf, market_capital, \
         hk_volume , hk_pct , hk_net ,\
-        is_peach , is_zig , is_quad "
+        is_peach , is_zig , is_quad ,\
+        is_macd, is_2d3pct, is_up_days "
 
 class HData_xq_day(object):
     def __init__(self,user,password):
@@ -100,7 +101,10 @@ class HData_xq_day(object):
                 hk_net float,
                 is_peach    float,
                 is_zig      float,
-                is_quad     float
+                is_quad     float,
+                is_macd float,
+                is_2d3pct float,
+                is_up_days float 
                 );
             alter table xq_d_table add primary key(stock_code,record_date);
             ''')
@@ -154,8 +158,11 @@ class HData_xq_day(object):
         pass
 
     def insert_all_stock_data(self, data):
-        #data format: record_date , stock_code , open , close , high , low  , volume ,  amount  , p_change 
-        #data format: ['timestamp', 'symbol', 'open', 'close', 'high', 'low', 'volume', 'amount', 'percent', 'chg', 'turnoverrate', 'pe', 'pb', 'ps', 'pcf', 'market_capital', 'hk_volume', 'hk_pct', 'hk_net', 'is_quad', 'is_zig', 'is_quad']
+        #data format: record_date , stock_code , open , close , high , low  , volume ,  amount  , \
+        #        p_change 
+        #data format: ['timestamp', 'symbol', 'open', 'close', 'high', 'low', 'volume', 'amount', \
+        #       'percent', 'chg', 'turnoverrate', 'pe', 'pb', 'ps', 'pcf', 'market_capital', \
+        #       'hk_volume', 'hk_pct', 'hk_net', 'is_quad', 'is_zig', 'is_quad']
         self.db_connect()
         t1=time.time()
 
