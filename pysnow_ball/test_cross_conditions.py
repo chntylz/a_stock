@@ -54,6 +54,19 @@ hdata=HData_xq_day("usr","usr")
 debug = 0
 #debug = 1
 
+def yitoujing(df, k):
+    df_len=len(df)
+    today_p = df.percent[df_len-k-1]
+    yes_p   = df.percent[df_len-k-1-1]
+    cond_1 = today_p > 0.03 and yes_p > 0.03
+    cond_2 = REF(C,k) > REF(MA(C, 21), k)
+    cond_3 = REF(MA(C, 21),k) > REF(MA(C, 21),k+1)
+    cond_4 = today_p > 0.095 and yes_p > 0.095
+    if cond_1 and cond_2 and cond_3 :
+        return True
+    else:
+        return False
+
 def calculate_peach_zig_quad(nowdate):
 
     start_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -364,26 +377,60 @@ def calculate_peach_zig_quad(nowdate):
 
         ###############################################################################################
         #is_macd
-
+        cond_1 = C > O and today_p > 0.01 and yes_p > 0
+        cond_2 = MA(C, 5) < MA(C, 21) and MA(C, 13) < MA(C, 21)  # ma5<ma13, ma13<ma21
+        cond_3 = dif[-2] - dea[-2] < 0 and dif[-1] - dea[-1] > 0 and dif[-1] < 0 # macd gold cross, and dif < 0
+        cond_4 = CROSS( REF(C, 1) , REF(MA(C, 5), 1))  or  CROSS( REF(C, 2) , REF(MA(C, 5), 2)) or  CROSS( REF(C, 3) , REF(MA(C, 5), 3)) # C cross ma5 exist in past 3 days
+        if cond_1 and cond_2 and cond_3 and cond_4:
+            is_macd = 1
+     
         ###############################################################################################
         #is_2d3pct
 
+        df_len = len(detail_info)
+
+        i = 0
+        while df_len > i:
+            if yitoujing(detail_info, i):
+                pass
+            else:
+                break;
+            i = i +1
+            
+        is_2d3pct = i       
+        if i > 1:
+                print('### %s, %s, %s, is_2d3pct=%d' %(str(nowdate), nowcode, nowname, is_2d3pct))
+            
+
         ###############################################################################################
         #is_up_days
+        for k in range(0, 6):
+            yes_c = REF(C, k+1)
+            cur_c = REF(C, k)
+            cur_o = REF(O, k)
+            if debug:
+                print(str(nowdate), nowcode, nowname, k, yes_c, cur_c, cur_o)
+
+            if (cur_c  > cur_o) and ( cur_c < yes_c * 1.09):
+                continue;
+            else:
+                break;
+        #5day up, up range is lower than 10%
+        if 5 == k and (C < REF(C, 5) * 1.1 ): 
+            draw_flag  = True
+     
         ###############################################################################################
         
         update_list.append([nowdate.strftime("%Y-%m-%d"), nowcode_new, is_peach, is_zig, is_quad, \
                 is_macd, is_2d3pct, is_up_days])
 
         if debug:
-            print('final nowdate=%s, code:%s, name:%s,is_peach=%s, is_zig=%s,is_quad=%s, \
-                    is_macd=%s, is_2d3pct=%s, is_up_days=%s'% \
+            print('final nowdate=%s, code:%s, name:%s,is_peach=%s, is_zig=%s,is_quad=%s,is_macd=%s, is_2d3pct=%s, is_up_days=%s'% \
                     (nowdate.strftime("%Y-%m-%d"), nowcode, nowname, is_peach, is_zig, is_quad,\
                     is_macd, is_2d3pct, is_up_days))
         
         if (is_peach or is_quad) and (is_zig > 0):
-            print('final real code:%s, name:%s,is_peach=%s, is_zig=%s,is_quad=%s, \
-                    is_macd=%s, is_2d3pct=%s, is_up_days=%s'% \
+            print('final real code:%s, name:%s,is_peach=%s, is_zig=%s,is_quad=%s,is_macd=%s, is_2d3pct=%s, is_up_days=%s'% \
                     (nowcode, nowname, is_peach, is_zig, is_quad, \
                     is_macd, is_2d3pct, is_up_days))
         

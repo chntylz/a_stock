@@ -42,6 +42,10 @@ def handle_raw_df(df):
     df['is_peach'] = 0
     df['is_zig'] = 0
     df['is_quad'] = 0
+    df['is_macd'] = 0
+    df['is_2d3pct'] = 0
+    df['is_up_days'] = 0
+
 
     df=df.fillna(0)
     
@@ -65,7 +69,8 @@ def handle_raw_df(df):
             'amount', 'percent', 'chg',\
             'turnoverrate', 'pe', 'pb', 'ps', 'pcf', 'market_capital', \
             'hk_volume', 'hk_pct', 'hk_net', \
-            'is_peach', 'is_zig', 'is_quad']
+            'is_peach', 'is_zig', 'is_quad', \
+            'is_macd', 'is_2d3pct', 'is_up_days']
 
     #resort conlums
     df = df[new_cols]
@@ -186,6 +191,7 @@ if __name__ == '__main__':
     else:
         print('today data')
         today_df = get_today_data()
+        today_df.to_csv('./test_today.csv', encoding='utf-8')
         hdata_day.delete_data_from_hdata(
                 start_date=datetime.datetime.now().date().strftime("%Y-%m-%d"),
                 end_date=datetime.datetime.now().date().strftime("%Y-%m-%d")
