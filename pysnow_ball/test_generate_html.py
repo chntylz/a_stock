@@ -195,16 +195,6 @@ if __name__ == '__main__':
     else:
         print('#error, html_peach_df len < 1')
 
-    #basic
-    print('start basic')
-    curr_dir=curr_day_w
-    basic_df = df[(df.is_2d3pct > 1)]
-    html_basic_df = convert_to_html_df(basic_df)
-    if len(html_basic_df):
-        generate_html(html_basic_df)
-    else:
-        print('#error, html_basic_df len < 1')
-
     #5days
     print('start 5days')
     curr_dir=curr_day_w+'-5days'
@@ -225,4 +215,16 @@ if __name__ == '__main__':
     else:
         print('#error, html_macd_df len < 1')
 
+    #basic
+    print('start basic')
+    curr_dir=curr_day_w
+    basic_df = df[(df.is_2d3pct > 1)]
+    html_basic_df = convert_to_html_df(basic_df)
+    if len(html_basic_df):
+        generate_html(html_basic_df)
+    else:
+        print('#error, html_basic_df len < 1')
+
+
+    os.system('cp -rf ' + stock_data_dir +'/' + curr_dir + '*  /var/www/html/stock_data/' )
 

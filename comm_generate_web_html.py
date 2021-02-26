@@ -676,10 +676,9 @@ def comm_handle_hsgt_data(df):
 
 def insert_industry(dict_name, key):
     if dict_name.get(key) is None :
-       dict_name.setdefault(key, 1)
+        dict_name.setdefault(key, 1)
     else:
         dict_name[key]=dict_name[key] + 1
-
     pass
 
 
@@ -893,6 +892,7 @@ def comm_generate_web_dataframe_new(input_df, curr_dir, curr_day, dict_industry)
         is_zig  =daily_df.is_zig[i]
         is_quad =daily_df.is_quad[i]
         is_peach=daily_df.is_peach[i]
+        is_2d3pct=daily_df.is_2d3pct[i]
         total_mv=daily_df.market_capital[i]
 
         industry_name = basic_df.loc[stock_code]['industry']
@@ -940,13 +940,13 @@ def comm_generate_web_dataframe_new(input_df, curr_dir, curr_day, dict_industry)
         data_list.append([new_date, stock_code, stock_name, close_p, C.value, \
                 hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, \
                 money_total, total_mv,\
-                is_peach, is_zig, is_quad,\
+                is_peach, is_zig, is_quad, is_2d3pct,\
                 zlje, zlje_3, zlje_5, zlje_10,h_chg ])
 
     data_column = ['cur_date', 'code', 'name', 'a_pct', 'close', \
             'hk_date', 'hk_share', 'hk_pct', 'hk_delta1', 'hk_deltam', 'conti_day', \
             'hk_m_total', 'total_mv',\
-            'peach', 'zig', 'quad', \
+            'peach', 'zig', 'quad', '2d3pct',\
             'zlje', 'zlje_3', 'zlje_5', 'zlje_10', 'holder_change' ]
 
     ret_df=pd.DataFrame(data_list, columns=data_column)
@@ -957,7 +957,7 @@ def comm_generate_web_dataframe_new(input_df, curr_dir, curr_day, dict_industry)
         print(ret_df)
 
     data_column = ['cur_date', 'code', 'name', 'a_pct', 'close', \
-            'peach', 'zig', 'quad',\
+            'peach', 'zig', 'quad', '2d3pct',\
             'zlje', 'zlje_3', 'zlje_5', 'zlje_10', 'holder_change',\
             'hk_date', 'hk_share', 'hk_pct', \
             'hk_delta1', 'hk_deltam', 'conti_day', \
