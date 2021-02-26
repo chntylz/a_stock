@@ -48,7 +48,7 @@ stock_data_dir="stock_data"
 curr_dir=curr_day_w+'-zig'
 
 
-def zig_continue_handle_html_body_special(newfile, date):
+def continue_handle_html_body_special(newfile, date):
     f = newfile
     curr_day = date
     with open(newfile,'a') as f:
@@ -73,7 +73,8 @@ def zig_continue_handle_html_body_special(newfile, date):
         limit_up = df[df['percent'] >= 9.70]
         limit_down = df[df['percent'] <= -9.70]
 
-        s_debug= ('<p> A股上涨个数： %d,  A股下跌个数： %d,  A股走平个数:  %d</p>' % (df_up.shape[0], df_down.shape[0], df_even.shape[0]))
+        s_debug= ('<p> A股上涨个数： %d,  A股下跌个数： %d,  A股走平个数:  %d</p>' % \
+                (df_up.shape[0], df_down.shape[0], df_even.shape[0]))
         print(s_debug)
         f.write('%s\n'%(s_debug))
 
@@ -94,7 +95,7 @@ def zig_continue_handle_html_body_special(newfile, date):
     pass
 
 
-def zig_continue_handle_html_end_special(newfile, dict_industry):
+def continue_handle_html_end_special(newfile, dict_industry):
     with open(newfile,'a') as f:
         f.write('\n')
         f.write('\n')
@@ -102,21 +103,22 @@ def zig_continue_handle_html_end_special(newfile, dict_industry):
         f.write('\n')
         f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
         f.write('\n')
-        f.write('<p>industry %s</p>\n' % (sorted(dict_industry.items(),key=lambda x:x[1],reverse=True)))
+        f.write('<p>industry %s</p>\n' % \
+                (sorted(dict_industry.items(),key=lambda x:x[1],reverse=True)))
         f.write('\n')
         f.write('<p>-----------------------------------我是分割线-----------------------------------</p>\n')
 
     pass
     
    
-def generate_zig_html(df):
+def generate_html(df):
     os.system('mkdir -p ' + stock_data_dir)
     os.system('mkdir -p ' + stock_data_dir +'/' + curr_dir)
     newfile='%s/%s'%(stock_data_dir, curr_dir + '/' + curr_dir + '.html')
     comm_handle_html_head(newfile, stock_data_dir, curr_day )
-    zig_continue_handle_html_body_special(newfile, curr_day)
+    continue_handle_html_body_special(newfile, curr_day)
     comm_handle_html_body(newfile, df)
-    zig_continue_handle_html_end_special(newfile, dict_industry)
+    continue_handle_html_end_special(newfile, dict_industry)
     comm_handle_html_end(newfile, curr_dir)
 
    
@@ -129,42 +131,21 @@ def get_current_data(date):
         print(df.head(2))
     return df
 
-
-def handle_zig_to_html(df):
+def convert_to_html_df(df):
+    dict_industry.clear()
     if len(df) < 1:
         print('#error, df data len < 1, return')
-        return
-    zig_df = df[(df.is_zig == 1) | (df.is_zig == 2) ]
-    zig_df = zig_df.reset_index(drop=True)
-    html_df = comm_generate_web_dataframe_new(zig_df, curr_day_w, curr_day, dict_industry )
-    return html_df
- 
-def handle_quad_to_html(df):
-    if len(df) < 1:
-        print('#error, df data len < 1, return')
-        return
-    quad_df = df[(df.is_quad == 1)]
-    quad_df = quad_df.reset_index(drop=True)
-    if  len(quad_df):
-        html_df = comm_generate_web_dataframe_new(quad_df, curr_day_w, curr_day, dict_industry )
+        return None
+    df = df.reset_index(drop=True)
+    if len(df):
+        html_df = comm_generate_web_dataframe_new(df, curr_day_w, curr_day, dict_industry )
+        if debug:
+            print('dict_industry:%s' % dict_industry)
     else:
         html_df = None
         print('#error, html_df data len < 1, return None')
     return html_df
  
-def handle_peach_to_html(df):
-    if len(df) < 1:
-        print('#error, df data len < 1, return')
-        return
-    peach_df = df[(df.is_peach == 1)]
-    peach_df = peach_df.reset_index(drop=True)
-    if  len(peach_df):
-        html_df = comm_generate_web_dataframe_new(peach_df, curr_day_w, curr_day, dict_industry )
-    else:
-        html_df = None
-        print('#error, html_df data len < 1, return None')
-    return html_df
-
 if __name__ == '__main__':
 
     script_name, para1 = check_input_parameter()
@@ -183,30 +164,65 @@ if __name__ == '__main__':
 
     df = get_current_data(curr_day)
 
-    '''
+    #zig
+    print('start zig')
     curr_dir=curr_day_w+'-zig'
-    html_zig_df = handle_zig_to_html(df)
+    zig_df = df[(df.is_zig == 1) | (df.is_zig == 2) ]
+    html_zig_df = convert_to_html_df(zig_df)
     if len(html_zig_df):
-        generate_zig_html(html_zig_df)
+        generate_html(html_zig_df)
     else:
         print('#error, html_zig_df len < 1')
 
+    #quad
+    print('start quad')
     curr_dir=curr_day_w+'-quad'
-    html_quad_df = handle_quad_to_html(df)
-    if len(html_zig_df):
-        generate_zig_html(html_quad_df)
+    quad_df = df[(df.is_quad == 1)]
+    html_quad_df =  convert_to_html_df(quad_df)
+    if len(html_quad_df):
+        generate_html(html_quad_df)
     else:
         print('#error, html_quad_df len < 1')
 
-    '''
 
+    #peach
+    print('start peach')
     curr_dir=curr_day_w+'-peach'
-    html_peach_df = handle_peach_to_html(df)
+    peach_df = df[(df.is_peach == 1)]
+    html_peach_df = convert_to_html_df(peach_df)
     if len(html_peach_df):
-        generate_zig_html(html_peach_df)
+        generate_html(html_peach_df)
     else:
         print('#error, html_peach_df len < 1')
 
+    #basic
+    print('start basic')
+    curr_dir=curr_day_w
+    basic_df = df[(df.is_2d3pct > 1)]
+    html_basic_df = convert_to_html_df(basic_df)
+    if len(html_basic_df):
+        generate_html(html_basic_df)
+    else:
+        print('#error, html_basic_df len < 1')
 
-    
+    #5days
+    print('start 5days')
+    curr_dir=curr_day_w+'-5days'
+    up_days_df = df[(df.is_up_days == 1)]
+    html_up_days_df = convert_to_html_df(up_days_df)
+    if len(html_up_days_df):
+        generate_html(html_up_days_df)
+    else:
+        print('#error, html_5days_df len < 1')
+
+    #macd
+    print('start macd')
+    curr_dir=curr_day_w+'-macd'
+    macd_df = df[(df.is_macd == 1)]
+    html_macd_df = convert_to_html_df(macd_df)
+    if len(html_macd_df):
+        generate_html(html_macd_df)
+    else:
+        print('#error, html_macd_df len < 1')
+
 

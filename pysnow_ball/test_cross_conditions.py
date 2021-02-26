@@ -58,10 +58,10 @@ def yitoujing(df, k):
     df_len=len(df)
     today_p = df.percent[df_len-k-1]
     yes_p   = df.percent[df_len-k-1-1]
-    cond_1 = today_p > 0.03 and yes_p > 0.03
+    cond_1 = today_p > 3 and yes_p > 3
     cond_2 = REF(C,k) > REF(MA(C, 21), k)
     cond_3 = REF(MA(C, 21),k) > REF(MA(C, 21),k+1)
-    cond_4 = today_p > 0.095 and yes_p > 0.095
+    cond_4 = today_p > 9.5 and yes_p > 9.5
     if cond_1 and cond_2 and cond_3 :
         return True
     else:
@@ -368,8 +368,8 @@ def calculate_peach_zig_quad(nowdate):
                         break
 
             if c_less_ma5 and c_less_ma60:
-               print('### %s, %s, %s' %(str(nowdate), nowcode, nowname))
                is_quad = 1
+               print('### %s, %s, %s, is_quad=%d' %(str(nowdate), nowcode, nowname, is_quad))
 
         if debug:
             print('is_quad=%s' % is_quad)
@@ -383,6 +383,7 @@ def calculate_peach_zig_quad(nowdate):
         cond_4 = CROSS( REF(C, 1) , REF(MA(C, 5), 1))  or  CROSS( REF(C, 2) , REF(MA(C, 5), 2)) or  CROSS( REF(C, 3) , REF(MA(C, 5), 3)) # C cross ma5 exist in past 3 days
         if cond_1 and cond_2 and cond_3 and cond_4:
             is_macd = 1
+            print('### %s, %s, %s, is_macd=%d' %(str(nowdate), nowcode, nowname, is_macd))
      
         ###############################################################################################
         #is_2d3pct
@@ -399,7 +400,7 @@ def calculate_peach_zig_quad(nowdate):
             
         is_2d3pct = i       
         if i > 1:
-                print('### %s, %s, %s, is_2d3pct=%d' %(str(nowdate), nowcode, nowname, is_2d3pct))
+            print('### %s, %s, %s, is_2d3pct=%d' %(str(nowdate), nowcode, nowname, is_2d3pct))
             
 
         ###############################################################################################
@@ -417,7 +418,8 @@ def calculate_peach_zig_quad(nowdate):
                 break;
         #5day up, up range is lower than 10%
         if 5 == k and (C < REF(C, 5) * 1.1 ): 
-            draw_flag  = True
+            is_up_days = 1
+            print('### %s, %s, %s, is_up_days=%d' %(str(nowdate), nowcode, nowname, is_up_days))
      
         ###############################################################################################
         
