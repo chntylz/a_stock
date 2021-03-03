@@ -273,6 +273,94 @@ def income_analysis_revenue(df):
     df_ret= df_ret.T
     return df_ret
 
+def income_analysis_gross(df):
+    y_unit=10000*10000
+    df_len=len(df)
+    # gross_ratio > 40%
+    i = 0
+    list = []
+    list.append([df.stock_name[0], 'total_revenue', 'operating_cost',\
+        'gross', 'gross_ratio', 'result'])
+    for i in range(df_len):
+        gross =  df.total_revenue_x[i] - df.operating_cost[i] 
+        gross_ratio = gross * 100 / df.total_revenue_x[i]
+        condi = gross_ratio > 40
+        list.append([df.record_date[i], df.total_revenue_x[i] / y_unit, \
+            df.operating_cost[i]/y_unit, \
+            gross / y_unit, \
+            gross_ratio, \
+            condi\
+            ])
+    df_ret = pd.DataFrame(list)
+    df_ret= df_ret.T
+    return df_ret
+
+
+
+def income_analysis_costfee(df):
+    y_unit=10000*10000
+    df_len=len(df)
+    # costfee_ratio > 40%
+    i = 0
+    list = []
+    list.append([df.stock_name[0], 'total_revenue', 'operating_cost',\
+        'gross', 'sales_fee', 'manage_fee', 'financing_expenses', 'rad_cost', 'total_fee', \
+        'costfee_p', 'gross_ratio', 'costfee_ratio', 'result'])
+    for i in range(df_len):
+        gross =  df.total_revenue_x[i] - df.operating_cost[i] 
+        gross_ratio = gross * 100 / df.total_revenue_x[i]
+        total_fee = df.sales_fee[i] + df.manage_fee[i] + df.financing_expenses[i] + df.rad_cost[i]
+        costfee_p = total_fee * 100 / df.total_revenue_x[i]
+        costfee_ratio = costfee_p * 100 / gross_ratio
+        condi = gross_ratio > 40 and costfee_ratio < 60
+        list.append([df.record_date[i], df.total_revenue_x[i] / y_unit, \
+            df.operating_cost[i]/y_unit, \
+            gross / y_unit, \
+            df.sales_fee[i] / y_unit, \
+            df.manage_fee[i]/ y_unit, \
+            df.financing_expenses[i]/ y_unit, \
+            df.rad_cost[i]/ y_unit, \
+            total_fee / y_unit, costfee_p, \
+            gross_ratio, costfee_ratio,   \
+            condi])
+    df_ret = pd.DataFrame(list)
+    df_ret= df_ret.T
+    return df_ret
+
+
+def income_analysis_costfee(df):
+    y_unit=10000*10000
+    df_len=len(df)
+    # costfee_ratio > 40%
+    i = 0
+    list = []
+    list.append([df.stock_name[0], 'total_revenue', 'operating_cost',\
+        'gross', 'sales_fee', 'manage_fee', 'financing_expenses', 'rad_cost', 'total_fee', \
+        'costfee_p', 'gross_ratio', 'costfee_ratio', 'result'])
+    for i in range(df_len):
+        gross =  df.total_revenue_x[i] - df.operating_cost[i] 
+        gross_ratio = gross * 100 / df.total_revenue_x[i]
+        total_fee = df.sales_fee[i] + df.manage_fee[i] + df.financing_expenses[i] + df.rad_cost[i]
+        costfee_p = total_fee * 100 / df.total_revenue_x[i]
+        costfee_ratio = costfee_p * 100 / gross_ratio
+        condi = gross_ratio > 40 and costfee_ratio < 60
+        list.append([df.record_date[i], df.total_revenue_x[i] / y_unit, \
+            df.operating_cost[i]/y_unit, \
+            gross / y_unit, \
+            df.sales_fee[i] / y_unit, \
+            df.manage_fee[i]/ y_unit, \
+            df.financing_expenses[i]/ y_unit, \
+            df.rad_cost[i]/ y_unit, \
+            total_fee / y_unit, costfee_p, \
+            gross_ratio, costfee_ratio,   \
+            condi])
+    df_ret = pd.DataFrame(list)
+    df_ret= df_ret.T
+    return df_ret
+
+
+
+
 def fina_data_analysis(df):
     all_df = df
     group_by_stock_code_df=all_df.groupby('stock_code')
