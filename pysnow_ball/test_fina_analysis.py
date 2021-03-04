@@ -26,70 +26,8 @@ hdata_income   = HData_xq_income("usr","usr")
 hdata_balance  = HData_xq_balance("usr","usr")
 hdata_cashflow = HData_xq_cashflow("usr","usr")
 
-df_fina     = hdata_fina.get_data_from_hdata()
-df_income   = hdata_income.get_data_from_hdata()
-df_balance  = hdata_balance.get_data_from_hdata()
-df_cashflow = hdata_cashflow.get_data_from_hdata()
 
-df_fina = df_fina.sort_values('record_date', ascending=0)
-df_fina = df_fina.reset_index(drop=True)
-
-df_income = df_income.sort_values('record_date', ascending=0)
-df_income = df_income.reset_index(drop=True)
-
-df_balance = df_balance.sort_values('record_date', ascending=0)
-df_balance = df_balance.reset_index(drop=True)
-
-df_cashflow = df_cashflow.sort_values('record_date', ascending=0)
-df_cashflow = df_cashflow.reset_index(drop=True)
-
-
-
-
-df_y_fina       = df_fina[df_fina['report_name'].str.contains('年报')]
-df_y_income     = df_income[df_income['report_name'].str.contains('年报')]
-df_y_balance    = df_balance[df_balance['report_name'].str.contains('年报')]
-df_y_cashflow   = df_cashflow[df_cashflow['report_name'].str.contains('年报')]
-
-df_y_fina.iloc[:, :5].head(1)    
-df_y_income.iloc[:, :5].head(1)   
-df_y_balance.iloc[:, :5].head(1)  
-df_y_cashflow.iloc[:, :5].head(1) 
-
-
-
-df_tmp = pd.merge(df_y_fina, df_y_income, how='outer', \
-        on=['record_date', 'stock_code', 'report_name'])
-df_tmp = pd.merge(df_tmp, df_y_balance, how='outer', \
-        on=['record_date', 'stock_code', 'report_name'])
-df = df_y_income_balance = pd.merge(df_tmp, df_y_cashflow, how='outer', \
-        on=['record_date', 'stock_code', 'report_name'])
-
-df=df.fillna(0)
-df=round(df,2)
-df['total_loan'] = 0
-df['total_loan']  = df.st_loan+ df.interest_payable \
-    + df.noncurrent_liab_due_in1y + df.lt_loan \
-    + df.bond_payable + df.lt_payable
-
-
-len(df_y_fina)
-len(df_y_income)  
-len(df_y_balance)
-len(df_y_cashflow)
-len(df_y_income_balance)
-
-df_y_fina[df_y_fina['stock_code'] == 'SZ002475']
-df_y_income[df_y_income['stock_code'] == 'SZ002475']
-df_y_balance[df_y_balance['stock_code'] == 'SZ002475']
-df_y_cashflow[df_y_cashflow['stock_code'] == 'SZ002475']
-df_y_income_balance[df_y_income_balance['stock_code'] == 'SZ002475']
-
-
-df_y_balance[df_y_balance.stock_code=='SH600519'].total_assets
-
-
-
+#1-1
 def income_analysis_assets(df):
     y_unit=10000*10000
     df_len=len(df)
@@ -101,13 +39,14 @@ def income_analysis_assets(df):
     for i in range(df_len):
         if debug:
             print('record_date=%s, i=%d, total_assets=%f, total_assets_new=%f'\
-                    %(df.record_date[i], i, df.total_assets[i]/y_unit, df.total_assets_new[i]))
+                    %(df.record_date[i], i, df.total_assets[i]/y_unit, df.total_assets_new[i] * 100))
         list.append([df.record_date[i], df.total_assets[i]/y_unit, \
-                df.total_assets_new[i], df.total_assets_new[i] >= 0.2])
+                df.total_assets_new[i] * 100 , df.total_assets_new[i] >= 0.2])
     df_ret = pd.DataFrame(list)
     df_ret= df_ret.T
     return df_ret
 
+#1-2
 def income_analysis_liab(df):
     y_unit=10000*10000
     df_len=len(df)
@@ -127,6 +66,7 @@ def income_analysis_liab(df):
     df_ret= df_ret.T
     return df_ret
 
+#1-3
 def income_analysis_loan(df):
     y_unit=10000*10000
     df_len=len(df)
@@ -154,6 +94,7 @@ def income_analysis_loan(df):
     df_ret= df_ret.T
     return df_ret
 
+#1-4
 def income_analysis_payable_receivable(df):
     y_unit=10000*10000
     df_len=len(df)
@@ -181,7 +122,7 @@ def income_analysis_payable_receivable(df):
     df_ret= df_ret.T
     return df_ret
 
-
+#1-5
 def income_analysis_fixed_assets(df):
     y_unit=10000*10000
     df_len=len(df)
@@ -206,6 +147,7 @@ def income_analysis_fixed_assets(df):
     df_ret= df_ret.T
     return df_ret
 
+#1-6
 def income_analysis_invest(df):
     y_unit=10000*10000
     df_len=len(df)
@@ -229,7 +171,7 @@ def income_analysis_invest(df):
     df_ret= df_ret.T
     return df_ret
 
-
+#1-7
 def income_analysis_roe(df):
     y_unit=10000*10000
     df_len=len(df)
@@ -241,7 +183,7 @@ def income_analysis_roe(df):
     for i in range(df_len):
         roe = df.net_profit_atsopc_x[i] * 100 / df.total_quity_atsopc[i]
         list.append([df.record_date[i], df.net_profit_atsopc_x[i]/y_unit, \
-            df.net_profit_atsopc_new_x[i], \
+            df.net_profit_atsopc_new_x[i] * 100, \
             df.total_quity_atsopc[i]/y_unit, \
             roe, \
             15 < roe and roe < 39 \
@@ -250,7 +192,7 @@ def income_analysis_roe(df):
     df_ret= df_ret.T
     return df_ret
 
-
+#2-1
 def income_analysis_revenue(df):
     y_unit=10000*10000
     df_len=len(df)
@@ -262,9 +204,9 @@ def income_analysis_revenue(df):
         'cash_received_of_sales_service', 'cash_ratio', 'result'])
     for i in range(df_len):
         cash_ratio = df.cash_received_of_sales_service[i] * 100 / df.total_revenue_x[i]
-        condi = df.total_revenue_new_x[i] > 0.10 and cash_ratio > 100
+        condi = df.total_revenue_new_x[i] * 100 > 10 and cash_ratio > 100
         list.append([df.record_date[i], df.total_revenue_x[i] / y_unit, \
-            df.total_revenue_new_x[i], \
+            df.total_revenue_new_x[i] * 100, \
             df.cash_received_of_sales_service[i]/y_unit, \
             cash_ratio, \
             condi\
@@ -273,6 +215,7 @@ def income_analysis_revenue(df):
     df_ret= df_ret.T
     return df_ret
 
+#2-2
 def income_analysis_gross(df):
     y_unit=10000*10000
     df_len=len(df)
@@ -296,7 +239,7 @@ def income_analysis_gross(df):
     return df_ret
 
 
-
+#2-3
 def income_analysis_costfee(df):
     y_unit=10000*10000
     df_len=len(df)
@@ -304,13 +247,13 @@ def income_analysis_costfee(df):
     i = 0
     list = []
     list.append([df.stock_name[0], 'total_revenue', 'operating_cost',\
-        'gross', 'sales_fee', 'manage_fee', 'financing_expenses', 'rad_cost', 'total_fee', \
+        'gross', 'sales_fee', 'manage_fee', 'financing_expenses', 'rad_cost', 'total_4fee', \
         'costfee_p', 'gross_ratio', 'costfee_ratio', 'result'])
     for i in range(df_len):
         gross =  df.total_revenue_x[i] - df.operating_cost[i] 
         gross_ratio = gross * 100 / df.total_revenue_x[i]
-        total_fee = df.sales_fee[i] + df.manage_fee[i] + df.financing_expenses[i] + df.rad_cost[i]
-        costfee_p = total_fee * 100 / df.total_revenue_x[i]
+        total_4fee = df.sales_fee[i] + df.manage_fee[i] + df.financing_expenses[i] + df.rad_cost[i]
+        costfee_p = total_4fee * 100 / df.total_revenue_x[i]
         costfee_ratio = costfee_p * 100 / gross_ratio
         condi = gross_ratio > 40 and costfee_ratio < 60
         list.append([df.record_date[i], df.total_revenue_x[i] / y_unit, \
@@ -320,48 +263,163 @@ def income_analysis_costfee(df):
             df.manage_fee[i]/ y_unit, \
             df.financing_expenses[i]/ y_unit, \
             df.rad_cost[i]/ y_unit, \
-            total_fee / y_unit, costfee_p, \
+            total_4fee / y_unit, costfee_p, \
             gross_ratio, costfee_ratio,   \
             condi])
     df_ret = pd.DataFrame(list)
     df_ret= df_ret.T
     return df_ret
 
-
-def income_analysis_costfee(df):
+#2-4
+def income_analysis_main_profit(df):
     y_unit=10000*10000
     df_len=len(df)
     # costfee_ratio > 40%
     i = 0
     list = []
     list.append([df.stock_name[0], 'total_revenue', 'operating_cost',\
-        'gross', 'sales_fee', 'manage_fee', 'financing_expenses', 'rad_cost', 'total_fee', \
-        'costfee_p', 'gross_ratio', 'costfee_ratio', 'result'])
+        'operating_taxes_and_surcharge', \
+        'sales_fee', 'manage_fee', 'financing_expenses', 'rad_cost', 'total_4fee', \
+        'total_profit', \
+        'invest_income', 'income_from_chg_in_fv', 'asset_impairment_loss', 'non_operating_income', \
+        'non_operating_payout', 'credit_impairment_loss', 'other_income', 'asset_disposal_income', \
+        'all_other_income', 'main_profit', \
+        'main_profit_of_total_revenue', 'main_profit_of_total_profit', 'result'])
     for i in range(df_len):
-        gross =  df.total_revenue_x[i] - df.operating_cost[i] 
-        gross_ratio = gross * 100 / df.total_revenue_x[i]
-        total_fee = df.sales_fee[i] + df.manage_fee[i] + df.financing_expenses[i] + df.rad_cost[i]
-        costfee_p = total_fee * 100 / df.total_revenue_x[i]
-        costfee_ratio = costfee_p * 100 / gross_ratio
-        condi = gross_ratio > 40 and costfee_ratio < 60
+        total_4fee = (df.sales_fee[i] + df.manage_fee[i] + \
+                df.financing_expenses[i] + df.rad_cost[i])
+        all_other_income = (df.invest_income[i] + df.income_from_chg_in_fv[i] - \
+                df.asset_impairment_loss[i]+df.non_operating_income[i] - \
+                df.non_operating_payout[i] - df.credit_impairment_loss[i] + \
+                df.other_income[i] + df.asset_disposal_income[i])
+        total_profit = df.profit_total_amt[i]
+        main_profit = (total_profit - all_other_income)  
+        main_profit_of_total_revenue = main_profit * 100 / df.total_revenue_x[i] 
+        main_profit_of_total_profit = main_profit * 100 / total_profit
+        condi = main_profit_of_total_profit > 80
         list.append([df.record_date[i], df.total_revenue_x[i] / y_unit, \
             df.operating_cost[i]/y_unit, \
-            gross / y_unit, \
+            df.operating_taxes_and_surcharge[i] / y_unit, \
             df.sales_fee[i] / y_unit, \
             df.manage_fee[i]/ y_unit, \
             df.financing_expenses[i]/ y_unit, \
             df.rad_cost[i]/ y_unit, \
-            total_fee / y_unit, costfee_p, \
-            gross_ratio, costfee_ratio,   \
+            total_4fee / y_unit, \
+            total_profit / y_unit, \
+            df.invest_income[i]/ y_unit, df.income_from_chg_in_fv[i]/ y_unit, \
+            df.asset_impairment_loss[i]/ y_unit, df.non_operating_income[i]/ y_unit, \
+            df.non_operating_payout[i]/ y_unit, df.credit_impairment_loss[i]/ y_unit, \
+            df.other_income[i]/ y_unit, df.asset_disposal_income[i]/ y_unit,  \
+            all_other_income/ y_unit, main_profit/ y_unit, \
+            main_profit_of_total_revenue, main_profit_of_total_profit, \
             condi])
     df_ret = pd.DataFrame(list)
     df_ret= df_ret.T
     return df_ret
 
+
+#2-5
+def income_analysis_net_profit(df):
+    y_unit=10000*10000
+    df_len=len(df)
+    # ncf_ratio > 100%
+    i = 0
+    list = []
+    list.append([df.stock_name[0], 'ncf_from_oa', 'ncf_from_oa_yoy',\
+        'net_profit', 'net_profit_of_ncf_from_oa', 'result'])
+    total_net_profit = 0
+    total_ncf_from_oa = 0
+    for i in range(df_len):
+        total_ncf_from_oa += df.ncf_from_oa[i] 
+        total_net_profit  += df.net_profit[i]
+        net_profit_of_ncf_from_oa  = df.ncf_from_oa[i]  * 100/  df.net_profit[i]
+        condi = net_profit_of_ncf_from_oa > 100 
+        list.append([df.record_date[i], \
+            df.ncf_from_oa[i]/ y_unit, \
+            df.ncf_from_oa_new[i] * 100, \
+            df.net_profit[i] / y_unit,\
+            net_profit_of_ncf_from_oa ,\
+            condi])
+    df_ret = pd.DataFrame(list)
+    df_ret= df_ret.T
+    return df_ret
+
+#3-1
+#cash flow
+
+#3-2
+def income_analysis_paid_assets(df):
+    y_unit=10000*10000
+    df_len=len(df)
+    # paid_assets_of_nc  [10% ~ 60%]
+    i = 0
+    list = []
+    list.append([df.stock_name[0], 'ncf_from_oa', 'cash_paid_for_assets',\
+        'net_cash_of_disposal_assets', 'paid_assets_of_ncf','disposal_assets_of_ncf', 'result'])
+    for i in range(df_len):
+        paid_assets_of_ncf      = df.cash_paid_for_assets[i] * 100   / df.ncf_from_oa[i]
+        disposal_assets_of_ncf  = df.net_cash_of_disposal_assets[i] * 100 / df.ncf_from_oa[i]
+        condi = paid_assets_of_ncf  > 10 and paid_assets_of_ncf < 60 
+        list.append([df.record_date[i], \
+            df.ncf_from_oa[i]/ y_unit, \
+            df.cash_paid_for_assets[i] / y_unit, \
+            df.net_cash_of_disposal_assets[i] / y_unit, \
+            paid_assets_of_ncf , \
+            disposal_assets_of_ncf, \
+            condi])
+    df_ret = pd.DataFrame(list)
+    df_ret= df_ret.T
+    return df_ret
+
+#3-3
+#bonus
+
+#3-4
+def income_analysis_ncf_of_oa_ia_fa(df):
+    y_unit=10000*10000
+    df_len=len(df)
+    # ncf_from_oa > 0
+    i = 0
+    list = []
+    list.append([df.stock_name[0], 'ncf_from_oa', 'ncf_from_ia', 'ncf_from_fa', \
+        'result'])
+    for i in range(df_len):
+        condi = df.ncf_from_oa[i] > 0 
+        list.append([df.record_date[i], \
+            df.ncf_from_oa[i]/ y_unit, \
+            df.ncf_from_ia[i]/ y_unit, \
+            df.ncf_from_fa[i]/ y_unit, \
+            condi])
+    df_ret = pd.DataFrame(list)
+    df_ret= df_ret.T
+    return df_ret
+
+
+#3-5
+def income_analysis_net_increase(df):
+    y_unit=10000*10000
+    df_len=len(df)
+    # net_increase_in_cce > 0
+    i = 0
+    list = []
+    list.append([df.stock_name[0], '现金及现金等价物净增加额', '期末现金及现金等价物余额', \
+        'result'])
+    list.append([df.stock_name[0], 'net_increase_in_cce', 'final_balance_of_cce', \
+        'result'])
+    for i in range(df_len):
+        condi = df.net_increase_in_cce[i] > 0 
+        list.append([df.record_date[i], \
+            df.net_increase_in_cce[i]/ y_unit, \
+            df.final_balance_of_cce[i]/ y_unit, \
+            condi])
+    df_ret = pd.DataFrame(list)
+    df_ret= df_ret.T
+    return df_ret
 
 
 
 def fina_data_analysis(df):
+    ret_df = pd.DataFrame()
     all_df = df
     group_by_stock_code_df=all_df.groupby('stock_code')
     for stock_code, group_df in group_by_stock_code_df:
@@ -378,16 +436,122 @@ def fina_data_analysis(df):
         pos_e=stock_name.rfind(']')
         stock_name=stock_name[pos_s+1: pos_e]
         group_df.insert(1, 'stock_name' , stock_name, allow_duplicates=False)
-        asset_pct = income_analysis_assets(group_df)
-        liab_pct  = income_analysis_liab(group_df)
-        loan_pct  = income_analysis_loan(group_df)
-        #if asset_pct and liab_pct and loan_pct:
-        #    print(stock_code_new, stock_name, asset_pct, liab_pct)
-        return group_df
+
+        ret_df = asset_df = income_analysis_assets(group_df)
+        
+        liab_df  = income_analysis_liab(group_df)
+        ret_df = pd.concat([ret_df, liab_df]) 
+
+        loan_df  = income_analysis_loan(group_df)
+        ret_df = pd.concat([ret_df, loan_df]) 
+
+        pay_recv_df = income_analysis_payable_receivable(group_df)
+        ret_df = pd.concat([ret_df, pay_recv_df]) 
+
+        fix_assets_df = income_analysis_fixed_assets(group_df)
+        ret_df = pd.concat([ret_df, fix_assets_df]) 
+
+        invest_df = income_analysis_invest(group_df)
+        ret_df = pd.concat([ret_df, invest_df]) 
+
+        roe_df = income_analysis_roe(group_df)
+        ret_df = pd.concat([ret_df, roe_df]) 
+
+        revenue_df = income_analysis_revenue(group_df)
+        ret_df = pd.concat([ret_df, revenue_df]) 
+
+        gross_df = income_analysis_gross(group_df)
+        ret_df = pd.concat([ret_df, gross_df]) 
+
+        costfee_df = income_analysis_costfee(group_df)
+        ret_df = pd.concat([ret_df, costfee_df]) 
+
+        main_profit_df = income_analysis_main_profit(group_df)
+        ret_df = pd.concat([ret_df, main_profit_df]) 
+
+        net_profit_df = income_analysis_net_profit(group_df)
+        ret_df = pd.concat([ret_df, net_profit_df]) 
+
+        paid_assets_df = income_analysis_paid_assets(group_df)
+        ret_df = pd.concat([ret_df, paid_assets_df]) 
+
+        ncf_df = income_analysis_ncf_of_oa_ia_fa(group_df)
+        ret_df = pd.concat([ret_df, ncf_df]) 
+
+        net_increase_df = income_analysis_net_increase(group_df)
+        ret_df = pd.concat([ret_df, net_increase_df]) 
+
+        return group_df, ret_df
     pass
 
+def get_data_from_fina_income_balance_cashflow():
 
-fina_data_analysis(df)
+    df_fina     = hdata_fina.get_data_from_hdata()
+    df_income   = hdata_income.get_data_from_hdata()
+    df_balance  = hdata_balance.get_data_from_hdata()
+    df_cashflow = hdata_cashflow.get_data_from_hdata()
+
+    df_fina = df_fina.sort_values('record_date', ascending=0)
+    df_fina = df_fina.reset_index(drop=True)
+
+    df_income = df_income.sort_values('record_date', ascending=0)
+    df_income = df_income.reset_index(drop=True)
+
+    df_balance = df_balance.sort_values('record_date', ascending=0)
+    df_balance = df_balance.reset_index(drop=True)
+
+    df_cashflow = df_cashflow.sort_values('record_date', ascending=0)
+    df_cashflow = df_cashflow.reset_index(drop=True)
+
+    df_y_fina       = df_fina[df_fina['report_name'].str.contains('年报')]
+    df_y_income     = df_income[df_income['report_name'].str.contains('年报')]
+    df_y_balance    = df_balance[df_balance['report_name'].str.contains('年报')]
+    df_y_cashflow   = df_cashflow[df_cashflow['report_name'].str.contains('年报')]
+
+    df_y_fina.iloc[:, :5].head(1)    
+    df_y_income.iloc[:, :5].head(1)   
+    df_y_balance.iloc[:, :5].head(1)  
+    df_y_cashflow.iloc[:, :5].head(1) 
+
+    df_tmp = pd.merge(df_y_fina, df_y_income, how='outer', \
+            on=['record_date', 'stock_code', 'report_name'])
+    df_tmp = pd.merge(df_tmp, df_y_balance, how='outer', \
+            on=['record_date', 'stock_code', 'report_name'])
+    df = df_y_income_balance = pd.merge(df_tmp, df_y_cashflow, how='outer', \
+            on=['record_date', 'stock_code', 'report_name'])
+
+    df=df.fillna(0)
+    df=round(df,2)
+    df['total_loan'] = 0
+    df['total_loan']  = df.st_loan+ df.interest_payable \
+        + df.noncurrent_liab_due_in1y + df.lt_loan \
+        + df.bond_payable + df.lt_payable
+
+
+    '''
+    len(df_y_fina)
+    len(df_y_income)  
+    len(df_y_balance)
+    len(df_y_cashflow)
+    len(df_y_income_balance)
+
+    df_y_fina[df_y_fina['stock_code'] == 'SZ002475']
+    df_y_income[df_y_income['stock_code'] == 'SZ002475']
+    df_y_balance[df_y_balance['stock_code'] == 'SZ002475']
+    df_y_cashflow[df_y_cashflow['stock_code'] == 'SZ002475']
+    df_y_income_balance[df_y_income_balance['stock_code'] == 'SZ002475']
+
+    df_y_balance[df_y_balance.stock_code=='SH600519'].total_assets
+    '''
+
+    return df
+
+
+
+if __name__ == '__main__':
+
+    df =  get_data_from_fina_income_balance_cashflow()
+    group_df, target_df = fina_data_analysis(df)
 
 
 
