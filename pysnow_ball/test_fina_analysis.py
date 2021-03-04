@@ -35,7 +35,10 @@ def income_analysis_assets(df):
     #total_assets_new
     i = 0
     list = []
+    list.append([df.stock_name[0], '总资产', '总资产增长率', 'result'])
+    '''
     list.append([df.stock_name[0], 'total_assets', 'total_assets_pct', 'result'])
+    '''
     for i in range(df_len):
         if debug:
             print('record_date=%s, i=%d, total_assets=%f, total_assets_new=%f'\
@@ -54,7 +57,10 @@ def income_analysis_liab(df):
     #asset_liab_ratio_x
     i = 0
     list = []
+    list.append([df.stock_name[0], '总资产', '总负债', '资产负债率', 'result'])
+    '''
     list.append([df.stock_name[0], 'total_assets', 'total_liab', 'asset_liab_ratio_x', 'result'])
+    '''
     for i in range(df_len):
         if debug:
             print('record_date=%s, i=%d, total_assets=%f, total_liab=%f, asset_liab_ratio_x=%f, '\
@@ -74,9 +80,14 @@ def income_analysis_loan(df):
     #fuzhai vs zichan
     i = 0
     list = []
+    list.append([df.stock_name[0], '货币资金', '短期借款', \
+                '应付利息', '一年内到期的非流动负债', \
+                '长期借款', '应付债券', '长期应付款', '有息负债总额','result'])
+    '''
     list.append([df.stock_name[0], 'currency_funds', 'st_loan', \
                 'interest_payable', 'noncurrent_liab_due_in1y', \
                 'lt_loan', 'bond_payable', 'lt_payable', 'total_loan','result'])
+    '''
     for i in range(df_len):
         if debug:
             print('record_date=%s, i=%d, currency_funds=%f, st_loan=%f, interest_payable=%f, \
@@ -102,21 +113,31 @@ def income_analysis_payable_receivable(df):
     # yingfuyushou vs yingshouyufu
     i = 0
     list = []
+    list.append([df.stock_name[0], '总资产', '应付票据', '应付账款', \
+            '预收款项', '应付预收合计',\
+            '应收票据', '应收账款', '预付款项', '应收预付合计', \
+            '应付预收 - 应收预付', '应收账款/总资产', 'result'\
+            ])
+    ''' 
     list.append([df.stock_name[0], 'total_assets', 'bill_payable', 'accounts_payable', \
             'pre_receivable', 'total_payable',\
             'bills_receivable', 'account_receivable', 'pre_payment', 'total_receivable', \
-            'payable-receivable', 'reveivable/total_assets'\
+            'payable-receivable', 'reveivable/total_assets', 'result'\
             ])
+    ''' 
     for i in range(df_len):
         total_payable =  df.bill_payable[i] + df.accounts_payable[i] + df.pre_receivable[i]
         total_receivable = df.bills_receivable[i] + df.account_receivable[i] + df.pre_payment[i]
+        recv_of_total_assets =  total_receivable / df.total_assets[i] * 100 
         list.append([df.record_date[i], \
             df.total_assets[i]/y_unit, df.bill_payable[i]/y_unit, df.accounts_payable[i]/y_unit,\
             df.pre_receivable[i]/y_unit, total_payable/y_unit, \
             df.bills_receivable[i]/y_unit,df.account_receivable[i]/y_unit,df.pre_payment[i]/y_unit,\
             total_receivable/y_unit,\
             (total_payable - total_receivable)/y_unit,\
-            total_receivable / df.total_assets[i] * 100 \
+            total_receivable / df.total_assets[i] * 100 ,\
+            recv_of_total_assets < 20
+
             ])
     df_ret = pd.DataFrame(list)
     df_ret= df_ret.T
@@ -130,9 +151,14 @@ def income_analysis_fixed_assets(df):
     #
     i = 0
     list = []
+    list.append([df.stock_name[0],'固定资产', '在建工程',\
+        '工程物资', '固定资产合计', '总资产', \
+        '固定资产/总资产', 'result'])
+    '''
     list.append([df.stock_name[0],'fixed_asset_sum', 'construction_in_process_sum',\
         'project_goods_and_material', 'total_fixed', 'total_assets', \
         'total_fixed/total_assets', 'result'])
+    '''
     for i in range(df_len):
         total_fixed = df.fixed_asset_sum[i] + df.construction_in_process_sum[i] \
             + df.project_goods_and_material[i]
@@ -154,9 +180,14 @@ def income_analysis_invest(df):
     #invest ratio  < 10%
     i = 0
     list = []
+    list.append([df.stock_name[0],'以公允价值计量的资产', '可供出售的金融资产',\
+        '长期股权投资', '投资性房地产', '总投资', '总资产', \
+        '与主业无关的投资类资产占比', 'result'])
+    '''
     list.append([df.stock_name[0],'tradable_fnncl_assets', 'saleable_finacial_assets',\
         'lt_equity_invest', 'invest_property', 'total_invest', 'total_assets', \
         'total_fixed/total_assets', 'result'])
+    '''
     for i in range(df_len):
         total_invest = df.tradable_fnncl_assets[i] + df.saleable_finacial_assets[i] \
             + df.lt_equity_invest[i] + df.invest_property[i]
@@ -178,8 +209,12 @@ def income_analysis_roe(df):
     # 15% < roe  < 39%
     i = 0
     list = []
+    list.append([df.stock_name[0], '归母净利润', '归母净利润增长率',\
+        '归属母公司股东权益合计', '净资产收益率', 'result'])
+    '''
     list.append([df.stock_name[0], 'net_profit_atsopc_x', 'net_profit_atsopc_new_x',\
         'total_quity_atsopc', 'roe', 'result'])
+    '''
     for i in range(df_len):
         roe = df.net_profit_atsopc_x[i] * 100 / df.total_quity_atsopc[i]
         list.append([df.record_date[i], df.net_profit_atsopc_x[i]/y_unit, \
@@ -200,8 +235,12 @@ def income_analysis_revenue(df):
     # (cash_ratio = cash / revenue) > 100%
     i = 0
     list = []
+    list.append([df.stock_name[0], '营业收入', '营业收入增长率',\
+        '销售商品、提供劳务收到的现金', '现金占比', 'result'])
+    '''
     list.append([df.stock_name[0], 'total_revenue', 'total_revenue_yoy',\
         'cash_received_of_sales_service', 'cash_ratio', 'result'])
+    '''
     for i in range(df_len):
         cash_ratio = df.cash_received_of_sales_service[i] * 100 / df.total_revenue_x[i]
         condi = df.total_revenue_new_x[i] * 100 > 10 and cash_ratio > 100
@@ -222,8 +261,12 @@ def income_analysis_gross(df):
     # gross_ratio > 40%
     i = 0
     list = []
+    list.append([df.stock_name[0], '营业收入', '营业成本',\
+        '毛利', '毛利率', 'result'])
+    '''
     list.append([df.stock_name[0], 'total_revenue', 'operating_cost',\
         'gross', 'gross_ratio', 'result'])
+    '''
     for i in range(df_len):
         gross =  df.total_revenue_x[i] - df.operating_cost[i] 
         gross_ratio = gross * 100 / df.total_revenue_x[i]
@@ -246,9 +289,14 @@ def income_analysis_costfee(df):
     # costfee_ratio > 40%
     i = 0
     list = []
+    list.append([df.stock_name[0], '营业收入', '营业成本',\
+        '毛利', '销售费用', '管理费用', '财务费用', '研发费用', '四费合计', \
+        '费用率', '毛利率', '费用率/毛利率', 'result'])
+    '''
     list.append([df.stock_name[0], 'total_revenue', 'operating_cost',\
         'gross', 'sales_fee', 'manage_fee', 'financing_expenses', 'rad_cost', 'total_4fee', \
         'costfee_p', 'gross_ratio', 'costfee_ratio', 'result'])
+    '''
     for i in range(df_len):
         gross =  df.total_revenue_x[i] - df.operating_cost[i] 
         gross_ratio = gross * 100 / df.total_revenue_x[i]
@@ -277,6 +325,16 @@ def income_analysis_main_profit(df):
     # costfee_ratio > 40%
     i = 0
     list = []
+    list.append([df.stock_name[0], '营业收入', '营业成本',\
+        '营业税金及附加', \
+        '销售费用', '管理费用', '财务费用', '研发费用', '四费合计', \
+        '利润总额', \
+        '投资收益', '公允价值变动损益', '资产减值', '营业外收入', \
+        '营业外支出', '信用减值损失', '其他收益', '资产处置收益', \
+        '所有其他收益', '主营利润', \
+        '主营利润率', '主营利润/利润总额', 'result'])
+ 
+    '''
     list.append([df.stock_name[0], 'total_revenue', 'operating_cost',\
         'operating_taxes_and_surcharge', \
         'sales_fee', 'manage_fee', 'financing_expenses', 'rad_cost', 'total_4fee', \
@@ -285,6 +343,7 @@ def income_analysis_main_profit(df):
         'non_operating_payout', 'credit_impairment_loss', 'other_income', 'asset_disposal_income', \
         'all_other_income', 'main_profit', \
         'main_profit_of_total_revenue', 'main_profit_of_total_profit', 'result'])
+    '''
     for i in range(df_len):
         total_4fee = (df.sales_fee[i] + df.manage_fee[i] + \
                 df.financing_expenses[i] + df.rad_cost[i])
@@ -325,8 +384,12 @@ def income_analysis_net_profit(df):
     # ncf_ratio > 100%
     i = 0
     list = []
+    list.append([df.stock_name[0], '经营活动产生的现金流量净额', '经营活动产生的现金流量净额增长率',\
+        '净利润', '净利润现金比率', 'result'])
+    '''
     list.append([df.stock_name[0], 'ncf_from_oa', 'ncf_from_oa_yoy',\
         'net_profit', 'net_profit_of_ncf_from_oa', 'result'])
+    '''
     total_net_profit = 0
     total_ncf_from_oa = 0
     for i in range(df_len):
@@ -354,8 +417,15 @@ def income_analysis_paid_assets(df):
     # paid_assets_of_nc  [10% ~ 60%]
     i = 0
     list = []
+    list.append([df.stock_name[0], '经营活动产生的现金流量净额',\
+            '购建固定资产、无形资产和其他长期资产支付的现金',\
+            '处置固定资产、无形资产和其他长期资产收回的现金净额', \
+            '购建固定资产、无形资产和其他长期资产支付的现金占比', \
+            '处置固定资产、无形资产和其他长期资产收回的现金净额占比', 'result'])
+    '''
     list.append([df.stock_name[0], 'ncf_from_oa', 'cash_paid_for_assets',\
         'net_cash_of_disposal_assets', 'paid_assets_of_ncf','disposal_assets_of_ncf', 'result'])
+    '''
     for i in range(df_len):
         paid_assets_of_ncf      = df.cash_paid_for_assets[i] * 100   / df.ncf_from_oa[i]
         disposal_assets_of_ncf  = df.net_cash_of_disposal_assets[i] * 100 / df.ncf_from_oa[i]
@@ -381,8 +451,11 @@ def income_analysis_ncf_of_oa_ia_fa(df):
     # ncf_from_oa > 0
     i = 0
     list = []
-    list.append([df.stock_name[0], 'ncf_from_oa', 'ncf_from_ia', 'ncf_from_fa', \
+    list.append([df.stock_name[0], '经营活动产生的现金流量净额', \
+        '投资活动产生的现金流量净额', '筹资活动现金流量净额', \
         'result'])
+    #list.append([df.stock_name[0], 'ncf_from_oa', 'ncf_from_ia', 'ncf_from_fa', \
+    #    'result'])
     for i in range(df_len):
         condi = df.ncf_from_oa[i] > 0 
         list.append([df.record_date[i], \
@@ -404,8 +477,8 @@ def income_analysis_net_increase(df):
     list = []
     list.append([df.stock_name[0], '现金及现金等价物净增加额', '期末现金及现金等价物余额', \
         'result'])
-    list.append([df.stock_name[0], 'net_increase_in_cce', 'final_balance_of_cce', \
-        'result'])
+    #list.append([df.stock_name[0], 'net_increase_in_cce', 'final_balance_of_cce', \
+    #    'result'])
     for i in range(df_len):
         condi = df.net_increase_in_cce[i] > 0 
         list.append([df.record_date[i], \
@@ -419,12 +492,14 @@ def income_analysis_net_increase(df):
 
 
 def fina_data_analysis(df):
-    ret_df = pd.DataFrame()
     all_df = df
     group_by_stock_code_df=all_df.groupby('stock_code')
     for stock_code, group_df in group_by_stock_code_df:
+        ret_df = pd.DataFrame()
+        '''
         if stock_code != 'SZ002475':
             continue
+        '''
         group_df = group_df.reset_index(drop=True)
         if debug:
             print(stock_code)
@@ -481,7 +556,7 @@ def fina_data_analysis(df):
         net_increase_df = income_analysis_net_increase(group_df)
         ret_df = pd.concat([ret_df, net_increase_df]) 
 
-        return group_df, ret_df
+        ret_df.to_csv('./csv_data/' + stock_code + '_' + stock_name + '.csv', encoding='gbk')
     pass
 
 def get_data_from_fina_income_balance_cashflow():
