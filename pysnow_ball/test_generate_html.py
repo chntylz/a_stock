@@ -215,6 +215,17 @@ if __name__ == '__main__':
     else:
         print('#error, html_macd_df len < 1')
 
+
+    #cup_tea
+    print('start cup_tea')
+    curr_dir=curr_day_w+'-cuptea'
+    cuptea_df = df[(df.is_cup_tea == 1)]
+    html_cuptea_df = convert_to_html_df(cuptea_df)
+    if len(html_cuptea_df):
+        generate_html(html_cuptea_df)
+    else:
+        print('#error, html_cuptea_df len < 1')
+
     #basic
     print('start basic')
     curr_dir=curr_day_w

@@ -842,10 +842,10 @@ def comm_generate_web_dataframe(curr_dir, images, curr_day, dict_industry):
 
 def comm_generate_web_dataframe_new(input_df, curr_dir, curr_day, dict_industry):
     
-    shell_cmd = 'mkdir -p ' + curr_dir
+    shell_cmd = 'mkdir -p stock_data/' + curr_dir
     os.system(shell_cmd)
 
-    txt_file = curr_dir + '/' + curr_day +'.txt'
+    txt_file = 'stock_data/' + curr_dir + '/' + curr_day +'.txt'
     
     with open(txt_file,'w') as f:
         f.write('\n')
@@ -893,6 +893,7 @@ def comm_generate_web_dataframe_new(input_df, curr_dir, curr_day, dict_industry)
         is_quad =daily_df.is_quad[i]
         is_peach=daily_df.is_peach[i]
         is_2d3pct=daily_df.is_2d3pct[i]
+        is_cup_tea=daily_df.is_cup_tea[i]
         total_mv=daily_df.market_capital[i]
 
         industry_name = basic_df.loc[stock_code]['industry']
@@ -940,13 +941,13 @@ def comm_generate_web_dataframe_new(input_df, curr_dir, curr_day, dict_industry)
         data_list.append([new_date, stock_code, stock_name, close_p, C.value, \
                 hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, \
                 money_total, total_mv,\
-                is_peach, is_zig, is_quad, is_2d3pct,\
+                is_peach, is_zig, is_quad, is_2d3pct, is_cup_tea,\
                 zlje, zlje_3, zlje_5, zlje_10,h_chg ])
 
     data_column = ['cur_date', 'code', 'name', 'a_pct', 'close', \
             'hk_date', 'hk_share', 'hk_pct', 'hk_delta1', 'hk_deltam', 'conti_day', \
             'hk_m_total', 'total_mv',\
-            'peach', 'zig', 'quad', '2d3pct',\
+            'peach', 'zig', 'quad', '2d3pct', 'cup_tea',\
             'zlje', 'zlje_3', 'zlje_5', 'zlje_10', 'holder_change' ]
 
     ret_df=pd.DataFrame(data_list, columns=data_column)
@@ -957,7 +958,7 @@ def comm_generate_web_dataframe_new(input_df, curr_dir, curr_day, dict_industry)
         print(ret_df)
 
     data_column = ['cur_date', 'code', 'name', 'a_pct', 'close', \
-            'peach', 'zig', 'quad', '2d3pct',\
+            'peach', 'zig', 'quad', '2d3pct', 'cup_tea', \
             'zlje', 'zlje_3', 'zlje_5', 'zlje_10', 'holder_change',\
             'hk_date', 'hk_share', 'hk_pct', \
             'hk_delta1', 'hk_deltam', 'conti_day', \

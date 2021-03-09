@@ -90,7 +90,8 @@ def calculate_peach_zig_quad(nowdate):
         is_macd = 0
         is_ema = 0
         is_2d3pct  = 0
-        is_up_days  = 0
+        is_up_days = 0
+        is_cup_tea = 0 
 
         nowcode=codestock_local[i][0]
         nowname=codestock_local[i][1]
@@ -114,6 +115,10 @@ def calculate_peach_zig_quad(nowdate):
         else:
             pass
 
+
+        #if '2658' not in  nowcode:
+        #    continue
+        #print("code:%s, name:%s" % (nowcode, nowname ))
 
         '''
         #database table item list
@@ -157,6 +162,59 @@ def calculate_peach_zig_quad(nowdate):
         S(nowcode)
         # print(str(nowdate), nowcode, nowname, O, H, L, C)
 
+        ##############################################################################
+        #is_cup_tea 
+
+        in_day = 30
+        #第一次最高价： 30个交易日的最高价
+        p_hi_in_day = HHV(REF(H, 1), in_day)    
+
+        #第一次最低价： 30个交易日的最低价
+        p_lo_in_day = LLV(REF(L, 1), in_day)    
+
+        #跌幅不能大于40%
+        cond_1 =  p_lo_in_day >= 0.6 * p_hi_in_day  
+
+        #出现第一次最高价 距离当前的天数
+        days_from_last_hi = BARSLAST(REF(H, 1) == p_hi_in_day.value )        
+
+        #出现第一次最低价 距离当前的天数
+        days_from_last_lo = BARSLAST(REF(L, 1) == p_lo_in_day.value)          
+
+        #print(p_hi_in_day, p_lo_in_day , days_from_last_hi, days_from_last_lo)
+        if days_from_last_lo.value > 1:
+            #第二次最高价：第一次最低价以来的最高价(当天除外)
+            p_hi_in_day_2 = HHV(REF(H, 1), days_from_last_lo.value -1)     
+           
+            #昨天（前一天，排除当天突破，即为所找）等于最高价距离当天的天数
+            days_from_hi_in_day_2 = BARSLAST(REF(H, 1)== p_hi_in_day_2.value )      
+
+            if days_from_hi_in_day_2.value > 2:
+                loop = 1
+                cond_2 = True
+                while loop < days_from_hi_in_day_2.value:
+                    if REF(C, loop) > REF(MA(C, 10), loop):
+                        pass
+                    else:
+                        cond_2 = False
+                        break
+                    loop += 1
+                
+                #第二次最低价：第二次最高价以来的最低价
+                p_lo_in_day_2 = LLV(REF(L, 1), days_from_hi_in_day_2.value-1)   
+
+                cond_3 = p_hi_in_day_2 > 0.8 * p_hi_in_day  
+                
+                if cond_1 and cond_2 and cond_3 and (C > p_hi_in_day_2):
+                    is_cup_tea = 1
+                    print(p_hi_in_day, p_lo_in_day , days_from_last_hi, days_from_last_lo)
+                    print(p_hi_in_day_2, p_lo_in_day_2 , days_from_hi_in_day_2)
+                    print(cond_1, cond_2, cond_3,  C > p_hi_in_day_2)
+                    print('### %s, %s, %s, is_cup_tea=%d' %(str(nowdate), nowcode, nowname, is_cup_tea))
+
+
+
+        ##############################################################################
         # dif: 12， 与26日的差别
         # dea:dif的9日以移动平均线
         # 计算MACD指标
@@ -424,17 +482,17 @@ def calculate_peach_zig_quad(nowdate):
         ###############################################################################################
         
         update_list.append([nowdate.strftime("%Y-%m-%d"), nowcode_new, is_peach, is_zig, is_quad, \
-                is_macd, is_2d3pct, is_up_days])
+                is_macd, is_2d3pct, is_up_days, is_cup_tea ])
 
         if debug:
-            print('final nowdate=%s, code:%s, name:%s,is_peach=%s, is_zig=%s,is_quad=%s,is_macd=%s, is_2d3pct=%s, is_up_days=%s'% \
+            print('final nowdate=%s, code:%s, name:%s,is_peach=%s, is_zig=%s,is_quad=%s,is_macd=%s, is_2d3pct=%s, is_up_days=%s, is_cup_tea=%s '% \
                     (nowdate.strftime("%Y-%m-%d"), nowcode, nowname, is_peach, is_zig, is_quad,\
-                    is_macd, is_2d3pct, is_up_days))
+                    is_macd, is_2d3pct, is_up_days, is_cup_tea ))
         
         if (is_peach or is_quad) and (is_zig > 0):
-            print('final real code:%s, name:%s,is_peach=%s, is_zig=%s,is_quad=%s,is_macd=%s, is_2d3pct=%s, is_up_days=%s'% \
+            print('final real code:%s, name:%s,is_peach=%s, is_zig=%s,is_quad=%s,is_macd=%s, is_2d3pct=%s, is_up_days=%s, is_cup_tea=%s '% \
                     (nowcode, nowname, is_peach, is_zig, is_quad, \
-                    is_macd, is_2d3pct, is_up_days))
+                    is_macd, is_2d3pct, is_up_days, is_cup_tea))
         
         if debug:
             print('#############################################################################')
@@ -443,7 +501,7 @@ def calculate_peach_zig_quad(nowdate):
         print('update_list:%s'% update_list)
 
     data_column=['record_date', 'stock_code', 'is_peach', 'is_zig', 'is_quad', \
-            'is_macd', 'is_2d3pct' ,'is_up_days']
+            'is_macd', 'is_2d3pct' ,'is_up_days', 'is_cup_tea']
     update_df=pd.DataFrame(update_list, columns=data_column)
     if debug:
         print(update_df)
@@ -468,6 +526,7 @@ def update_peach_zig_quad(nowdate, df, df1):
     tmp_df['is_macd']  = tmp_df1['is_macd']
     tmp_df['is_2d3pct']  = tmp_df1['is_2d3pct']
     tmp_df['is_up_days']  = tmp_df1['is_up_days']
+    tmp_df['is_cup_tea']  = tmp_df1['is_cup_tea']
 
     if debug:
         print(tmp_df)
@@ -498,6 +557,7 @@ if __name__ == '__main__':
             end_date=nowdate.strftime("%Y-%m-%d")\
             )
     update_peach_zig_quad(nowdate, nowdate_df, handle_df) 
+
 
     t2 = time.time()
 

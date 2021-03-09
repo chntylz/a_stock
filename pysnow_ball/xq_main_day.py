@@ -45,6 +45,7 @@ def handle_raw_df(df):
     df['is_macd'] = 0
     df['is_2d3pct'] = 0
     df['is_up_days'] = 0
+    df['is_cup_tea'] = 0
 
 
     df=df.fillna(0)
@@ -70,7 +71,7 @@ def handle_raw_df(df):
             'turnoverrate', 'pe', 'pb', 'ps', 'pcf', 'market_capital', \
             'hk_volume', 'hk_pct', 'hk_net', \
             'is_peach', 'is_zig', 'is_quad', \
-            'is_macd', 'is_2d3pct', 'is_up_days']
+            'is_macd', 'is_2d3pct', 'is_up_days', 'is_cup_tea']
 
     #resort conlums
     df = df[new_cols]
