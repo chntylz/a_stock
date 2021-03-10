@@ -21,7 +21,7 @@ import pysnowball as ball
 
 debug=0
 #debug=1
-
+para1 = 0
 
 hdata_day=HData_xq_day("usr","usr")
 
@@ -128,6 +128,11 @@ def get_all_his_data():
     codestock_local=get_stock_list()
     length=len(codestock_local)
     tt_1 = time.time()
+
+    if int(para1):
+        nowdate=datetime.datetime.now().date()
+        nowdate=nowdate-datetime.timedelta(int(para1))
+
     for i in range(0,length):
         nowcode=codestock_local[i][0]
         if nowcode[0:1] == '6':
@@ -138,8 +143,12 @@ def get_all_his_data():
         df = get_his_data(stock_code_new, 10000)
         #add stock_code
         df['symbol'] = stock_code_new
-
+         
         df = handle_raw_df(df)
+        
+        if int(para1):
+            #print("nowdate is %s"%(nowdate.strftime("%Y-%m-%d")))
+            df=df[df.timestamp == nowdate.strftime("%Y-%m-%d")]
 
         #insert database
         #todo

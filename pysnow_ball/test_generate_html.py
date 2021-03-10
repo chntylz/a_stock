@@ -219,7 +219,7 @@ if __name__ == '__main__':
     #cup_tea
     print('start cup_tea')
     curr_dir=curr_day_w+'-cuptea'
-    cuptea_df = df[(df.is_cup_tea == 1)]
+    cuptea_df = df[(df.is_cup_tea == 1) & (df.is_zig > 0)]
     html_cuptea_df = convert_to_html_df(cuptea_df)
     if len(html_cuptea_df):
         generate_html(html_cuptea_df)
