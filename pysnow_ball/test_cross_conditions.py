@@ -577,11 +577,12 @@ if __name__ == '__main__':
 
     handle_df = calculate_peach_zig_quad(nowdate)
 
-    nowdate_df = hdata.get_data_from_hdata(\
-            start_date=nowdate.strftime("%Y-%m-%d"), \
-            end_date=nowdate.strftime("%Y-%m-%d")\
-            )
-    update_peach_zig_quad(nowdate, nowdate_df, handle_df) 
+    if len(handle_df) > 3000:
+        nowdate_df = hdata.get_data_from_hdata(\
+                start_date=nowdate.strftime("%Y-%m-%d"), \
+                end_date=nowdate.strftime("%Y-%m-%d")\
+                )
+        update_peach_zig_quad(nowdate, nowdate_df, handle_df) 
 
     t2 = time.time()
 
