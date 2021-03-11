@@ -116,9 +116,10 @@ def calculate_peach_zig_quad(nowdate):
             pass
 
 
-        #if '2658' not in  nowcode:
-        #    continue
-        #print("code:%s, name:%s" % (nowcode, nowname ))
+        if 0:
+            if '0744' not in  nowcode:
+                continue
+            print("code:%s, name:%s" % (nowcode, nowname ))
 
         '''
         #database table item list
@@ -183,11 +184,11 @@ def calculate_peach_zig_quad(nowdate):
         #     **L1** 
 
         #BOLL UP 变大
-        cond_0 = 0
-        if len(upperband) > 2:
-            if upperband[-1] >= upperband[-2]:
-                cond_0 = 1
 
+        cond_1 = cond_2 = cond_3 = cond_4 =cond_5 = False
+        H2 = L2 = H2_days= H2_date= L2_days= L2_date = 0
+        max_botton_days = 0
+        
         in_day = 30
         #第一次最高价： 30个交易日的最高价
         H1 = HHV(REF(H, 1), in_day)    
@@ -196,7 +197,7 @@ def calculate_peach_zig_quad(nowdate):
         L1 = LLV(REF(C, 1), in_day)    
 
         #跌幅不能大于40%
-        cond_1 =  L1 >= 0.6 * H1  
+        cond_1 =  L1 >= 0.4 * H1  
 
         #出现第一次最高价 距离当前的天数
         H1_days = BARSLAST(REF(H, 1) == H1.value )        
@@ -207,22 +208,76 @@ def calculate_peach_zig_quad(nowdate):
         L1_date = detail_info.record_date[df_len-1-L1_days.value-1]
 
         #print(H1, L1 , H1_days, L1_days)
-        if L1_days.value > 1 and H1_days > L1_days.value:
+        if L1_days.value > 1 and H1_days.value > L1_days.value:
             #第二次最高价：第一次最低价以来的最高价(当天除外)
             H2 = HHV(REF(H, 1), L1_days.value -1)     
+            cond_2 = H2 > 0.8 * H1  
            
             #第二次最高价距离昨天的天数
             H2_days = BARSLAST(REF(H, 1)== H2.value )      
             H2_date = detail_info.record_date[df_len-1-H2_days.value-1]
 
-            if H2_days.value > 2 and L1_days.value > H2_days.value:
+            #计算底部横盘天数，涨跌幅不能超过2%
+            def get_max_days_by_pct():
+                N = 1
+                target = 0
+                while 1:
+                    #N天内，涨跌幅不能超过2%
+                    if debug:
+                        print('%s: delta_p=%s in %s' % (DATETIME, (HHV(C,N)-LLV(C,N))/LLV(C,N), N))
+                    #if (HHV(C,N)-LLV(C,N))/LLV(C,N) < 0.2 and N < 30:
+                    if EXIST(((C-REF(C,1))/C) < -0.02 , N) or  \
+                            EXIST(((C-REF(C,1))/C) >  0.02 , N) or \
+                            N > 3:
+                        break
+                    else:
+                        target = max(target, N)
+                    N += 1
+                if debug:
+                    print('target=%s, N=%s' % (target, N))
+                return target
+
+            K = 0
+            max_botton_days = 1
+            while (cond_1 and cond_2):
+                #locate to L1_date
+                L1_cur_date=datetime.datetime.strptime(L1_date,'%Y-%m-%d')
+                H2_cur_date=datetime.datetime.strptime(H2_date,'%Y-%m-%d')
+                cur_date_new=L1_cur_date+datetime.timedelta(int(K))
+                if debug:
+                    print('L1_cur_date=%s, H2_cur_date=%s, cur_date_new=%s, K=%s' %\
+                            (L1_cur_date.strftime('%Y%m%d'), \
+                            H2_cur_date.strftime('%Y%m%d'), \
+                            cur_date_new.strftime('%Y%m%d'), \
+                            K))
+                if H2_cur_date <= cur_date_new or K > 3:
+                    #funcat call, reset to original date
+                    T(str(nowdate))
+                    break
+
+                T((cur_date_new.strftime('%Y%m%d')))
+
+                max_botton_days = max(max_botton_days , get_max_days_by_pct())
+                if debug:
+                    print(max_botton_days, K) 
+                K +=1
+
+            #底部至少2天
+            cond_3 = max_botton_days >= 2 
+
+            if debug:
+                print('->1')
+            if H2_days.value > 1 and L1_days.value > H2_days.value:
+                if debug:
+                    print('->2')
                 loop = 1
-                cond_2 = True
-                while loop < H2_days.value:
+                cond_4 = True
+                #H2 -> C 之间， C > MA(C, 10)
+                while loop < H2_days.value and cond_3:
                     if REF(C, loop) > REF(MA(C, 10), loop):
                         pass
                     else:
-                        cond_2 = False
+                        cond_4 = False
                         break
                     loop += 1
                 
@@ -230,24 +285,25 @@ def calculate_peach_zig_quad(nowdate):
                 L2 = LLV(REF(L, 1), H2_days.value-1)   
                 L2_days = BARSLAST(REF(L, 1) == L2.value)          
                 L2_date = detail_info.record_date[df_len-1-L2_days.value-1]
-
-                cond_3 = H2 > 0.8 * H1  
                 
-                #突破前一天的ma5 > ma30
-                MA5=MA(C,5)
-                MA30=MA(C,30)
-                cond_4 = REF(MA5,1)> REF(MA30,1)
+                if debug:
+                    print(L2, L2_days, L2_date)
+                
+        #突破: 收盘价 > 杯柄的最高价
+        cond_5 = C > H2
 
-                #突破: 收盘价 > 杯柄的最高价
-                cond_5 = C > H2
-
-                if (cond_0 and cond_1 and cond_2 and cond_3 and cond_4 and cond_5):
-                    is_cup_tea = 1
-                    print(H1, L1 , H1_days, H1_date, L1_days, L1_date)
-                    print(H2, L2 , H2_days, H2_date, L2_days, L2_date)
-                    print(cond_0, cond_1, cond_2, cond_3, cond_4, cond_5)
-                    print('### %s, %s, %s, is_cup_tea=%d' %(str(nowdate), nowcode, nowname, is_cup_tea))
-
+        if (cond_1 and cond_2 and cond_3 and cond_4 and cond_5):
+        #if 1:
+            is_cup_tea = 1
+            print('H1=%s, H1_days=%s, H1_date=%s, L1=%s , L1_days=%s, L1_date=%s, delta_H1_L1=[%s,%s]' % \
+                    (H1, H1_days, H1_date, L1, L1_days, L1_date, H1_days - L1_days, (L1 - H1)/H))
+            print('H2=%s, H2_days=%s, H2_date=%s, L2=%s , L2_days=%s, L2_date=%s, delta_L1_H2=[%s,%s]' % \
+                    (H2, H2_days, H2_date, L2, L2_days, L2_date, L1_days - H2_days, (H2 - L1)/ L1))
+            print('max_botton_days=%s' % max_botton_days) 
+            print(cond_1, cond_2, cond_3, cond_4, cond_5)
+            print('### %s, %s, %s, is_cup_tea=%d' %(str(nowdate), nowcode, nowname, is_cup_tea))
+        #print(cond_1, cond_2, cond_3, cond_4, cond_5)
+        #print('### %s, %s, %s, is_cup_tea=%d' %(str(nowdate), nowcode, nowname, is_cup_tea))
 
            
         ##############################################################################
