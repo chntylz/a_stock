@@ -72,7 +72,7 @@ def get_original_data(datatype=None):
             stock_code_new= 'SH' + nowcode
         else:
             stock_code_new= 'SZ' + nowcode
-        tmp_df = get_fina_data(stock_code_new, datatype, def_cnt=12)
+        tmp_df = get_fina_data(stock_code_new, datatype, def_cnt=20)
         
         if len(tmp_df):
             pass
@@ -140,6 +140,7 @@ def update_database_indicator():
     print('#indicator zhuyao caiwu zhibiao')
     df_indicator = get_fina()
     df_indicator.to_csv('./test_indicator.csv', encoding='utf-8')
+    df_indicator = df_indicator.drop_duplicates(subset=['report_date', 'symbol'], keep='first')
     if len(df_indicator):
         hdata_fina.db_hdata_xq_create()
         hdata_fina.copy_from_stringio(df_indicator)
@@ -165,6 +166,7 @@ def update_database_income():
     print('#income  net profit')
     df_income = get_fina(datatype='income')
     df_income.to_csv('./test_income.csv', encoding='utf-8')
+    df_income = df_income.drop_duplicates(subset=['report_date', 'symbol'], keep='first')
     df_income = spilt_df(df_income,'operating_total_cost_si_new')
     if len(df_income):
         hdata_income.db_hdata_xq_create()
@@ -175,6 +177,7 @@ def update_database_balance():
     print('#balance zichan fuzhai biao')
     df_balance = get_fina(datatype='balance')
     df_balance.to_csv('./test_balance.csv', encoding='utf-8')
+    df_balance = df_balance.drop_duplicates(subset=['report_date', 'symbol'], keep='first')
     df_balance = spilt_df(df_balance,'lt_staff_salary_payable_new')
     if len(df_balance):
         hdata_balance.db_hdata_xq_create()
@@ -185,6 +188,7 @@ def update_database_cashflow():
     print('#cashflow xianjinliuliang biao')
     df_cashflow = get_fina(datatype='cashflow')
     df_cashflow.to_csv('./test_cashflow.csv', encoding='utf-8')
+    df_cashflow = df_cashflow.drop_duplicates(subset=['report_date', 'symbol'], keep='first')
     df_cashflow = spilt_df(df_cashflow,'net_increase_in_pledge_loans_new')
     if len(df_cashflow):
         hdata_cashflow.db_hdata_xq_create()

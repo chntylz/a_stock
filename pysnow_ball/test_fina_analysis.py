@@ -2,6 +2,8 @@ import pysnowball as ball
 from pysnowball import utls
 from comm_interface import *
 import pandas as pd
+#keep 0.01 accrucy
+pd.set_option('display.float_format',lambda x : '%.2f' % x)
 
 
 from HData_xq_fina import *

@@ -138,7 +138,7 @@ def convert_to_html_df(df):
         return df
     df = df.reset_index(drop=True)
     if len(df):
-        html_df = comm_generate_web_dataframe_new(df, curr_day_w, curr_day, dict_industry )
+        html_df = comm_generate_web_dataframe_new(df, curr_dir, curr_day, dict_industry )
         if debug:
             print('dict_industry:%s' % dict_industry)
     else:
