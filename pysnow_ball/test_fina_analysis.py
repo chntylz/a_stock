@@ -39,12 +39,18 @@ def income_analysis_assets(df):
     '''
     list.append([df.stock_name[0], 'total_assets', 'total_assets_pct', 'result'])
     '''
+    
+    biaozhun= '先看总资产 看总资产，判断公司实力及扩张能力 >30%'
+
     for i in range(df_len):
         if debug:
             print('record_date=%s, i=%d, total_assets=%f, total_assets_new=%f'\
                     %(df.record_date[i], i, df.total_assets[i]/y_unit, df.total_assets_new[i] * 100))
         list.append([df.record_date[i], df.total_assets[i]/y_unit, \
                 df.total_assets_new[i] * 100 , df.total_assets_new[i] >= 0.2])
+
+    list.append([biaozhun, 0, 0, 0])
+
     df_ret = pd.DataFrame(list)
     df_ret= df_ret.T
     return df_ret
@@ -68,6 +74,9 @@ def income_analysis_liab(df):
                     df.total_liab[i]/y_unit, df.asset_liab_ratio_x[i]))
         list.append([df.record_date[i], df.total_assets[i]/y_unit, df.total_liab[i]/y_unit,\
                 df.asset_liab_ratio_x[i], df.asset_liab_ratio_x[i] < 60 ])
+    biaozhun='看资产负债率，判断公司的债务风险.    资产负债率大于 60%的公司，债务风险较大需要注意'
+    list.append([biaozhun, 0, 0, 0, 0])
+
     df_ret = pd.DataFrame(list)
     df_ret= df_ret.T
     return df_ret
@@ -101,6 +110,14 @@ def income_analysis_loan(df):
                 df.interest_payable[i]/y_unit, df.noncurrent_liab_due_in1y[i]/y_unit, \
                 df.lt_loan[i]/y_unit, df.bond_payable[i]/y_unit, df.lt_payable[i]/y_unit, \
                 df.total_loan[i]/y_unit, df.currency_funds[i] > df.total_loan[i] ])
+
+    biaozhun='看有息负债和货币资金，排除偿债风险:\
+            有息负债和货币资金主要看两者大小，对于资产负债率大于40%的公司，\
+            我们要看货币资金是否大于有息负债。货币资金小于有息负债的公司淘汰\
+            货币资金 - 有息负债总额  必须大于0'
+
+    list.append([biaozhun, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+    
     df_ret = pd.DataFrame(list)
     df_ret= df_ret.T
     return df_ret
@@ -143,6 +160,17 @@ def income_analysis_payable_receivable(df):
             total_receivable_of_total_assets,\
             recv_of_total_assets < 20
             ])
+        biaozhun='看“应收应付”和“预付预收”，判断公司的行业地位:\
+                “应收应付”和“预付预收”主要看两点，\
+                一是看（应付票据+应付账款+预收款项）与（应收票据+应收账款+预付款项）的大小；\
+                二是看应收账款与总资产的比率。\
+                （应付票据+应付账款+预收款项）-（应收票据+应收账款+预付款项）小于 0，\
+                说明在经营过程中，公司的自有资金会被其他公司无偿占用，这样的公司竞争力相对较弱。\
+                在实践中，我们把（应付票据+应付账款+预收款项）-（应收票据+应收账款+预付款项）\
+                小于 0 的公司淘汰掉。\
+                另外应收账款与总资产的比率大于 20%的公司，\
+                说明公司应收账款的规模较大，经营风险自然也较大。'
+    list.append([biaozhun, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
     df_ret = pd.DataFrame(list)
     df_ret= df_ret.T
     return df_ret
@@ -176,6 +204,13 @@ def income_analysis_fixed_assets(df):
             total_fixed_of_total_assets, \
             total_fixed_of_total_assets < 40 \
             ])
+
+    biaozhun='看固定资产，判断公司的轻重:\
+            固定资产，只要看一点，那就是（固定资产+在建工程+工程物资）与总资产的比率，\
+            （固定资产+在建工程+工程物资）与总资产的比率大于 40%的公司为重资产型公司。\
+            重资产型公司保持竞争力的成本比较高，风险比较大，\
+            当我们遇到重资产型公司，安全起见还是淘汰。'
+    list.append([biaozhun, 0,0,0,0,0,0,0])
     df_ret = pd.DataFrame(list)
     df_ret= df_ret.T
     return df_ret
@@ -185,6 +220,12 @@ def income_analysis_invest(df):
     y_unit=10000*10000
     df_len=len(df)
     #invest ratio  < 10%
+    biaozhun = '看投资类资产，判断公司的专注程度:\
+        投资类资产我们只看一点，那就是与公司主业无关的投资类资产与总资产的比率。\
+        优秀的公司一定是专注于主业的公司，\
+        与主业无关的投资类资产占总资产的比例应当很低才对，最好为 0，\
+        在实践中，与主业无关的投资类资产占总资产比率大于 10%的公司不够专注。淘汰。'
+    
     i = 0
     list = []
     list.append([df.stock_name[0],'以公允价值计量的资产', '可供出售的金融资产',\
@@ -195,6 +236,7 @@ def income_analysis_invest(df):
         'lt_equity_invest', 'invest_property', 'total_invest', 'total_assets', \
         'total_fixed/total_assets', 'result'])
     '''
+
     for i in range(df_len):
         total_invest = df.tradable_fnncl_assets[i] + df.saleable_finacial_assets[i] \
             + df.lt_equity_invest[i] + df.invest_property[i]
@@ -209,6 +251,8 @@ def income_analysis_invest(df):
             total_invest_of_total_assets, \
             total_invest_of_total_assets < 10 \
             ])
+    list.append([biaozhun, 0, 0,0,0,0,0,0,0])
+
     df_ret = pd.DataFrame(list)
     df_ret= df_ret.T
     return df_ret
@@ -218,6 +262,12 @@ def income_analysis_roe(df):
     y_unit=10000*10000
     df_len=len(df)
     # 15% < roe  < 39%
+    biaozhun='看归母净利润，判断公司自有资本的获利能力:\归母净利润主要看两点，一是规模，二是增长率。\
+    用“归母净利润”和“归母股东权益”可以计算出公司的净资产收益率，也叫 ROE。 \
+    净资产收益率是一个综合性最强的财务比率，是杜邦分析系统的核心。\
+    它反映所有者投入资本的获利能力，同时反映企业筹资、投资、运营的效率。\
+    一般来说净资产收益率在 15%-39%比较合适。'
+
     i = 0
     list = []
     list.append([df.stock_name[0], '归母净利润', '归母净利润增长率',\
@@ -236,6 +286,7 @@ def income_analysis_roe(df):
             roe, \
             15 < roe and roe < 39 \
             ])
+    list.append([biaozhun, 0,0,0,0,0])
     df_ret = pd.DataFrame(list)
     df_ret= df_ret.T
     return df_ret
@@ -246,6 +297,14 @@ def income_analysis_revenue(df):
     df_len=len(df)
     # revenue_yoy > 10%
     # (cash_ratio = cash / revenue) > 100%
+    biaozhun='看营业收入，判断公司的行业地位及成长能力:\
+            我们通过营业收入的金额和含金量看公司的行业地位；\
+            通过营业收入增长率看公司的成长能力。\
+            营业收入金额较大且“销售商品、提供劳务收到的现金”与“营业收入”的比率\
+            大于 110%的公司行业地位高，产品竞争力强。\
+            “营业收入”增长率大于 10%的公司，成长性较好。\
+            销售商品、提供劳务收到的现金”与“营业收入”的比率\
+            小于 100%的公司、营业收入增长率小于10%的公司淘汰掉。'
     i = 0
     list = []
     list.append([df.stock_name[0], '营业收入', '营业收入增长率',\
@@ -265,6 +324,7 @@ def income_analysis_revenue(df):
             cash_ratio, \
             condi\
             ])
+    list.append([biaozhun,0,0,0,0,0])
     df_ret = pd.DataFrame(list)
     df_ret= df_ret.T
     return df_ret
@@ -274,6 +334,12 @@ def income_analysis_gross(df):
     y_unit=10000*10000
     df_len=len(df)
     # gross_ratio > 40%
+    biaozhun='看毛利率，判断公司产品的竞争力:\
+            高毛利率说明公司的产品或服务有很强的竞争力。\
+            低毛利率则说明公司的产品或服务竞争力较差。\
+            一般来说，毛利率大于 40%的公司都有某种核心竞争力。\
+            毛利率小于 40%的公司一般面临的竞争压力都较大，风险也较大。\
+            毛利率高的公司，风险相对较小。'
     i = 0
     list = []
     list.append([df.stock_name[0], '营业收入', '营业成本',\
@@ -294,6 +360,7 @@ def income_analysis_gross(df):
             gross_ratio, \
             condi\
             ])
+    list.append([biaozhun, 0,0,0,0,0])
     df_ret = pd.DataFrame(list)
     df_ret= df_ret.T
     return df_ret
@@ -304,6 +371,10 @@ def income_analysis_costfee(df):
     y_unit=10000*10000
     df_len=len(df)
     # costfee_ratio > 40%
+    biaozhun='看费用率，判断公司成本管控能力:\
+            毛利率高，费用率低，经营成果才可能好。\
+            优秀公司的费用率与毛利率的比率一般小于 40%。\
+            费用率与毛利率的比率大于 60%的公司需要注意风险。'
     i = 0
     list = []
     list.append([df.stock_name[0], '营业收入', '营业成本',\
@@ -340,6 +411,7 @@ def income_analysis_costfee(df):
             total_4fee / y_unit, costfee_p, \
             gross_ratio, costfee_ratio,   \
             condi])
+    list.append([biaozhun, 0, 0,0,0,0,0,0,0,0,0,0,0])
     df_ret = pd.DataFrame(list)
     df_ret= df_ret.T
     return df_ret
@@ -348,7 +420,13 @@ def income_analysis_costfee(df):
 def income_analysis_main_profit(df):
     y_unit=10000*10000
     df_len=len(df)
-    # costfee_ratio > 40%
+    # profit_ratio > 40%
+    biaozhun='看主营利润，判断公司的盈利能力及利润质量:\
+            主营利润是一家公司最主要的利润来源，主营利润小于 0 的公司，直接淘汰。\
+            毛利率大于 40%的公司，主营利润率至少应该大于 15%。\
+            主营利润率小于 15%的公司，淘汰。\
+            另外优秀公司的“主营利润”与“利润总额”的比率至少要大于 80%。\
+            “主营利润”与“利润总额”的比率小于 80%的公司，要注意。'
     i = 0
     list = []
     list.append([df.stock_name[0], '营业收入', '营业成本',\
@@ -404,6 +482,7 @@ def income_analysis_main_profit(df):
             all_other_income/ y_unit, main_profit/ y_unit, \
             main_profit_of_total_revenue, main_profit_of_total_profit, \
             condi])
+    list.append([biaozhun, 0, 0,0,0,0,0,0,0, 0,0,0,0,0,0,0, 0,0,0,0,0,0,0])
     df_ret = pd.DataFrame(list)
     df_ret= df_ret.T
     return df_ret
@@ -414,6 +493,20 @@ def income_analysis_net_profit(df):
     y_unit=10000*10000
     df_len=len(df)
     # ncf_ratio > 100%
+    biaozhun='看净利润，判断公司的经营成果及含金量:\
+            净利润金额越大越好。净利润小于 0 的公司，直接淘汰掉。\
+            优秀的公司不但净利润金额大而且含金量高。\
+            优秀公司的“净利润现金比率”会持续的大于 100%。\
+            过去 5 年的“净利润现金比率\
+            （过去 5 年的“经营活动产生的现金流量净额”总和/过去 5 年的净利润总和*100%）”\
+            小于 100%的公司，要注意'
+    biaozhun2='现金流量表 cash_flow:\
+            看经营活动产生的现金流量净额，判断公司的造血能力经营活动产生的现金流量净额越大，\
+            公司的造血能力越强。优秀的公司造血能力都很强大。\
+            优秀的公司满足经营活动产生的现金流量净额>\
+            固定资产折旧+无形资产摊销+借款利息+现金股利这个条件。\
+            “经营活动产生的现金流量净额”持续小于（固定资产折旧和无形资产摊销+借款利息+现金股利）的公司，\
+            淘汰'
     i = 0
     list = []
     list.append([df.stock_name[0], '经营活动产生的现金流量净额', '经营活动产生的现金流量净额增长率',\
@@ -438,6 +531,7 @@ def income_analysis_net_profit(df):
             df.net_profit[i] / y_unit,\
             net_profit_of_ncf_from_oa ,\
             condi])
+    list.append([biaozhun,biaozhun2,0,0,0,0])
     df_ret = pd.DataFrame(list)
     df_ret= df_ret.T
     return df_ret
@@ -450,6 +544,11 @@ def income_analysis_paid_assets(df):
     y_unit=10000*10000
     df_len=len(df)
     # paid_assets_of_nc  [10% ~ 60%]
+    biaozhun='看“购买固定资产、无形资产和其他长期资产支付的现金”，判断公司未来的成长能力:\
+            “购买固定资产、无形资产和其他长期资产支付的现金”金额越大，公司未来成长能力越强。\
+            成长能力较强的公司，“购买固定资产、无形资产和其他长期资产支付的现金”与\
+            “经营活动现金流量净额”比率一般在 10%-60%之间。\
+            这个比率连续 2 年高于 100%或低于 10%的公司，淘汰。'
     i = 0
     list = []
     list.append([df.stock_name[0], '经营活动产生的现金流量净额',\
@@ -478,6 +577,7 @@ def income_analysis_paid_assets(df):
             paid_assets_of_ncf , \
             disposal_assets_of_ncf, \
             condi])
+    list.append([biaozhun,0,0,0,0,0,0])
     df_ret = pd.DataFrame(list)
     df_ret= df_ret.T
     return df_ret
@@ -490,6 +590,11 @@ def income_analysis_ncf_of_oa_ia_fa(df):
     y_unit=10000*10000
     df_len=len(df)
     # ncf_from_oa > 0
+    biaozhun=' 看三大活动现金流量净额的组合类型，选出最佳类型的公司:\
+        优秀的公司一般是“正负负”和“正正负”类型。\
+        公司经营活动产生的现金流量净额为正，说明公司主业经营赚钱；\
+        投资活动产生的现金流量净额为负，说明公司在继续投资，公司处于扩张之中。\
+        筹资活动现金流量净额为负，说明公司在还钱或者分红。'
     i = 0
     list = []
     list.append([df.stock_name[0], '经营活动产生的现金流量净额', \
@@ -504,6 +609,7 @@ def income_analysis_ncf_of_oa_ia_fa(df):
             df.ncf_from_ia[i]/ y_unit, \
             df.ncf_from_fa[i]/ y_unit, \
             condi])
+    list.append([biaozhun, 0,0,0,0])
     df_ret = pd.DataFrame(list)
     df_ret= df_ret.T
     return df_ret
@@ -514,6 +620,10 @@ def income_analysis_net_increase(df):
     y_unit=10000*10000
     df_len=len(df)
     # net_increase_in_cce > 0
+    biaozhun='看“现金及现金等价物的净增加额”，判断公司的稳定性:\
+        “现金及现金等价物的净增加额”持续小于 0 的公司，很难稳定持续的保持现有的竞争力。\
+        优秀公司的“现金及现金等价物的净增加额”一般都是持续大于 0 的。\
+        去掉分红，“现金及现金等价物的净增加额”小于 0 的公司，淘汰。'
     i = 0
     list = []
     list.append([df.stock_name[0], '现金及现金等价物净增加额', '期末现金及现金等价物余额', \
@@ -526,6 +636,7 @@ def income_analysis_net_increase(df):
             df.net_increase_in_cce[i]/ y_unit, \
             df.final_balance_of_cce[i]/ y_unit, \
             condi])
+    list.append([biaozhun, 0,0,0])
     df_ret = pd.DataFrame(list)
     df_ret= df_ret.T
     return df_ret
