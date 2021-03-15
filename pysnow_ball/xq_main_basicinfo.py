@@ -67,7 +67,7 @@ if __name__ == '__main__':
     hdata_basicinfo.db_hdata_xq_create()
     basicinfo_df = get_basicinfo_data()
 
-    basicinfo_df.to_csv('./test_basicinfo.csv', encoding='utf-8')
+    basicinfo_df.to_csv('./test_basicinfo.csv', encoding='gbk')
     hdata_basicinfo.copy_from_stringio(basicinfo_df)
     
     

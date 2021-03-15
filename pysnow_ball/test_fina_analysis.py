@@ -760,7 +760,7 @@ def get_data_from_fina_income_balance_cashflow():
             on=['record_date', 'stock_code', 'report_name'])
 
     df=df.fillna(0)
-    df=round(df,2)
+    df=round(df,4)
     df['total_loan'] = 0
     df['total_loan']  = df.st_loan+ df.interest_payable \
         + df.noncurrent_liab_due_in1y + df.lt_loan \

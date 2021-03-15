@@ -136,7 +136,7 @@ def check_table():
 def update_database_holder():
     print('holder')
     df_holder = get_holder()
-    df_holder.to_csv('./test_holder.csv', encoding='utf-8')
+    df_holder.to_csv('./test_holder.csv', encoding='gbk')
     if len(df_holder):
         hdata_holder.db_hdata_xq_create()
         hdata_holder.copy_from_stringio(df_holder)

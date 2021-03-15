@@ -368,7 +368,7 @@ class HData_xq_balance(object):
         buffer = StringIO()
         #df.to_csv(buffer, index_label='id', header=False)
         if debug:
-            df.to_csv('./test.csv', encoding='utf-8')
+            df.to_csv('./test.csv', encoding='gbk')
 
         df.to_csv(buffer, index=0, header=False)
         buffer.seek(0)

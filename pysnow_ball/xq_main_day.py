@@ -201,7 +201,7 @@ if __name__ == '__main__':
     else:
         print('today data')
         today_df = get_today_data()
-        today_df.to_csv('./test_today.csv', encoding='utf-8')
+        today_df.to_csv('./test_today.csv', encoding='gbk')
         hdata_day.delete_data_from_hdata(
                 start_date=datetime.datetime.now().date().strftime("%Y-%m-%d"),
                 end_date=datetime.datetime.now().date().strftime("%Y-%m-%d")

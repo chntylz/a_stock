@@ -5,6 +5,7 @@ import sys
 import os
 import time
 sys.path.append("..")
+sys.path.append("../eastmoney/")
 
 
 import psycopg2 #使用的是PostgreSQL数据库
