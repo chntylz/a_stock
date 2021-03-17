@@ -226,6 +226,16 @@ if __name__ == '__main__':
     else:
         print('#error, html_cuptea_df len < 1')
 
+    #cup_tea
+    print('start duck_head')
+    curr_dir=curr_day_w+'-duckhead'
+    duckhead_df = df[(df.is_duck_head == 1)]
+    html_duckhead_df = convert_to_html_df(duckhead_df)
+    if len(html_duckhead_df):
+        generate_html(html_duckhead_df)
+    else:
+        print('#error, html_duckhead_df len < 1')
+
     #basic
     print('start basic')
     curr_dir=curr_day_w

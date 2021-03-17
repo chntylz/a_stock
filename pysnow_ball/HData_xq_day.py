@@ -30,7 +30,7 @@ xq_cols = " record_date, stock_code, open, close, high, low,\
         pe, pb, ps, pcf, market_capital, \
         hk_volume , hk_pct , hk_net ,\
         is_peach , is_zig , is_quad ,\
-        is_macd, is_2d3pct, is_up_days, is_cup_tea "
+        is_macd, is_2d3pct, is_up_days, is_cup_tea, is_duck_head "
 
 class HData_xq_day(object):
     def __init__(self,user,password):
@@ -105,7 +105,8 @@ class HData_xq_day(object):
                 is_macd float,
                 is_2d3pct float,
                 is_up_days float,
-                is_cup_tea float 
+                is_cup_tea float,
+                is_duck_head float 
                 );
             alter table xq_d_table add primary key(stock_code,record_date);
             ''')

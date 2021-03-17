@@ -92,6 +92,7 @@ def calculate_peach_zig_quad(nowdate):
         is_2d3pct  = 0
         is_up_days = 0
         is_cup_tea = 0 
+        is_duck_head = 0
 
         nowcode=codestock_local[i][0]
         nowname=codestock_local[i][1]
@@ -117,7 +118,7 @@ def calculate_peach_zig_quad(nowdate):
 
 
         if 0:
-            if '0744' not in  nowcode:
+            if '0825' not in  nowcode:
                 continue
             print("code:%s, name:%s" % (nowcode, nowname ))
 
@@ -175,6 +176,70 @@ def calculate_peach_zig_quad(nowdate):
         upperband, middleband, lowerband = talib.BBANDS(np.array(detail_info['close']),\
                 timeperiod=20, nbdevdn=2, nbdevup=2)
 
+
+        ##############################################################################
+        # old duck 
+
+        '''
+        def moving_average(a, n=3):
+            out = talib.MA(a, n)
+            return out    
+            
+        def duck_head(df, min_period=8, mid_period=18, max_period=55):
+            """
+            上涨中继， 老鸭头
+            :return:
+            """
+            E1 = moving_average(df.close, n=mid_period)
+            E2 = moving_average(df.close, n=max_period)
+            # 1、前8日中满足“E1<1日前的E1”的天数>=6
+            is_min_5_growth = np.sum(np.diff(E1[-min_period-1:-1], 1) > 0) >= 6
+            # 2、 今天的E1 > 昨天的E1
+            is_mid_today_growth = list(E1)[-1] > list(E1)[-2]
+            # 3、最近18天中满足“E2>1日前的E2”的天数>=13
+            is_mid_13_growth = np.sum(np.diff(E2[-mid_period:], 1) > 0) >= 13
+            # 4、 今天的E2>昨天的E2
+            condition_4 = list(E2)[-1] > list(E2)[-2]
+            f13 = (df.low[-mid_period:] / E2[-mid_period:] - 1) < 0.1
+            # 6、最近18日都满足“E1>E2”
+            condition_6 = E1[-mid_period:] > E2[-mid_period:]
+            condition_7 = df.close[-min_period:] > E2[-min_period:]
+            condition_8 = list(df.close)[-1] > list(E1)[-1]
+            condition_9 = list(E1)[-1] / list(E2)[-1] < 1.10
+            return is_min_5_growth & is_mid_today_growth & \
+            is_mid_13_growth & condition_4 & f13.all(axis=0) & condition_6.all(axis=0) & \
+            condition_7.all(axis=0) & condition_8 & condition_9
+        '''
+
+        #is_duck_head = duck_head(detail_info)
+        #print('### %s, %s, %s, is_duck_head=%d' %(str(nowdate), nowcode, nowname, is_duck_head))
+        A1=A2=PDAY1=PDAY2=PDAY3=PDAY4=PDAY5=0
+        MA5 = MA(CLOSE,5);
+        MA10 = MA(CLOSE,10);
+        MA60 = MA(CLOSE,60);
+        PDAY1 = BARSLAST(CROSS(MA5,MA60));#{5日均线上穿60日均线}
+        PDAY2 = BARSLAST(CROSS(MA10,MA60));#{10日均线上穿60日均线，至此形成鸭颈部}
+        if PDAY1 > 100000 or PDAY2 > 100000:
+            pass
+        else:
+            if PDAY2.value:
+                PDAY3 = BARSLAST(HIGH==HHV(HIGH,PDAY2.value));#{形成头部，要下跌}
+            PDAY4 = BARSLAST(CROSS(MA10,MA5));#{下跌后，5日均线和10日均线死叉}
+            PDAY5 = BARSLAST(CROSS(MA5,MA10));#{回落不久，5日均线和10日均线形成金叉，形成嘴部}
+            A1= PDAY1>PDAY2 and PDAY2>PDAY3 and PDAY3>PDAY4 and PDAY4>PDAY5 and PDAY5<5;
+            if PDAY2.value:
+                A2= COUNT(CROSS(MA10,MA5),PDAY2.value)==1;
+
+        if debug:
+            print('PDAY1:%s' % PDAY1) 
+            print('PDAY2:%s' % PDAY2) 
+            print('PDAY3:%s' % PDAY3) 
+            print('PDAY4:%s' % PDAY4) 
+            print('PDAY5:%s' % PDAY5) 
+
+        if A1 and A2:
+            is_duck_head = 1
+            print('### %s, %s, %s, is_duck_head=%d' %(str(nowdate), nowcode, nowname, is_duck_head))
 
         ##############################################################################
         #is_cup_tea 
@@ -572,18 +637,8 @@ def calculate_peach_zig_quad(nowdate):
         ###############################################################################################
         
         update_list.append([nowdate.strftime("%Y-%m-%d"), nowcode_new, is_peach, is_zig, is_quad, \
-                is_macd, is_2d3pct, is_up_days, is_cup_tea ])
+                is_macd, is_2d3pct, is_up_days, is_cup_tea, is_duck_head])
 
-        if debug:
-            print('final nowdate=%s, code:%s, name:%s,is_peach=%s, is_zig=%s,is_quad=%s,is_macd=%s, is_2d3pct=%s, is_up_days=%s, is_cup_tea=%s '% \
-                    (nowdate.strftime("%Y-%m-%d"), nowcode, nowname, is_peach, is_zig, is_quad,\
-                    is_macd, is_2d3pct, is_up_days, is_cup_tea ))
-        
-        if (is_peach or is_quad) and (is_zig > 0):
-            print('final real code:%s, name:%s,is_peach=%s, is_zig=%s,is_quad=%s,is_macd=%s, is_2d3pct=%s, is_up_days=%s, is_cup_tea=%s '% \
-                    (nowcode, nowname, is_peach, is_zig, is_quad, \
-                    is_macd, is_2d3pct, is_up_days, is_cup_tea))
-        
         if debug:
             print('#############################################################################')
 
@@ -591,7 +646,7 @@ def calculate_peach_zig_quad(nowdate):
         print('update_list:%s'% update_list)
 
     data_column=['record_date', 'stock_code', 'is_peach', 'is_zig', 'is_quad', \
-            'is_macd', 'is_2d3pct' ,'is_up_days', 'is_cup_tea']
+            'is_macd', 'is_2d3pct' ,'is_up_days', 'is_cup_tea', 'is_duck_head' ]
     update_df=pd.DataFrame(update_list, columns=data_column)
     if debug:
         print(update_df)
@@ -617,6 +672,7 @@ def update_peach_zig_quad(nowdate, df, df1):
     tmp_df['is_2d3pct']  = tmp_df1['is_2d3pct']
     tmp_df['is_up_days']  = tmp_df1['is_up_days']
     tmp_df['is_cup_tea']  = tmp_df1['is_cup_tea']
+    tmp_df['is_duck_head']  = tmp_df1['is_duck_head']
 
     if debug:
         print(tmp_df)

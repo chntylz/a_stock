@@ -100,6 +100,10 @@ def showImageInHTML(imageTypes,savedir):
         f.write('<td>\n')
         f.write('     <a href="cuptea-index.html"  target="_blank"> cuptea </a>\n')
         f.write('</td>\n')
+
+        f.write('<td>\n')
+        f.write('     <a href="duckhead-index.html"  target="_blank"> duckhead </a>\n')
+        f.write('</td>\n')
  
         f.write('<td>\n')
         f.write('     <a href="./stock_data/finance/finance.html"  target="_blank"> finance </a>\n')

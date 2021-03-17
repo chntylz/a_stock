@@ -139,6 +139,7 @@ def getAllFiles(directory):
                         ('finance' in file) or \
                         ('peach' in file) or \
                         ('cuptea' in file) or \
+                        ('duckhead' in file) or \
                         ('5days' in file) :
                     continue;
                 else:
