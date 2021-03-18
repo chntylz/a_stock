@@ -28,7 +28,7 @@ hsgtdata=HData_hsgt("usr","usr")
 hdata_day=HData_xq_day("usr","usr")
 
 debug = 0 
-#debug = 1
+debug = 0
    
 
 def get_fina_data():
@@ -45,6 +45,20 @@ def get_fina_data():
 def fina_get_continuous_info(df, curr_day, select='operating_income_yoy', net_percent=20):
     all_df = df
     data_list = []
+    
+    now_hour = int(datetime.datetime.now().strftime("%H"))
+    daily_df = pd.DataFrame()
+    if now_hour > 12:
+        daily_df = hdata_day.get_data_from_hdata(start_date=curr_day, end_date=curr_day)
+    else:
+        nowdate=datetime.datetime.now().date()
+        lastdate=nowdate-datetime.timedelta(1)
+        last_day=lastdate.strftime("%Y-%m-%d")
+        daily_df = hdata_day.get_data_from_hdata(start_date=last_day, end_date=last_day)
+        if debug:
+            print('last_day:%s' % last_day)
+            print('daily_df:%s' % daily_df)
+
     group_by_stock_code_df=all_df.groupby('stock_code')
     for stock_code, group_df in group_by_stock_code_df:
 
@@ -66,15 +80,12 @@ def fina_get_continuous_info(df, curr_day, select='operating_income_yoy', net_pe
         stock_name=stock_name[pos_s+1: pos_e]
         if debug:
             print(stock_name)
-        #skip ST
-        if ('ST' in stock_name):
-            continue
- 
-        
+            
         operating_income_yoy=group_df.loc[0, 'operating_income_yoy']
         net_profit_atsopc_yoy=group_df.loc[0, 'net_profit_atsopc_yoy']
 
         length=len(group_df)
+        i = 0
         for i in range(length):
             or_item = group_df.loc[i]['operating_income_yoy']
             netprofit_item = group_df.loc[i]['net_profit_atsopc_yoy']
@@ -85,6 +96,8 @@ def fina_get_continuous_info(df, curr_day, select='operating_income_yoy', net_pe
                 pass
             else:
                 break
+        if debug:
+            print('i=%d' % i)
 
         #algorithm
         if(i > 1):
@@ -97,6 +110,11 @@ def fina_get_continuous_info(df, curr_day, select='operating_income_yoy', net_pe
         #funcat call
         T(curr_day)
         S(stock_code)
+
+        if stock_code[0:1] == '6':
+            stock_code_new= 'SH' + stock_code
+        else:
+            stock_code_new= 'SZ' + stock_code
 
 
         open_p = close_p = 0
@@ -116,20 +134,11 @@ def fina_get_continuous_info(df, curr_day, select='operating_income_yoy', net_pe
         hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total \
                 = comm_handle_hsgt_data(all_df)
                 
-        now_hour = int(datetime.datetime.now().strftime("%H"))
-        if now_hour > 12:
-            daily_df = hdata_day.get_data_from_hdata(start_date=curr_day, end_date=curr_day)
-        else:
-            nowdate=datetime.datetime.now().date()
-            lastdate=nowdate-datetime.timedelta(1)
-            last_day=nowdate.strftime("%Y-%m-%d")
-            daily_df = hdata_day.get_data_from_hdata(start_date=last_day, end_date=last_day)
-
-
-        tmp_df  = daily_df[daily_df['stock_code']==stock_code]
+        tmp_df  = daily_df[daily_df['stock_code']==stock_code_new]
+        tmp_df = tmp_df.reset_index(drop=True)
         if debug:
             print(stock_code)
-            print(len(tmp_df), tmp_df)
+            print('len(tmp_df)=%d, tmp_df=%s' % (len(tmp_df), tmp_df))
 
         if(len(tmp_df)):
             is_zig   = tmp_df['is_zig'][0]
