@@ -909,8 +909,10 @@ def comm_generate_web_dataframe_new(input_df, curr_dir, curr_day, dict_industry)
         fina_df = fina_df.sort_values('record_date', ascending=0)
         fina_df = fina_df.reset_index(drop=True)
         
+        fina_date = curr_day
         op_yoy = net_yoy = 0
         if len(fina_df):
+            fina_date = fina_df['record_date'][0]
             op_yoy = fina_df['operating_income_yoy'][0]
             net_yoy = fina_df['net_profit_atsopc_yoy'][0]
             
@@ -919,7 +921,7 @@ def comm_generate_web_dataframe_new(input_df, curr_dir, curr_day, dict_industry)
                 print(fina_df)
 
         fina=str(round(op_yoy,2)) +' ' + str(round(net_yoy,2))
-        new_date = curr_day[5:] + '<br>'+ fina + '</br>'
+        new_date = fina_date + '<br>'+ fina + '</br>'
         #### fina end ####
  
         #### holder start ####
