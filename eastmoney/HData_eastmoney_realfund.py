@@ -61,7 +61,7 @@ class HData_eastmoney_realfund(object):
         self.cur.execute('''
             drop table if exists eastmoney_realfund_table;
             create table eastmoney_realfund_table(
-                stock_code float, 
+                stock_code varchar, 
                 stock_name varchar, 
                 record_date date, 
                 type varchar, 

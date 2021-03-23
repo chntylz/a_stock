@@ -55,7 +55,6 @@ def handle_raw_data(df):
     if len(df) < 0:
         return
 
-    '''
     #unit: Y
     df['f7']  = df['f7'].apply(lambda x: float(x)/1000/1000/100)
     df['f8']  = df['f8'].apply(lambda x: float(x)/1000/1000/100)
@@ -64,7 +63,6 @@ def handle_raw_data(df):
     df['f9']  = df['f9'].apply(lambda x: round(float(x),2))
     df['f10']  = df['f10'].apply(lambda x: round(float(x),2))
     df['f12']  = df['f12'].apply(lambda x: round(float(x),2))
-    '''
 
     df = round(df, 2)
 
@@ -74,7 +72,7 @@ def check_table():
     table_exist = hdata_realfund.table_is_exist()
     print('table_exist=%d' % table_exist)
     if table_exist:
-        #hdata_realfund.db_hdata_xq_create()
+        hdata_realfund.db_hdata_xq_create()
         print('table already exist')
     else:
         hdata_realfund.db_hdata_xq_create()
@@ -87,8 +85,16 @@ if __name__ == '__main__':
     date_string = nowdate.strftime('%Y-%m-%d')
 
     check_table()
+    df  = get_real_fund('2019-12-31')
+    df2 = get_real_fund('2020-03-31')
+    df3 = get_real_fund('2020-06-30')
+    df4 = get_real_fund('2020-09-30')
+    df4 = get_real_fund('2020-12-31')
+
+    df = pd.concat([df, df2])
+    df = pd.concat([df, df3])
+    df = pd.concat([df, df4])
     
-    df = get_real_fund('2019-12-31')
     df.to_csv('test_realfund.csv', encoding='gbk')
     if len(df):
         df = handle_raw_data(df)

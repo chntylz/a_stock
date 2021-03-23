@@ -4,14 +4,16 @@ SZ399001 shenzheng
 SZ399006 chuangyeban
 SZ159994 5GETF
 
+SZ000977 langchaoxinxi
 SH601318 zhongguopingan
 SH600529 shandongyaobo
 SZ300035 zhongkedianqi
 SZ002230 kedaxunfei
 SZ000401 jidongshuini
 SZ000651 gelidianqi
+SH603799 huayouguye
 
-SZ000977 langchaoxinxi
+
 SZ601933 yonghuichaoshi
 SZ002241 ge'ergufen
 SZ300676 huadajiyin
