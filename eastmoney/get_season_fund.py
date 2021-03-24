@@ -11,18 +11,18 @@ import time
 import datetime
 
 
-from HData_eastmoney_realfund import *
+from HData_eastmoney_fund import *
 
 debug = 0
 debug = 1
 
 
-hdata_realfund = HData_eastmoney_realfund('usr', 'usr')
+hdata_fund = HData_eastmoney_fund('usr', 'usr')
 
 date_list = ['03-31', '06-30', '09-30', '12-31']
 
 
-def get_real_fund(date=None):
+def get_season_fund(date=None):
 
     data_df = pd.DataFrame()
     nowdate=datetime.datetime.now().date()
@@ -69,13 +69,13 @@ def handle_raw_data(df):
     return df
 
 def check_table():
-    table_exist = hdata_realfund.table_is_exist()
+    table_exist = hdata_fund.table_is_exist()
     print('table_exist=%d' % table_exist)
     if table_exist:
-        hdata_realfund.db_hdata_xq_create()
+        hdata_fund.db_hdata_xq_create()
         print('table already exist')
     else:
-        hdata_realfund.db_hdata_xq_create()
+        hdata_fund.db_hdata_xq_create()
         print('table not exist, create')
     pass
 
@@ -85,19 +85,19 @@ if __name__ == '__main__':
     date_string = nowdate.strftime('%Y-%m-%d')
 
     check_table()
-    df  = get_real_fund('2019-12-31')
-    df2 = get_real_fund('2020-03-31')
-    df3 = get_real_fund('2020-06-30')
-    df4 = get_real_fund('2020-09-30')
-    df4 = get_real_fund('2020-12-31')
+    df  = get_season_fund('2019-12-31')
+    df2 = get_season_fund('2020-03-31')
+    df3 = get_season_fund('2020-06-30')
+    df4 = get_season_fund('2020-09-30')
+    df4 = get_season_fund('2020-12-31')
 
     df = pd.concat([df, df2])
     df = pd.concat([df, df3])
     df = pd.concat([df, df4])
     
-    df.to_csv('test_realfund.csv', encoding='gbk')
+    df.to_csv('test_fund.csv', encoding='gbk')
     if len(df):
         df = handle_raw_data(df)
-        hdata_realfund.copy_from_stringio(df)
+        hdata_fund.copy_from_stringio(df)
 
 
