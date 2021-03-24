@@ -11,19 +11,19 @@ import time
 import datetime
 
 
-from HData_eastmoney_fund import *
-from HData_eastmoney_fund_3 import *
-from HData_eastmoney_fund_5 import *
-from HData_eastmoney_fund_10 import *
+from HData_eastmoney_zlje import *
+from HData_eastmoney_zlje_3 import *
+from HData_eastmoney_zlje_5 import *
+from HData_eastmoney_zlje_10 import *
 
 debug = 0
 #debug = 1
 
 
-hdata_fund = HData_eastmoney_fund('usr', 'usr')
-hdata_fund_3 = HData_eastmoney_fund_3('usr', 'usr')
-hdata_fund_5 = HData_eastmoney_fund_5('usr', 'usr')
-hdata_fund_10 = HData_eastmoney_fund_10('usr', 'usr')
+hdata_zlje = HData_eastmoney_zlje('usr', 'usr')
+hdata_zlje_3 = HData_eastmoney_zlje_3('usr', 'usr')
+hdata_zlje_5 = HData_eastmoney_zlje_5('usr', 'usr')
+hdata_zlje_10 = HData_eastmoney_zlje_10('usr', 'usr')
 
 url_1 = 'http://push2.eastmoney.com/api/qt/clist/get?cb=jQuery112308511204703039876_1610688047489&fid=f62 &po=1&pz=10000&pn=1&np=1&fltt=2&invt=2&ut=b2884a393a59ad64002292a3e90d46a5&fs=m%3A0%2Bt%3A6%2Bf%3A!2%2Cm%3A0%2Bt%3A13%2Bf%3A!2%2Cm%3A0%2Bt%3A80%2Bf%3A!2%2Cm%3A1%2Bt%3A2%2Bf%3A!2%2Cm%3A1%2Bt%3A23%2Bf%3A!2%2Cm%3A0%2Bt%3A7%2Bf%3A!2%2Cm%3A1%2Bt%3A3%2Bf%3A!2&fields=f12%2Cf14%2Cf2%2Cf3%2Cf62%2Cf184%2Cf66%2Cf69%2Cf72%2Cf75%2Cf78%2Cf81%2Cf84%2Cf87%2Cf204%2Cf205%2Cf124'
 url_3 = 'http://push2.eastmoney.com/api/qt/clist/get?cb=jQuery112309724568186220448_1610691602607&fid=f267&po=1&pz=10000&pn=1&np=1&fltt=2&invt=2&ut=b2884a393a59ad64002292a3e90d46a5&fs=m%3A0%2Bt%3A6%2Bf%3A!2%2Cm%3A0%2Bt%3A13%2Bf%3A!2%2Cm%3A0%2Bt%3A80%2Bf%3A!2%2Cm%3A1%2Bt%3A2%2Bf%3A!2%2Cm%3A1%2Bt%3A23%2Bf%3A!2%2Cm%3A0%2Bt%3A7%2Bf%3A!2%2Cm%3A1%2Bt%3A3%2Bf%3A!2&fields=f12%2Cf14%2Cf2%2Cf127%2Cf267%2Cf268%2Cf269%2Cf270%2Cf271%2Cf272%2Cf273%2Cf274%2Cf275%2Cf276%2Cf257%2Cf258%2Cf124'
@@ -97,7 +97,7 @@ def get_date_from_timestamp(timestamp):
     return my_date
 
 
-def get_daily_fund(url=None):
+def get_daily_zlje(url=None):
     timestamp=str(round(time.time() * 1000))
     #url = 'http://push2.eastmoney.com/api/qt/clist/get?cb=jQuery112309724568186220448_1610691602607&fid=f62&po=1&pz=10000&pn=1&np=1&fltt=2&invt=2&ut=b2884a393a59ad64002292a3e90d46a5&fs=m%3A0%2Bt%3A6%2Bf%3A!2%2Cm%3A0%2Bt%3A13%2Bf%3A!2%2Cm%3A0%2Bt%3A80%2Bf%3A!2%2Cm%3A1%2Bt%3A2%2Bf%3A!2%2Cm%3A1%2Bt%3A23%2Bf%3A!2%2Cm%3A0%2Bt%3A7%2Bf%3A!2%2Cm%3A1%2Bt%3A3%2Bf%3A!2&fields=f12%2Cf14%2Cf2%2Cf3%2Cf62%2Cf184%2Cf66%2Cf69%2Cf72%2Cf75%2Cf78%2Cf81%2Cf84%2Cf87%2Cf204%2Cf205%2Cf124'
     if url == 'url_3':
@@ -184,60 +184,60 @@ def handle_raw_data(df):
     return df
 
 def check_table():
-    table_exist = hdata_fund.table_is_exist()
+    table_exist = hdata_zlje.table_is_exist()
     print('table_exist=%d' % table_exist)
     if table_exist:
-        #hdata_fund.db_hdata_xq_create()
+        #hdata_zlje.db_hdata_xq_create()
         print('table already exist')
     else:
-        hdata_fund.db_hdata_xq_create()
+        hdata_zlje.db_hdata_xq_create()
         print('table not exist, create')
 
-    table_3_exist = hdata_fund_3.table_is_exist()
+    table_3_exist = hdata_zlje_3.table_is_exist()
     print('table_3_exist=%d' % table_3_exist)
     if table_3_exist:
-        #hdata_fund_3.db_hdata_xq_create()
+        #hdata_zlje_3.db_hdata_xq_create()
         print('table_3 already exist')
     else:
-        hdata_fund_3.db_hdata_xq_create()
+        hdata_zlje_3.db_hdata_xq_create()
         print('table_3 not exist, create')
 
-    table_5_exist = hdata_fund_5.table_is_exist()
+    table_5_exist = hdata_zlje_5.table_is_exist()
     print('table_5_exist=%d' % table_5_exist)
     if table_5_exist:
-        #hdata_fund_5.db_hdata_xq_create()
+        #hdata_zlje_5.db_hdata_xq_create()
         print('table_5 already exist')
     else:
-        hdata_fund_5.db_hdata_xq_create()
+        hdata_zlje_5.db_hdata_xq_create()
         print('table_5 not exist, create')
 
-    table_10_exist = hdata_fund_10.table_is_exist()
+    table_10_exist = hdata_zlje_10.table_is_exist()
     print('table_10_exist=%d' % table_10_exist)
     if table_10_exist:
-        #hdata_fund_10.db_hdata_xq_create()
+        #hdata_zlje_10.db_hdata_xq_create()
         print('table_10 already exist')
     else:
-        hdata_fund_10.db_hdata_xq_create()
+        hdata_zlje_10.db_hdata_xq_create()
         print('table_10 not exist, create')
 
     pass
 
 def get_zlje_data_from_db(url=None, curr_date=None):
 
-    hdata_db = hdata_fund
+    hdata_db = hdata_zlje
 
     if curr_date is None:
         nowdate=datetime.datetime.now().date()
         curr_date = nowdate.strftime('%Y-%m-%d') 
     
     if url == 'url_3':
-        hdata_db = hdata_fund_3
+        hdata_db = hdata_zlje_3
     elif url == 'url_5':
-        hdata_db = hdata_fund_5
+        hdata_db = hdata_zlje_5
     elif url == 'url_10':
-        hdata_db = hdata_fund_10
+        hdata_db = hdata_zlje_10
     else:
-        hdata_db = hdata_fund
+        hdata_db = hdata_zlje
 
     df = hdata_db.get_data_from_hdata(start_date=curr_date, end_date=curr_date)
     
@@ -245,20 +245,20 @@ def get_zlje_data_from_db(url=None, curr_date=None):
 
 def delete_zlje_data_from_db(url=None, curr_date=None):
 
-    hdata_db = hdata_fund
+    hdata_db = hdata_zlje
 
     if curr_date is None:
         nowdate=datetime.datetime.now().date()
         curr_date = nowdate.strftime('%Y-%m-%d') 
     
     if url == 'url_3':
-        hdata_db = hdata_fund_3
+        hdata_db = hdata_zlje_3
     elif url == 'url_5':
-        hdata_db = hdata_fund_5
+        hdata_db = hdata_zlje_5
     elif url == 'url_10':
-        hdata_db = hdata_fund_10
+        hdata_db = hdata_zlje_10
     else:
-        hdata_db = hdata_fund
+        hdata_db = hdata_zlje
 
     hdata_db.delete_data_from_hdata(start_date=curr_date, end_date=curr_date)
     
@@ -269,17 +269,17 @@ def delete_zlje_data_from_db(url=None, curr_date=None):
 def get_zlje(df, stock_code, url=None, curr_date=None):
     zlje =  0
 
-    #fund_df = get_zlje_data_from_db(url, curr_date)
-    fund_df = df
+    #zlje_df = get_zlje_data_from_db(url, curr_date)
+    zlje_df = df
 
-    tmp_fund_df = fund_df[fund_df['stock_code'] == stock_code]
-    tmp_fund_df = tmp_fund_df.reset_index(drop=True)
+    tmp_zlje_df = zlje_df[zlje_df['stock_code'] == stock_code]
+    tmp_zlje_df = tmp_zlje_df.reset_index(drop=True)
     if debug:
-            print(new_code, len(tmp_fund_df))
+            print(new_code, len(tmp_zlje_df))
 
-    if len(tmp_fund_df):
-        zlje = tmp_fund_df['zlje'][0]
-        zdf  = tmp_fund_df['zdf'][0]
+    if len(tmp_zlje_df):
+        zlje = tmp_zlje_df['zlje'][0]
+        zdf  = tmp_zlje_df['zdf'][0]
         zlje = str(zlje) + '<br>' + str(zdf) + '</br>'
 
     return zlje
@@ -293,32 +293,32 @@ if __name__ == '__main__':
 
     check_table()
 
-    df = get_daily_fund()
+    df = get_daily_zlje()
     df = handle_raw_data(df)
     #print(list(df))
     if len(df):
         delete_zlje_data_from_db()
-    hdata_fund.copy_from_stringio(df)
+    hdata_zlje.copy_from_stringio(df)
 
-    df_3 = get_daily_fund(url='url_3')
+    df_3 = get_daily_zlje(url='url_3')
     df_3 = handle_raw_data(df_3)
     if len(df_3):
         delete_zlje_data_from_db(url='url_3')
-    hdata_fund_3.copy_from_stringio(df_3)
+    hdata_zlje_3.copy_from_stringio(df_3)
     #print(list(df_3))
 
-    df_5 = get_daily_fund(url='url_5')
+    df_5 = get_daily_zlje(url='url_5')
     df_5 = handle_raw_data(df_5)
     if len(df_5):
         delete_zlje_data_from_db(url='url_5')
-    hdata_fund_5.copy_from_stringio(df_5)
+    hdata_zlje_5.copy_from_stringio(df_5)
     #print(list(df_5))
 
-    df_10 = get_daily_fund(url='url_10')
+    df_10 = get_daily_zlje(url='url_10')
     df_10 = handle_raw_data(df_10)
     if len(df_10):
         delete_zlje_data_from_db(url='url_10')
-    hdata_fund_10.copy_from_stringio(df_10)
+    hdata_zlje_10.copy_from_stringio(df_10)
     #print(list(df_10))
 
     if debug:

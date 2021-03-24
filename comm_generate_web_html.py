@@ -682,12 +682,12 @@ def insert_industry(dict_name, key):
     pass
 
 
-from HData_eastmoney_fund import *
-from HData_eastmoney_fund_3 import *
-from HData_eastmoney_fund_5 import *
-from HData_eastmoney_fund_10 import *
+from HData_eastmoney_zlje import *
+from HData_eastmoney_zlje_3 import *
+from HData_eastmoney_zlje_5 import *
+from HData_eastmoney_zlje_10 import *
 
-from get_daily_fund import *
+from get_daily_zlje import *
 
 def comm_generate_web_dataframe(curr_dir, images, curr_day, dict_industry):
     
@@ -695,10 +695,10 @@ def comm_generate_web_dataframe(curr_dir, images, curr_day, dict_industry):
     with open(txt_file,'w') as f:
         f.write('\n')
 
-    fund_df   = get_zlje_data_from_db(url='url',     curr_date=curr_day)
-    fund_3_df = get_zlje_data_from_db(url='url_3',   curr_date=curr_day)
-    fund_5_df = get_zlje_data_from_db(url='url_5',   curr_date=curr_day)
-    fund_10_df = get_zlje_data_from_db(url='url_10', curr_date=curr_day)
+    zlje_df   = get_zlje_data_from_db(url='url',     curr_date=curr_day)
+    zlje_3_df = get_zlje_data_from_db(url='url_3',   curr_date=curr_day)
+    zlje_5_df = get_zlje_data_from_db(url='url_5',   curr_date=curr_day)
+    zlje_10_df = get_zlje_data_from_db(url='url_10', curr_date=curr_day)
 
     daily_df = hdata_day.get_data_from_hdata(start_date=curr_day, end_date=curr_day)
 
@@ -758,10 +758,10 @@ def comm_generate_web_dataframe(curr_dir, images, curr_day, dict_industry):
         industry_name = basic_df.loc[stock_code]['industry']
         insert_industry(dict_industry, industry_name)
 
-        zlje = get_zlje(fund_df, stock_code, curr_date=curr_day)
-        zlje_3 = get_zlje(fund_3_df, stock_code, curr_date=curr_day)
-        zlje_5 = get_zlje(fund_5_df, stock_code, curr_date=curr_day)
-        zlje_10 = get_zlje(fund_10_df, stock_code, curr_date=curr_day)
+        zlje = get_zlje(zlje_df, stock_code, curr_date=curr_day)
+        zlje_3 = get_zlje(zlje_3_df, stock_code, curr_date=curr_day)
+        zlje_5 = get_zlje(zlje_5_df, stock_code, curr_date=curr_day)
+        zlje_10 = get_zlje(zlje_10_df, stock_code, curr_date=curr_day)
 
         #### fina start ####
         if stock_code[0:1] == '6':
@@ -850,10 +850,10 @@ def comm_generate_web_dataframe_new(input_df, curr_dir, curr_day, dict_industry)
     with open(txt_file,'w') as f:
         f.write('\n')
 
-    fund_df   = get_zlje_data_from_db(url='url',     curr_date=curr_day)
-    fund_3_df = get_zlje_data_from_db(url='url_3',   curr_date=curr_day)
-    fund_5_df = get_zlje_data_from_db(url='url_5',   curr_date=curr_day)
-    fund_10_df = get_zlje_data_from_db(url='url_10', curr_date=curr_day)
+    zlje_df   = get_zlje_data_from_db(url='url',     curr_date=curr_day)
+    zlje_3_df = get_zlje_data_from_db(url='url_3',   curr_date=curr_day)
+    zlje_5_df = get_zlje_data_from_db(url='url_5',   curr_date=curr_day)
+    zlje_10_df = get_zlje_data_from_db(url='url_10', curr_date=curr_day)
 
     daily_df = input_df
 
@@ -899,10 +899,10 @@ def comm_generate_web_dataframe_new(input_df, curr_dir, curr_day, dict_industry)
         industry_name = basic_df.loc[stock_code]['industry']
         insert_industry(dict_industry, industry_name)
 
-        zlje = get_zlje(fund_df, stock_code, curr_date=curr_day)
-        zlje_3 = get_zlje(fund_3_df, stock_code, curr_date=curr_day)
-        zlje_5 = get_zlje(fund_5_df, stock_code, curr_date=curr_day)
-        zlje_10 = get_zlje(fund_10_df, stock_code, curr_date=curr_day)
+        zlje = get_zlje(zlje_df, stock_code, curr_date=curr_day)
+        zlje_3 = get_zlje(zlje_3_df, stock_code, curr_date=curr_day)
+        zlje_5 = get_zlje(zlje_5_df, stock_code, curr_date=curr_day)
+        zlje_10 = get_zlje(zlje_10_df, stock_code, curr_date=curr_day)
 
         #### fina start ####
         fina_df = hdata_fina.get_data_from_hdata(stock_code = stock_code_new)

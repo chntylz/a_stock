@@ -19,7 +19,7 @@ from HData_xq_day import *
 from HData_xq_fina import *
 from HData_xq_holder import *
 
-from get_daily_fund import *
+from get_daily_zlje import *
 
 import  datetime
 
@@ -50,15 +50,15 @@ def hsgt_get_day_item_from_json(file_path):
     list_tmp=[]
     line_count=len(gzip.open(file_path).readlines())
 
-    #get fund from eastmoney database
-    real_fund_df = get_daily_fund()
-    real_fund_df = handle_raw_data(real_fund_df)
+    #get zlje from eastmoney database
+    real_zlje_df = get_daily_zlje()
+    real_zlje_df = handle_raw_data(real_zlje_df)
     
     ####get zlje start####
-    fund_df   = get_zlje_data_from_db(url='url'     )
-    fund_3_df = get_zlje_data_from_db(url='url_3'   )
-    fund_5_df = get_zlje_data_from_db(url='url_5'   )
-    fund_10_df = get_zlje_data_from_db(url='url_10' )
+    zlje_df   = get_zlje_data_from_db(url='url'     )
+    zlje_3_df = get_zlje_data_from_db(url='url_3'   )
+    zlje_5_df = get_zlje_data_from_db(url='url_5'   )
+    zlje_10_df = get_zlje_data_from_db(url='url_10' )
     ####get zlje end####
 
     for line in gzip.open(file_path):
@@ -94,19 +94,19 @@ def hsgt_get_day_item_from_json(file_path):
             shgt_code='0'.join(shgt_code)
 
         #### zlje start ####
-        zlje = get_zlje(fund_df,     shgt_code, curr_date=shgt_date)
+        zlje = get_zlje(zlje_df,     shgt_code, curr_date=shgt_date)
         if zlje:
             zlje = float(zlje[: zlje.find('<br>')])
 
-        zlje_3 = get_zlje(fund_3_df,   shgt_code, curr_date=shgt_date)
+        zlje_3 = get_zlje(zlje_3_df,   shgt_code, curr_date=shgt_date)
         if zlje_3:
             zlje_3 = float(zlje_3[: zlje_3.find('<br>')])
 
-        zlje_5 = get_zlje(fund_5_df,   shgt_code, curr_date=shgt_date)
+        zlje_5 = get_zlje(zlje_5_df,   shgt_code, curr_date=shgt_date)
         if zlje_5:
             zlje_5 = float(zlje_5[: zlje_5.find('<br>')])
 
-        zlje_10 = get_zlje(fund_10_df,  shgt_code, curr_date=shgt_date)
+        zlje_10 = get_zlje(zlje_10_df,  shgt_code, curr_date=shgt_date)
         if zlje_10:
             zlje_10 = float(zlje_10[: zlje_10.find('<br>')])
         #### zlje end ####

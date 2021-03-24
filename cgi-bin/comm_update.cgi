@@ -17,12 +17,12 @@ hdata_holder=HData_xq_holder("usr","usr")
 
 from comm_generate_html import *
 
-from HData_eastmoney_fund import *
-from HData_eastmoney_fund_3 import *
-from HData_eastmoney_fund_5 import *
-from HData_eastmoney_fund_10 import *
+from HData_eastmoney_zlje import *
+from HData_eastmoney_zlje_3 import *
+from HData_eastmoney_zlje_5 import *
+from HData_eastmoney_zlje_10 import *
 
-from get_daily_fund import *
+from get_daily_zlje import *
 from test_get_basic_data import *
 
 
@@ -77,14 +77,14 @@ def show_realdata():
         print(my_list)
     length=len(my_list)
    
-    real_fund_df = get_daily_fund()
-    real_fund_df = handle_raw_data(real_fund_df)
+    real_zlje_df = get_daily_zlje()
+    real_zlje_df = handle_raw_data(real_zlje_df)
     
     ####get zlje start####
-    fund_df   = get_zlje_data_from_db(url='url',     curr_date=str_date)
-    fund_3_df = get_zlje_data_from_db(url='url_3',   curr_date=str_date)
-    fund_5_df = get_zlje_data_from_db(url='url_5',   curr_date=str_date)
-    fund_10_df = get_zlje_data_from_db(url='url_10', curr_date=str_date)
+    zlje_df   = get_zlje_data_from_db(url='url',     curr_date=str_date)
+    zlje_3_df = get_zlje_data_from_db(url='url_3',   curr_date=str_date)
+    zlje_5_df = get_zlje_data_from_db(url='url_5',   curr_date=str_date)
+    zlje_10_df = get_zlje_data_from_db(url='url_10', curr_date=str_date)
     ####get zlje end####
     i = 0
     eastmoney_begin = 10
@@ -106,7 +106,7 @@ def show_realdata():
             if debug: 
                 print('use eastmoney data')
 
-            real_df = real_fund_df[real_fund_df['code'] == new_code]
+            real_df = real_zlje_df[real_zlje_df['code'] == new_code]
             if len(real_df):
                 real_df = real_df.reset_index(drop=True)
                 new_price       = real_df['zxj'][0]
@@ -145,10 +145,10 @@ def show_realdata():
         new_hsgt_date = new_hsgt_date[5:]
         
         #### zlje start ####
-        zlje    = get_zlje(fund_df,     new_code, curr_date=str_date)
-        zlje_3  = get_zlje(fund_3_df,   new_code, curr_date=str_date)
-        zlje_5  = get_zlje(fund_5_df,   new_code, curr_date=str_date)
-        zlje_10 = get_zlje(fund_10_df,  new_code, curr_date=str_date)
+        zlje    = get_zlje(zlje_df,     new_code, curr_date=str_date)
+        zlje_3  = get_zlje(zlje_3_df,   new_code, curr_date=str_date)
+        zlje_5  = get_zlje(zlje_5_df,   new_code, curr_date=str_date)
+        zlje_10 = get_zlje(zlje_10_df,  new_code, curr_date=str_date)
         #### zlje end ####
 
 

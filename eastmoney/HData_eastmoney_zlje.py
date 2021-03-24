@@ -16,10 +16,10 @@ from io import StringIO
 debug = 0
 #debug = 1
 
-class HData_eastmoney_fund(object):
+class HData_eastmoney_zlje(object):
     def __init__(self,user,password):
         # self.aaa = aaa
-        self.eastmoney_fund_table=[]
+        self.eastmoney_zlje_table=[]
         self.user=user
         self.password=password
 
@@ -39,7 +39,7 @@ class HData_eastmoney_fund(object):
 
     def table_is_exist(self):
         self.db_connect()
-        self.cur.execute("select count(*) from pg_class where relname = 'eastmoney_fund_table' ;")
+        self.cur.execute("select count(*) from pg_class where relname = 'eastmoney_zlje_table' ;")
         ans=self.cur.fetchall()
         #print(list(ans[0])[0])
         if list(ans[0])[0]:
@@ -62,8 +62,8 @@ class HData_eastmoney_fund(object):
 
         # 创建stocks表
         self.cur.execute('''
-            drop table if exists eastmoney_fund_table;
-            create table eastmoney_fund_table(
+            drop table if exists eastmoney_zlje_table;
+            create table eastmoney_zlje_table(
                 zxj float, 
                 zdf float, 
                 stock_code varchar, 
@@ -80,12 +80,12 @@ class HData_eastmoney_fund(object):
                 xdje float, 
                 xdjzb float
                 );
-            alter table eastmoney_fund_table add primary key(stock_code,record_date);
+            alter table eastmoney_zlje_table add primary key(stock_code,record_date);
             ''')
         self.conn.commit()
         self.db_disconnect()
 
-        print("db_eastmoney_fund_table_create finish")
+        print("db_eastmoney_zlje_table_create finish")
         pass
 
     def copy_from_stringio(self, df):
@@ -104,7 +104,7 @@ class HData_eastmoney_fund(object):
 
         self.db_connect()
         try:
-            self.cur.copy_from(buffer, table='eastmoney_fund_table', sep=",")
+            self.cur.copy_from(buffer, table='eastmoney_zlje_table', sep=",")
             self.conn.commit()
         except (Exception, psycopg2.DatabaseError) as error:
             print("Error: %s" % error)
@@ -119,7 +119,7 @@ class HData_eastmoney_fund(object):
     def db_get_maxdate_of_stock(self,stock_code):#获取某支股票的最晚日期
 
         self.db_connect()
-        self.cur.execute("select max(record_date) from eastmoney_fund_table \
+        self.cur.execute("select max(record_date) from eastmoney_zlje_table \
                 where stock_code=\'" + stock_code+ "\' ;")
         ans=self.cur.fetchall()
         if(len(ans)==0):
@@ -144,7 +144,7 @@ class HData_eastmoney_fund(object):
 
         sql_temp = "select * from ( "
 
-        sql_temp += "select * from eastmoney_fund_table"
+        sql_temp += "select * from eastmoney_zlje_table"
 
         if stock_code is None and start_date is None and end_date is None:
             pass
@@ -219,7 +219,7 @@ class HData_eastmoney_fund(object):
         
         and_flag = False
 
-        sql_temp = "delete from eastmoney_fund_table"
+        sql_temp = "delete from eastmoney_zlje_table"
 
         if stock_code is None and start_date is None and end_date is None:
             self.db_disconnect()
@@ -264,10 +264,10 @@ class HData_eastmoney_fund(object):
         pass
  
 
-#alter table eastmoney_fund_table add  "up_days" int not null default 0;
+#alter table eastmoney_zlje_table add  "up_days" int not null default 0;
 
 
-#update eastmoney_fund_table set is_zig=0 where record_date = '2018-10-08' and stock_code = '002732';
+#update eastmoney_zlje_table set is_zig=0 where record_date = '2018-10-08' and stock_code = '002732';
 
-#UPDATE eastmoney_fund_table SET is_zig = tmp.is_zig, is_quad=tmp.is_quad FROM    (VALUES ( DATE  '2018-06-13', '600647', 11, 1), ( DATE  '2018-06-12', '600647', 12, 1) ) AS tmp (record_date, stock_code, is_zig, is_quad ) WHERE eastmoney_fund_table.record_date = tmp.record_date and eastmoney_fund_table.stock_code = tmp.stock_code;
-#select * from eastmoney_fund_table where stock_code ='600647' and (record_date='2018-06-13' or record_date='2018-06-12' ); 
+#UPDATE eastmoney_zlje_table SET is_zig = tmp.is_zig, is_quad=tmp.is_quad FROM    (VALUES ( DATE  '2018-06-13', '600647', 11, 1), ( DATE  '2018-06-12', '600647', 12, 1) ) AS tmp (record_date, stock_code, is_zig, is_quad ) WHERE eastmoney_zlje_table.record_date = tmp.record_date and eastmoney_zlje_table.stock_code = tmp.stock_code;
+#select * from eastmoney_zlje_table where stock_code ='600647' and (record_date='2018-06-13' or record_date='2018-06-12' ); 
