@@ -69,7 +69,6 @@ def show_realdata():
     #my_list=['300750','300552', '000401', '300458','300014', '601958', '601117', '600588', '002230']
     #my_list_cn=['ningdeshidai','wanjikeji', 'jidongshuini', 'quanzhikeji', 'yiweilineng', 'jinmugufen', 'zhongguohuaxue', 'yongyouwangluo', 'kedaxunfei']
 
-    data_list = []
 
     file_name = 'my_optional.txt'
     my_list = get_stock_info(file_name)

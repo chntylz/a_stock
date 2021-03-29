@@ -17,8 +17,8 @@ debug=0
 class Stocks(object):#这个类表示"股票们"的整体(不是单元)
     def get_stock_basic(self):
         self.stock_basic = pro.stock_basic(exchange='', list_status='L', fields='ts_code,symbol,name,area,industry,list_date')
-
         self.stock_basic = self.stock_basic.fillna(0)
+        print(self.stock_basic)
 
     def get_codestock_local(self):#从本地获取所有股票代号和名称
         conn = psycopg2.connect(database="usr", user=self.user, password=self.password, host="127.0.0.1",
@@ -67,6 +67,7 @@ class Stocks(object):#这个类表示"股票们"的整体(不是单元)
         cur = conn.cursor()
         self.get_stock_basic()
 
+
         for i in range(0,len(self.stock_basic)):
             sql_temp='''select * from stocks where stock_code='''
             sql_temp+="\'"+self.stock_basic["symbol"][i]+"\';"
@@ -79,7 +80,7 @@ class Stocks(object):#这个类表示"股票们"的整体(不是单元)
             if(len(rows)==0):
                 #如果股票代码没找到就插
                 ans+=1
-                sql_tmp = self.db_perstock_insertsql(
+                sql_temp = self.db_perstock_insertsql(
                     self.stock_basic["symbol"][i],
                     self.stock_basic["name"][i],
                     self.stock_basic["area"][i],

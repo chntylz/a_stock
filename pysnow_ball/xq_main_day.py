@@ -17,6 +17,10 @@ import os
 from test_get_basic_data import * 
 from file_interface import * 
 from comm_interface import * 
+
+
+from Stocks import *
+
 import pysnowball as ball
 
 debug=0
@@ -24,9 +28,13 @@ debug=0
 para1 = 0
 
 hdata_day=HData_xq_day("usr","usr")
+stocks=Stocks("usr","usr")
+
 
 #stocks.db_stocks_create()#如果还没有表则需要创建
-#print(stocks.db_stocks_update())#根据todayall的情况更新stocks表
+stocks.db_stocks_update()#根据todayall的情况更新stocks表
+
+#sys.exit()
 
 def handle_raw_df(df):
     '''
@@ -183,7 +191,9 @@ if __name__ == '__main__':
     token=get_cookie()
     ball.set_token(token)
 
-    
+        
+
+
     cript_name, para1 = check_input_parameter()
     
     t1 = time.time()

@@ -286,6 +286,9 @@ def get_conti_day_from_s_db(image_name):
     pass
     
 def comm_write_to_file(f, k, df, filename):
+
+    fund_date = ['03-31', '06-30', '09-30', '12-31']
+
     f.write('<table class="gridtable">\n')
 
     #headline
@@ -300,6 +303,7 @@ def comm_write_to_file(f, k, df, filename):
         a_array=df[i:i+1].values  #get line of df
         tmp_stock_code=a_array[0][1] 
         xueqiu_url, hsgt_url, fina_url, holder_url = comm_handle_link(tmp_stock_code)
+        fund_url = 'https://data.eastmoney.com/zlsj/detail/2020-12-31-0-' + tmp_stock_code +'.html'
 
         col_name = list(df)
         col_len=len(col_name)
@@ -340,6 +344,10 @@ def comm_write_to_file(f, k, df, filename):
                 elif list(df)[j] == 'holder_change':
                     f.write('           <a href="%s" target="_blank"> %s</a>\n'%\
                             (holder_url, element_value))
+                elif list(df)[j] == 'fu_delta':
+                    tmp_url = ''
+                    f.write('           <a href="%s" target="_blank"> %s</a>\n'%\
+                            (fund_url, element_value))
                 elif(j == 15):
                     #fix bug:  must be real number, not datetime.date for holder function
                     if list(df)[j] == 'hk_date':
@@ -650,6 +658,10 @@ def comm_handle_hsgt_data(df):
                 * hsgt_df['close'][0] / 10000
         hsgt_deltam         = round(hsgt_deltam, 2)
         conti_day, money_total= comm_get_hsgt_continous_info(hsgt_df)
+        
+        is_zig              = hsgt_df['is_zig'][0]
+        is_quad             = hsgt_df['is_quad'][0]
+        is_peach            = hsgt_df['is_peach'][0]
 
     elif hsgt_df_len > 0:
         hsgt_date           = hsgt_df['record_date'][0]
@@ -661,6 +673,10 @@ def comm_handle_hsgt_data(df):
         hsgt_deltam         = round(hsgt_deltam, 2)
         conti_day           = 1
         money_total         = hsgt_deltam
+        
+        is_zig              = hsgt_df['is_zig'][0]
+        is_quad             = hsgt_df['is_quad'][0]
+        is_peach            = hsgt_df['is_peach'][0]
     else:
         hsgt_date           = ''
         hsgt_share          = 0
@@ -669,8 +685,12 @@ def comm_handle_hsgt_data(df):
         hsgt_deltam         = 0
         conti_day           = 0
         money_total         = 0
+        is_zig              = 0
+        is_quad             = 0
+        is_peach            = 0
 
-    return hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total   
+    return hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, \
+            conti_day, money_total, is_zig, is_quad, is_peach   
 
 
 
@@ -741,8 +761,8 @@ def comm_generate_web_dataframe(curr_dir, images, curr_day, dict_industry):
         close_p = round (close_p.value, 4) * 100
 
         hsgt_df = hsgtdata.get_data_from_hdata(stock_code=stock_code, end_date=curr_day, limit=60)
-        hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total \
-                = comm_handle_hsgt_data(hsgt_df)
+        hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total, \
+            is_zig, is_quad, is_peach = comm_handle_hsgt_data(hsgt_df)
         
         tmp_df=daily_df[daily_df['stock_code']==stock_code_new]
         tmp_df=tmp_df.reset_index(drop=True)
@@ -886,12 +906,13 @@ def comm_generate_web_dataframe_new(input_df, curr_dir, curr_day, dict_industry)
         close_p = round (close_p.value, 4) * 100
 
         hsgt_df = hsgtdata.get_data_from_hdata(stock_code=stock_code, end_date=curr_day, limit=60)
-        hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total \
-                = comm_handle_hsgt_data(hsgt_df)
+        hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total, \
+            is_zig, is_quad, is_peach = comm_handle_hsgt_data(hsgt_df)
         
         is_zig  =daily_df.is_zig[i]
         is_quad =daily_df.is_quad[i]
         is_peach=daily_df.is_peach[i]
+
         is_2d3pct=daily_df.is_2d3pct[i]
         is_cup_tea=daily_df.is_cup_tea[i]
         total_mv=daily_df.market_capital[i]
