@@ -14,6 +14,8 @@ from HData_fina import *
 from HData_hsgt import *
 from HData_xq_holder import *
 from HData_xq_day import *
+
+
 from comm_generate_web_html import *
 import  datetime
 
@@ -31,8 +33,7 @@ hdata_day=HData_xq_day("usr","usr")
 
 debug = 0 
 #debug = 1
-   
-
+ 
 def get_holder_data():
     nowdate = datetime.datetime.now().date()    
     lastdate = nowdate - datetime.timedelta(365 * 3) #3 years ago
@@ -43,30 +44,36 @@ def get_holder_data():
     holder_data = holder_data.sort_values('record_date', ascending=0)
     return holder_data
 
-def get_curr_day_k_data():
+def get_curr_day_k_data(date=None):
 
     daily_df = pd.DataFrame()
-    now_hour = int(datetime.datetime.now().strftime("%H"))
-    nowdate=datetime.datetime.now().date()
-    curr_day=nowdate.strftime("%Y-%m-%d")
+    if date is None:
+        now_hour = int(datetime.datetime.now().strftime("%H"))
+        nowdate=datetime.datetime.now().date()
+        curr_day=nowdate.strftime("%Y-%m-%d")
 
-    print('now_hour=%d' % now_hour )
+        print('now_hour=%d' % now_hour )
 
-    if now_hour > 12:
+        if now_hour > 12:
+            daily_df = hdata_day.get_data_from_hdata(start_date=curr_day,
+                    end_date=curr_day)
+        else:
+            lastdate=nowdate-datetime.timedelta(1)
+            last_day=lastdate.strftime("%Y-%m-%d")
+            daily_df = hdata_day.get_data_from_hdata(start_date=last_day,
+                    end_date=last_day)
+    else:
+        curr_day = date
         daily_df = hdata_day.get_data_from_hdata(start_date=curr_day,
                 end_date=curr_day)
-    else:
-        lastdate=nowdate-datetime.timedelta(1)
-        last_day=lastdate.strftime("%Y-%m-%d")
-        daily_df = hdata_day.get_data_from_hdata(start_date=last_day,
-                end_date=last_day)
 
     print('len(daily_df) = %d' % len(daily_df))
     return daily_df
 
-def holder_get_continuous_info(df, curr_day):
 
-    daily_df = get_curr_day_k_data()
+def holder_get_continuous_info(df, date=None):
+
+    daily_df = get_curr_day_k_data(date)
 
     df=df[~df['holder_num'].isin([0])]  #delete the line which holder_num value is 0
     df = df.fillna(0)
@@ -84,9 +91,8 @@ def holder_get_continuous_info(df, curr_day):
             print('len(group_df)=%d' % len(group_df))
 
         stock_code_new = stock_code[2:]
-
-   
         
+    
         #get stock_cname
         stock_name = symbol(stock_code_new)
         pos_s=stock_name.rfind('[')
@@ -136,23 +142,7 @@ def holder_get_continuous_info(df, curr_day):
         else:
             continue
 
-        #funcat call
-        T(curr_day)
-        S(stock_code_new)
-        if debug:
-            print(stock_code_new, O, H, L, C)
-            
-        pre_close = REF(C, 1)
-        open_p = (O - pre_close)/pre_close
-        open_p = round (open_p.value, 4)
-        open_jump=open_p - 0.02
-        if debug:
-            print(stock_code_new, O, H, L, C, open_p)
-
-        close_p = (C - pre_close)/pre_close
-        close_p = round (close_p.value, 4) * 100
-
-        all_df = hdata_hsgt.get_data_from_hdata(stock_code=stock_code_new, end_date=curr_day, limit=60)
+        all_df = hdata_hsgt.get_data_from_hdata(stock_code=stock_code_new, end_date=date, limit=60)
         hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total \
                 = comm_handle_hsgt_data(all_df)
        
@@ -167,27 +157,25 @@ def holder_get_continuous_info(df, curr_day):
             is_zig   = tmp_df['is_zig'][0]
             is_quad  = tmp_df['is_quad'][0]
             is_peach = tmp_df['is_peach'][0]
+            close_p  = tmp_df['percent'][0]
+            close    = tmp_df['close'][0]
 
         else:
             is_zig   = 0
             is_quad  = 0
             is_peach = 0
-        
-        '''
-        is_zig   = daily_df[daily_df['stock_code']==stock_code]['is_zig'][0]
-        is_quad  = daily_df[daily_df['stock_code']==stock_code]['is_quad'][0]
-        is_peach = daily_df[daily_df['stock_code']==stock_code]['is_peach'][0]
-        '''
-
+            close_p  = 0
+            close    = 0
 
         if debug:
-            print( max_date, stock_code_new, stock_name, holder_num, i,  holder_pct, holder_pct_i, close_p, C.value, \
+            print( max_date, stock_code_new, stock_name, holder_num, i,  holder_pct, holder_pct_i, \
+                    close_p, close, \
                     hsgt_share, hsgt_date, hsgt_percent, hsgt_delta1, hsgt_deltam, \
                     conti_day, money_total,\
                     is_peach, is_zig, is_quad )
 
         data_list.append([ max_date, stock_code_new, stock_name, holder_num,  i,  holder_pct, holder_pct_i, \
-                close_p, C.value,  hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, \
+                close_p, close,  hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, \
                 conti_day, money_total,\
                 is_peach, is_zig, is_quad])  #i  is conti_day
 
@@ -231,13 +219,16 @@ def holder_handle_html_special(newfile):
 
     
     
-def holder_generate_html(df):
-    save_dir = "holder"
+def holder_generate_html(df, save_dir=None, file_name=None):
+    if save_dir is None:
+        save_dir = "holder"
+    if file_name is None:
+        file_name='holder'
+
     exec_command = "mkdir -p " + (save_dir)
     print(exec_command)
     os.system(exec_command)
 
-    file_name='holder'
     newfile=save_dir + '/' + file_name + '.html'
 
     comm_handle_html_head(newfile, save_dir, datetime.datetime.now().date().strftime("%Y-%m-%d")  )
@@ -245,31 +236,26 @@ def holder_generate_html(df):
     comm_handle_html_body(newfile, df)
     comm_handle_html_end(newfile)
     
-    
-    
-def get_example_data(curr_day):
-
-    hdata_holder.db_connect()#由于每次连接数据库都要耗时0.0几秒，故获取历史数据时统一连接
+   
+def get_holder_df(date=None):
     df = get_holder_data()
-    df_holder =  holder_get_continuous_info(df, curr_day )
-    hdata_holder.db_disconnect()
-
+    df_holder =  holder_get_continuous_info(df, date)
     return df, df_holder
-
 
 
 if __name__ == '__main__':
 
     t1 = time.time()
     nowdate=datetime.datetime.now().date()
-    lastdate=nowdate-datetime.timedelta(1)
+    lastdate=nowdate-datetime.timedelta(0)
     curr_day=nowdate.strftime("%Y-%m-%d")
     last_day=lastdate.strftime("%Y-%m-%d")
 
     print("curr_day:%s"%(curr_day))
 
-    df, df_holder = get_example_data(last_day)
-    holder_generate_html(df_holder)
+    df, df_holder = get_holder_df(last_day)
+    holder_generate_html(df_holder, save_dir='holder', file_name='holder')
+
     t2 = time.time()
     print("t1:%s, t2:%s, delta=%s"%(t1, t2, t2-t1))
 
