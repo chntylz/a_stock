@@ -5,6 +5,8 @@ SZ399006 chuangyeban
 SZ159994 5GETF
 
 SZ000977 langchaoxinxi
+SZ000513 lizhujituan
+SZ300638 guanghetong
 SH601318 zhongguopingan
 SH600529 shandongyaobo
 SZ300035 zhongkedianqi
@@ -36,7 +38,6 @@ SZ000877 tianshangufen
 SZ003009 zhongtianhuojian
 SH600745 wentaikeji
 SZ002273 shuijingguangdian
-SZ300638 guanghetong
 SZ002049 ziguangguohui
 SH600196 fuxingyiyao
 SZ300664 pengyaohuanbao
@@ -62,7 +63,6 @@ SH600048 baolidichan
 SZ002463 hudiankeji
 
 SZ300253 weiningjiankang
-SZ000513 lizhujituan
 SZ002271 dongfangyuhong
 SZ002304 yanghegufen
 

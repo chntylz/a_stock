@@ -5,6 +5,7 @@ cp -rf ../zig.py            .
 cp -rf ../comm_generate_html.py .
 cp ../eastmoney/get_daily_zlje.py .
 cp ../eastmoney/HData_eastmoney_zlje*.py .
+cp ../eastmoney/HData_eastmoney_fund.py .
 cp ../pysnow_ball/HData_xq_fina.py .
 cp ../pysnow_ball/HData_xq_holder.py .
 cp ../pysnow_ball/test_get_basic_data.py .

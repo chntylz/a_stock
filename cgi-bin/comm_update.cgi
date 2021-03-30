@@ -46,6 +46,96 @@ def is_work_time():
 
     return ret
 
+ 
+from HData_eastmoney_fund import *
+hdata_fund=HData_eastmoney_fund("usr","usr")
+
+
+def get_fund_info(stock_code, fund_df):
+
+    fu_num=fu_delta=fu_value=fu_ratio=fu_chg_share=fu_chg_ratio=0
+    ret_fund_info=''
+    df = fund_df
+    tmp_df = df[df['stock_code'] == stock_code]
+    if len(tmp_df):
+        tmp_df = tmp_df.reset_index(drop=True)
+        fu_num = tmp_df.loc[0]['quantity'] 
+        fu_delta = tmp_df.loc[0]['delta_quantity'] 
+        fu_value = tmp_df.loc[0]['total_value'] 
+        fu_ratio = tmp_df.loc[0]['float_ratio'] 
+        fu_chg_share = tmp_df.loc[0]['chg_share']
+        fu_chg_ratio = tmp_df.loc[0]['chg_ratio'] 
+        
+        ret_fund_info = str(int(fu_num))
+        if fu_delta > 0:
+            ret_fund_info += '+' 
+            ret_fund_info += str(int(fu_delta))
+        else:
+            ret_fund_info += str(int(fu_delta))
+
+        
+        ret_fund_info += '+' 
+        ret_fund_info += str(fu_value)
+
+
+        ret_fund_info += '<br>' 
+
+        ret_fund_info += str(fu_ratio)
+
+        if fu_chg_share > 0:
+            ret_fund_info += '+' 
+            ret_fund_info += str(fu_chg_share)
+        else:
+            ret_fund_info += str(fu_chg_share)
+
+
+        if fu_chg_ratio > 0:
+            ret_fund_info += '+' 
+            ret_fund_info += str(fu_chg_ratio)
+        else:
+            ret_fund_info += str(fu_chg_ratio)
+
+        ret_fund_info += '</br>' 
+    return ret_fund_info
+        
+
+
+   
+
+
+
+def get_fund_data(date=None):
+    nowdate = date
+    if date is None: 
+        nowdate = datetime.datetime.now().date()    
+    lastdate = nowdate - datetime.timedelta(365 * 1) #1 years ago
+
+    #get the latest date from guizhoumaotai
+    maxdate = hdata_fund.db_get_maxdate_of_stock('600519')
+
+    #print('nowdate:%s, lastdate:%s' % (nowdate, lastdate))
+    df = hdata_fund.get_data_from_hdata( start_date=lastdate.strftime("%Y-%m-%d"), \
+            end_date=nowdate.strftime("%Y-%m-%d"))
+    
+    df = df.sort_values('record_date', ascending=0)
+    df = df.reset_index(drop=True)
+
+    df['quantity_last']=df.groupby('stock_code')['quantity'].shift((-1))
+    #insert the fourth column
+    df.insert(6, 'delta_quantity', df['quantity'] - df['quantity_last'])
+    df = df.fillna(0)
+
+    del df['quantity_last']
+    del df['type']
+    del df['value']
+
+    #df = df.sort_values('delta_quantity', ascending=0)
+    df = df.sort_values('quantity', ascending=0)
+    df = df.reset_index(drop=True)
+    df = df[df['record_date'] == maxdate.strftime("%Y-%m-%d")]
+    df = df.reset_index(drop=True)
+    return df
+
 
 
 def get_stock_info(file_name):
@@ -64,11 +154,13 @@ def get_stock_info(file_name):
     return stock_list
 
 
-
 def show_realdata():
     #my_list=['300750','300552', '000401', '300458','300014', '601958', '601117', '600588', '002230']
     #my_list_cn=['ningdeshidai','wanjikeji', 'jidongshuini', 'quanzhikeji', 'yiweilineng', 'jinmugufen', 'zhongguohuaxue', 'yongyouwangluo', 'kedaxunfei']
 
+    data_list = []
+
+    fund_df = get_fund_data()
 
     file_name = 'my_optional.txt'
     my_list = get_stock_info(file_name)
@@ -195,12 +287,18 @@ def show_realdata():
         h_chg = str(h0) + ' ' + str(h1) + ' ' + str(h2)
         #new_code = new_code + '<br>'+ h_chg + '</br>'
 
-        #### holder start ####
+        #### holder end ####
 
+        #### fund start ####
+        fund_info = get_fund_info(new_code, fund_df)
+        #print('stock_code =%s, fund_info：%s' % (new_code, fund_info))
+        #### fund end ####
+
+        
 
 
         data_list.append([new_date, new_code, new_name, new_pre_price, new_price, new_percent, \
-                is_peach, is_zig, is_quad, zlje, zlje_3, zlje_5, zlje_10, h_chg,\
+                is_peach, is_zig, is_quad, zlje, zlje_3, zlje_5, zlje_10, h_chg, fund_info, \
                 new_hsgt_date, new_hsgt_share_holding, new_hsgt_percent, \
                 new_hsgt_delta1, new_hsgt_deltam, conti_day, money_total])
 
@@ -208,7 +306,8 @@ def show_realdata():
         #data_list.append([str_date, my_list[i], my_list_cn[i], df['pre_close'][0], df['price'][0] ])
 
     data_column = ['curr_date', 'code', 'name', 'pre_price', 'price', 'a_pct', \
-            'peach', 'zig', 'quad', 'zlje', 'zlje_3', 'zlje_5', 'zlje_10', 'holder_change', \
+            'peach', 'zig', 'quad', 'zlje', 'zlje_3', 'zlje_5', 'zlje_10', \
+            'holder_change', 'num_d_v_r_c_cr', \
             'hk_date', 'hk_share', 'hk_pct', 'hk_delta1', 'hk_deltam', 'days', 'hk_m_total']
 
     ret_df=pd.DataFrame(data_list, columns=data_column)
