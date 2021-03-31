@@ -52,7 +52,7 @@ hdata=HData_xq_day("usr","usr")
 
 #debug switch
 debug = 0
-debug = 0
+#debug = 1
 
 def yitoujing(df, k):
     df_len=len(df)
@@ -139,8 +139,8 @@ def calculate_peach_zig_quad(nowdate):
         # if len(detail_info) == 0 or (detail_info is None):
         if len(detail_info) < 6  or (detail_info is None):
             # print('NaN: code:%s, name:%s' % (nowcode, nowname ))
-            update_list.append([nowdate.strftime("%Y-%m-%d"), nowcode_new, is_peach, is_zig, is_quad,\
-                    is_macd, is_2d3pct, is_up_days])
+            update_list.append([nowdate.strftime("%Y-%m-%d"), nowcode_new, is_peach, is_zig, is_quad, \
+                is_macd, is_2d3pct, is_up_days, is_cup_tea, is_duck_head])
             continue
          
         db_max_date = detail_info['record_date'][len(detail_info)-1]
@@ -674,6 +674,8 @@ def update_peach_zig_quad(nowdate, df, df1):
     tmp_df['is_cup_tea']  = tmp_df1['is_cup_tea']
     tmp_df['is_duck_head']  = tmp_df1['is_duck_head']
 
+    tmp_df.to_csv('./cross_condition.csv', encoding='gbk')
+
     if debug:
         print(tmp_df)
 
@@ -704,6 +706,7 @@ if __name__ == '__main__':
                 end_date=nowdate.strftime("%Y-%m-%d")\
                 )
         update_peach_zig_quad(nowdate, nowdate_df, handle_df) 
+
 
     t2 = time.time()
 
