@@ -580,6 +580,7 @@ def comm_handle_html_end(filename, target_dir=''):
         exec_command = 'cp -rf ' + filename + ' /var/www/html/stock_data/' + target_dir + '/'
         os.system(exec_command)
 
+    print(exec_command)
     if debug:
         print(exec_command)
     pass

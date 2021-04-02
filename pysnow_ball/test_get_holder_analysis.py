@@ -143,8 +143,8 @@ def holder_get_continuous_info(df, date=None):
             continue
 
         all_df = hdata_hsgt.get_data_from_hdata(stock_code=stock_code_new, end_date=date, limit=60)
-        hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total \
-                = comm_handle_hsgt_data(all_df)
+        hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total, \
+                is_zig, is_quad, is_peach = comm_handle_hsgt_data(all_df)
        
 
         tmp_df = daily_df[daily_df['stock_code']==stock_code]

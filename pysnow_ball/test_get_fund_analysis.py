@@ -49,6 +49,7 @@ def get_fund_data(date=None):
     df = hdata_fund.get_data_from_hdata( start_date=lastdate.strftime("%Y-%m-%d"), \
             end_date=nowdate.strftime("%Y-%m-%d"))
     
+    df=df[~df['stock_name'].str.contains('退市')]
     df = df.sort_values('record_date', ascending=0)
     df = df.reset_index(drop=True)
 
