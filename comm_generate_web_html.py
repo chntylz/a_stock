@@ -990,7 +990,7 @@ def comm_generate_web_dataframe_new(input_df, curr_dir, curr_day, dict_industry)
 
     ret_df=ret_df.loc[:,data_column]
 
-    ret_df = ret_df.sort_values('hk_m_total', ascending=0)
+    ret_df = ret_df.sort_values('zig', ascending=0)
  
     return ret_df
 
