@@ -118,7 +118,7 @@ def calculate_peach_zig_quad(nowdate):
 
 
         if 0:
-            if '0825' not in  nowcode:
+            if '0995' not in  nowcode:
                 continue
             print("code:%s, name:%s" % (nowcode, nowname ))
 
@@ -256,7 +256,15 @@ def calculate_peach_zig_quad(nowdate):
         
         in_day = 30
         #第一次最高价： 30个交易日的最高价
-        H1 = HHV(REF(H, 1), in_day)    
+        try :
+            H1 = HHV(REF(H, 1), in_day)    
+        except:
+            print('### error %s, %s, %s' %(str(nowdate), nowcode, nowname))
+            update_list.append([nowdate.strftime("%Y-%m-%d"), nowcode_new, is_peach, is_zig, is_quad, \
+                    is_macd, is_2d3pct, is_up_days, is_cup_tea, is_duck_head])
+            continue
+        else:
+            pass
 
         #第一次最低收盘价： 30个交易日的最低价
         L1 = LLV(REF(C, 1), in_day)    

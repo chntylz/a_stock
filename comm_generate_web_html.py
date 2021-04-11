@@ -50,17 +50,6 @@ basic_df=stocks.get_all_data()
 debug=0
 #debug=1
 
-def comm_get_total_mv(stock_code):
-    total_mv_df = db_daily.get_data_from_hdata(stock_code=stock_code, limit=1)
-    #市值，单位：亿
-    if len(total_mv_df) > 0:
-        total_mv = total_mv_df['total_mv'][0]/10000 
-    else:
-        total_mv = 0
-
-    return round(total_mv,2)
-
-
 
   
 ############################################################################################################
@@ -215,16 +204,6 @@ def comm_write_headline_column(f, df):
             f.write('           <a> %s</a>\n'%(list(df)[j]))
         f.write('        </td>\n')
 
-    #add total_mv
-    f.write('        <td>\n')
-    f.write('           <a> total_mv </a>\n')
-    f.write('        </td>\n')
-
-    #add industry
-    f.write('        <td>\n')
-    f.write('           <a> _industry_ </a>\n')
-    f.write('        </td>\n')
-
     f.write('    </tr>\n')
 
 def comm_handle_link(stock_code):
@@ -340,7 +319,7 @@ def comm_write_to_file(f, k, df, filename):
                     f.write('           <a href="%s" target="_blank"> %s</a>\n'%\
                             (xueqiu_url, element_value))
                 elif(j == 3):
-                    f.write('           <a> %.2f%s</a>\n'%(element_value, '%'))
+                    f.write('           <a> %.2f</a>\n'%(element_value))
                 elif list(df)[j] == 'holder_change':
                     f.write('           <a href="%s" target="_blank"> %s</a>\n'%\
                             (holder_url, element_value))
@@ -348,12 +327,9 @@ def comm_write_to_file(f, k, df, filename):
                     tmp_url = ''
                     f.write('           <a href="%s" target="_blank"> %s</a>\n'%\
                             (fund_url, element_value))
-                elif(j == 15):
-                    #fix bug:  must be real number, not datetime.date for holder function
-                    if list(df)[j] == 'hk_date':
-                        f.write('           <a> %s</a>\n'%(element_value))
-                    else:
-                        f.write('           <a> %.2f</a>\n'%(element_value))
+                #fix bug:  must be real number, not datetime.date for holder function
+                elif list(df)[j] == 'hk_date':
+                    f.write('           <a> %s</a>\n'%(element_value))
                 else:
                     #element_value=2019-09-23-1-002436-兴森科技-814-878-891-796-840.png
                     if 'png' in str(element_value):
@@ -424,15 +400,6 @@ def comm_write_to_file(f, k, df, filename):
             
                                 
             f.write('        </td>\n')
-        #add total_mv
-        f.write('        <td>\n')
-        f.write('           <a> %s </a>\n' %  (comm_get_total_mv(tmp_stock_code)))
-        f.write('        </td>\n')
-
-        #add industry
-        f.write('        <td>\n')
-        f.write('           <a> %s </a>\n' % (basic_df.loc[tmp_stock_code]['industry']))
-        f.write('        </td>\n')
 
         f.write('    </tr>\n')
 
@@ -774,7 +741,6 @@ def comm_generate_web_dataframe(curr_dir, images, curr_day, dict_industry):
         is_peach=tmp_df['is_peach'][0]
 
 
-        total_mv =  comm_get_total_mv(stock_code)
 
         industry_name = basic_df.loc[stock_code]['industry']
         insert_industry(dict_industry, industry_name)
@@ -918,6 +884,7 @@ def comm_generate_web_dataframe_new(input_df, curr_dir, curr_day, dict_industry)
         is_cup_tea=daily_df.is_cup_tea[i]
         total_mv=daily_df.market_capital[i]
 
+
         industry_name = basic_df.loc[stock_code]['industry']
         insert_industry(dict_industry, industry_name)
 
@@ -964,13 +931,13 @@ def comm_generate_web_dataframe_new(input_df, curr_dir, curr_day, dict_industry)
 
         data_list.append([new_date, stock_code, stock_name, close_p, C.value, \
                 hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, \
-                money_total, total_mv,\
+                money_total, total_mv, industry_name, \
                 is_peach, is_zig, is_quad, is_2d3pct, is_cup_tea,\
                 zlje, zlje_3, zlje_5, zlje_10,h_chg ])
 
     data_column = ['cur_date', 'code', 'name', 'a_pct', 'close', \
             'hk_date', 'hk_share', 'hk_pct', 'hk_delta1', 'hk_deltam', 'conti_day', \
-            'hk_m_total', 'total_mv',\
+            'hk_m_total', 'total_mv', 'industry', \
             'peach', 'zig', 'quad', '2d3pct', 'cup_tea',\
             'zlje', 'zlje_3', 'zlje_5', 'zlje_10', 'holder_change' ]
 
@@ -981,12 +948,12 @@ def comm_generate_web_dataframe_new(input_df, curr_dir, curr_day, dict_industry)
     if debug:
         print(ret_df)
 
-    data_column = ['cur_date', 'code', 'name', 'a_pct', 'close', \
+    data_column = ['cur_date', 'code', 'name', 'total_mv', 'industry',  'a_pct', 'close', \
             'peach', 'zig', 'quad', '2d3pct', 'cup_tea', \
             'zlje', 'zlje_3', 'zlje_5', 'zlje_10', 'holder_change',\
             'hk_date', 'hk_share', 'hk_pct', \
             'hk_delta1', 'hk_deltam', 'conti_day', \
-            'hk_m_total', 'm_per_day', 'total_mv']
+            'hk_m_total', 'm_per_day']
 
     ret_df=ret_df.loc[:,data_column]
 

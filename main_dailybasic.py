@@ -23,7 +23,8 @@ debug = 0
 
 def update_dailybasic(curr_date):
     data_format = " stock_code, record_date, close, turnover_rate, turnover_rate_f, volume_ratio, pe, pe_ttm, pb,  ps, ps_ttm, dv_ratio, dv_ttm, total_share, float_share, free_share, total_mv, circ_mv"
-    data_format = " ts_code, trade_date, close, turnover_rate, turnover_rate_f, volume_ratio, pe, pe_ttm, pb,  ps, ps_ttm, dv_ratio, dv_ttm, total_share, float_share, free_share, total_mv, circ_mv"
+    data_format = " ts_code, trade_date, close, turnover_rate, turnover_rate_f, volume_ratio, \
+            pe, pe_ttm, pb,  ps, ps_ttm, dv_ratio, dv_ttm, total_share, float_share, free_share, total_mv, circ_mv"
     hist_data = pro.daily_basic(ts_code='', trade_date=curr_date.strftime("%Y%m%d"), fields=data_format)
 
     if(len(hist_data) == 0):
