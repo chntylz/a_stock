@@ -50,7 +50,7 @@ set_data_backend(AaronDataBackend())
 
 
 #debug switch
-debug = False;
+debug = 0 
 
 def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name):
     if debug:
@@ -80,7 +80,7 @@ def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name
     today_p = round (today_p.value, 4)
 
 
-    detail_info.index = detail_info.index.format(formatter=lambda x: x.strftime('%Y-%m-%d'))
+    #detail_info.index = detail_info.index.format(formatter=lambda x: x.strftime('%Y-%m-%d'))
     #print(detail_info.index[2])
     
     detail_info['close'].fillna(value=0, inplace=True)   
@@ -131,7 +131,7 @@ def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name
         x1 = z_peers[i]
         y1 = z_df[z_peers[i]]
 
-        text1=z_d[x1] + '-' + str(z_k[x1])
+        text1=str(z_d[x1]) + '-' + str(z_k[x1])
         ax05.annotate(text1, xy=(x1, y1 ), xytext=(x1+2 , y1), color="b",arrowprops=dict(facecolor='red', shrink=0.05))
 
         if i is 0 or i is (z_len - 1):
@@ -216,7 +216,8 @@ def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name
     os.system(exec_command_1)
 
     exec_command_2 = "mv " + save_name + '-' +  nowcode + '*' + " " + save_dir + "/"
-    #print("%s"%(exec_command_2))
+    if debug:
+        print("%s"%(exec_command_2))
     os.system(exec_command_2)
     
     plt.clf()
@@ -224,5 +225,7 @@ def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name
 
 
     exec_command_3 = "cp -f " + save_dir + "/" + figure_name + " " + "/var/www/html/test.png" 
-    #print("%s"%(exec_command_3))
+    if debug:
+        print("%s"%(exec_command_3))
+
     os.system(exec_command_3)

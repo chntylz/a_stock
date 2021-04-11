@@ -69,11 +69,13 @@ def plot_stock_picture(nowcode, nowname):
     else:
         new_nowcode = 'SZ' + nowcode
 
-    detail_info = hdata_day.get_data_from_hdata(stock_code=nowcode, \
-            state_date=nowdate.strftime("%Y-%m-%d"), \
+    detail_info = hdata_day.get_data_from_hdata(stock_code=new_nowcode, \
             end_date=nowdate.strftime("%Y-%m-%d"), \
             limit=600)
-    #print(detail_info)
+
+    if debug:
+        print(detail_info)
+
     save_dir = 'stock_data'
     sub_name = ''
     plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name)
@@ -92,7 +94,7 @@ def get_xueqiu_url(stock_code_tmp):
     return xueqiu_url, finance_url
 
 
-def gete_df_and_stock_code(name):
+def get_df_and_stock_code(name):
     if name.isdigit():
         df=hdata_hsgt.get_all_hdata_of_stock_code(name)
         stock_code_tmp=name
@@ -173,12 +175,13 @@ if __name__ == '__main__':
     form = cgi.FieldStorage()
     name = form.getvalue('name', '000401')
 
-    all_df, stock_code_tmp = gete_df_and_stock_code(name)
+    all_df, stock_code_tmp = get_df_and_stock_code(name)
     xueqiu_url, finance_url=get_xueqiu_url(stock_code_tmp)
     df = get_html_data(all_df)
 
     if debug:
-        print(df['stock_cname'].head(10))
+        print(df.head(10))
+        print(' ****************************************************aaron ***************************')
 
     cgi_generate_html(df)
       
