@@ -52,7 +52,7 @@ hdata=HData_xq_day("usr","usr")
 
 #debug switch
 debug = 0
-#debug = 1
+debug = 0
 
 def yitoujing(df, k):
     df_len=len(df)
@@ -67,11 +67,12 @@ def yitoujing(df, k):
     else:
         return False
 
-def calculate_peach_zig_quad(nowdate):
+def calculate_peach_zig_quad(nowdate, nowdata_df):
 
     start_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
-    codestock_local=get_stock_list()
+    #codestock_local=get_stock_list()
+    codestock_local=nowdata_df
     stock_len=len(codestock_local)
     update_list=[]  #for update is_peach, is_zig, is_quad in database table
 
@@ -94,13 +95,28 @@ def calculate_peach_zig_quad(nowdate):
         is_cup_tea = 0 
         is_duck_head = 0
 
+        
+
+
+        '''
         nowcode=codestock_local[i][0]
         nowname=codestock_local[i][1]
-
         if nowcode[0:1] == '6':
             nowcode_new= 'SH' + nowcode
         else:
             nowcode_new= 'SZ' + nowcode
+        '''
+        nowcode_new=codestock_local.stock_code[i]
+        nowcode = nowcode_new[2:]
+
+        #funcat call
+        T(str(nowdate))
+        S(nowcode)
+
+        nowname = symbol(nowcode)
+        nowname = nowname[nowname.rfind('[') + 1:]
+        nowname = nowname[:nowname.rfind(']')]
+        # print(str(nowdate), nowcode, nowname, O, H, L, C)
 
         if debug:
             print("code:%s, name:%s" % (nowcode, nowname ))
@@ -118,7 +134,7 @@ def calculate_peach_zig_quad(nowdate):
 
 
         if 0:
-            if '0995' not in  nowcode:
+            if '5058' not in  nowcode:
                 continue
             print("code:%s, name:%s" % (nowcode, nowname ))
 
@@ -137,7 +153,7 @@ def calculate_peach_zig_quad(nowdate):
 
         #fix NaN bug
         # if len(detail_info) == 0 or (detail_info is None):
-        if len(detail_info) < 6  or (detail_info is None):
+        if len(detail_info) <= 6  or (detail_info is None):
             # print('NaN: code:%s, name:%s' % (nowcode, nowname ))
             update_list.append([nowdate.strftime("%Y-%m-%d"), nowcode_new, is_peach, is_zig, is_quad, \
                 is_macd, is_2d3pct, is_up_days, is_cup_tea, is_duck_head])
@@ -161,10 +177,6 @@ def calculate_peach_zig_quad(nowdate):
             continue
 
            
-        #funcat call
-        T(str(nowdate))
-        S(nowcode)
-        # print(str(nowdate), nowcode, nowname, O, H, L, C)
 
         ##############################################################################
         # dif: 12， 与26日的差别
@@ -175,208 +187,6 @@ def calculate_peach_zig_quad(nowdate):
            
         upperband, middleband, lowerband = talib.BBANDS(np.array(detail_info['close']),\
                 timeperiod=20, nbdevdn=2, nbdevup=2)
-
-
-        ##############################################################################
-        # old duck 
-
-        '''
-        def moving_average(a, n=3):
-            out = talib.MA(a, n)
-            return out    
-            
-        def duck_head(df, min_period=8, mid_period=18, max_period=55):
-            """
-            上涨中继， 老鸭头
-            :return:
-            """
-            E1 = moving_average(df.close, n=mid_period)
-            E2 = moving_average(df.close, n=max_period)
-            # 1、前8日中满足“E1<1日前的E1”的天数>=6
-            is_min_5_growth = np.sum(np.diff(E1[-min_period-1:-1], 1) > 0) >= 6
-            # 2、 今天的E1 > 昨天的E1
-            is_mid_today_growth = list(E1)[-1] > list(E1)[-2]
-            # 3、最近18天中满足“E2>1日前的E2”的天数>=13
-            is_mid_13_growth = np.sum(np.diff(E2[-mid_period:], 1) > 0) >= 13
-            # 4、 今天的E2>昨天的E2
-            condition_4 = list(E2)[-1] > list(E2)[-2]
-            f13 = (df.low[-mid_period:] / E2[-mid_period:] - 1) < 0.1
-            # 6、最近18日都满足“E1>E2”
-            condition_6 = E1[-mid_period:] > E2[-mid_period:]
-            condition_7 = df.close[-min_period:] > E2[-min_period:]
-            condition_8 = list(df.close)[-1] > list(E1)[-1]
-            condition_9 = list(E1)[-1] / list(E2)[-1] < 1.10
-            return is_min_5_growth & is_mid_today_growth & \
-            is_mid_13_growth & condition_4 & f13.all(axis=0) & condition_6.all(axis=0) & \
-            condition_7.all(axis=0) & condition_8 & condition_9
-        '''
-
-        #is_duck_head = duck_head(detail_info)
-        #print('### %s, %s, %s, is_duck_head=%d' %(str(nowdate), nowcode, nowname, is_duck_head))
-        A1=A2=PDAY1=PDAY2=PDAY3=PDAY4=PDAY5=0
-        MA5 = MA(CLOSE,5);
-        MA10 = MA(CLOSE,10);
-        MA60 = MA(CLOSE,60);
-        PDAY1 = BARSLAST(CROSS(MA5,MA60));#{5日均线上穿60日均线}
-        PDAY2 = BARSLAST(CROSS(MA10,MA60));#{10日均线上穿60日均线，至此形成鸭颈部}
-        if PDAY1 > 100000 or PDAY2 > 100000:
-            pass
-        else:
-            if PDAY2.value:
-                PDAY3 = BARSLAST(HIGH==HHV(HIGH,PDAY2.value));#{形成头部，要下跌}
-            PDAY4 = BARSLAST(CROSS(MA10,MA5));#{下跌后，5日均线和10日均线死叉}
-            PDAY5 = BARSLAST(CROSS(MA5,MA10));#{回落不久，5日均线和10日均线形成金叉，形成嘴部}
-            A1= PDAY1>PDAY2 and PDAY2>PDAY3 and PDAY3>PDAY4 and PDAY4>PDAY5 and PDAY5<5;
-            if PDAY2.value:
-                A2= COUNT(CROSS(MA10,MA5),PDAY2.value)==1;
-
-        if debug:
-            print('PDAY1:%s' % PDAY1) 
-            print('PDAY2:%s' % PDAY2) 
-            print('PDAY3:%s' % PDAY3) 
-            print('PDAY4:%s' % PDAY4) 
-            print('PDAY5:%s' % PDAY5) 
-
-        if A1 and A2:
-            is_duck_head = 1
-            print('### %s, %s, %s, is_duck_head=%d' %(str(nowdate), nowcode, nowname, is_duck_head))
-
-        ##############################################################################
-        #is_cup_tea 
-        # *H1               * 
-        #   *        H2    C
-        #    *      *  *L2* 
-        #     **L1** 
-
-        #BOLL UP 变大
-
-        cond_1 = cond_2 = cond_3 = cond_4 =cond_5 = False
-        H2 = L2 = H2_days= H2_date= L2_days= L2_date = 0
-        max_botton_days = 0
-        
-        in_day = 30
-        #第一次最高价： 30个交易日的最高价
-        try :
-            H1 = HHV(REF(H, 1), in_day)    
-        except:
-            print('### error %s, %s, %s' %(str(nowdate), nowcode, nowname))
-            update_list.append([nowdate.strftime("%Y-%m-%d"), nowcode_new, is_peach, is_zig, is_quad, \
-                    is_macd, is_2d3pct, is_up_days, is_cup_tea, is_duck_head])
-            continue
-        else:
-            pass
-
-        #第一次最低收盘价： 30个交易日的最低价
-        L1 = LLV(REF(C, 1), in_day)    
-
-        #跌幅不能大于40%
-        cond_1 =  L1 >= 0.4 * H1  
-
-        #出现第一次最高价 距离当前的天数
-        H1_days = BARSLAST(REF(H, 1) == H1.value )        
-        H1_date = detail_info.record_date[df_len-1-H1_days.value -1 ]
-
-        #出现第一次最低收盘价 距离当前的天数
-        L1_days = BARSLAST(REF(C, 1) == L1.value)          
-        L1_date = detail_info.record_date[df_len-1-L1_days.value-1]
-
-        #print(H1, L1 , H1_days, L1_days)
-        if L1_days.value > 1 and H1_days.value > L1_days.value:
-            #第二次最高价：第一次最低价以来的最高价(当天除外)
-            H2 = HHV(REF(H, 1), L1_days.value -1)     
-            cond_2 = H2 > 0.8 * H1  
-           
-            #第二次最高价距离昨天的天数
-            H2_days = BARSLAST(REF(H, 1)== H2.value )      
-            H2_date = detail_info.record_date[df_len-1-H2_days.value-1]
-
-            #计算底部横盘天数，涨跌幅不能超过2%
-            def get_max_days_by_pct():
-                N = 1
-                target = 0
-                while 1:
-                    #N天内，涨跌幅不能超过2%
-                    if debug:
-                        print('%s: delta_p=%s in %s' % (DATETIME, (HHV(C,N)-LLV(C,N))/LLV(C,N), N))
-                    #if (HHV(C,N)-LLV(C,N))/LLV(C,N) < 0.2 and N < 30:
-                    if EXIST(((C-REF(C,1))/C) < -0.02 , N) or  \
-                            EXIST(((C-REF(C,1))/C) >  0.02 , N) or \
-                            N > 3:
-                        break
-                    else:
-                        target = max(target, N)
-                    N += 1
-                if debug:
-                    print('target=%s, N=%s' % (target, N))
-                return target
-
-            K = 0
-            max_botton_days = 1
-            while (cond_1 and cond_2):
-                #locate to L1_date
-                L1_cur_date=datetime.datetime.strptime(L1_date,'%Y-%m-%d')
-                H2_cur_date=datetime.datetime.strptime(H2_date,'%Y-%m-%d')
-                cur_date_new=L1_cur_date+datetime.timedelta(int(K))
-                if debug:
-                    print('L1_cur_date=%s, H2_cur_date=%s, cur_date_new=%s, K=%s' %\
-                            (L1_cur_date.strftime('%Y%m%d'), \
-                            H2_cur_date.strftime('%Y%m%d'), \
-                            cur_date_new.strftime('%Y%m%d'), \
-                            K))
-                if H2_cur_date <= cur_date_new or K > 3:
-                    #funcat call, reset to original date
-                    T(str(nowdate))
-                    break
-
-                T((cur_date_new.strftime('%Y%m%d')))
-
-                max_botton_days = max(max_botton_days , get_max_days_by_pct())
-                if debug:
-                    print(max_botton_days, K) 
-                K +=1
-
-            #底部至少2天
-            cond_3 = max_botton_days >= 2 
-
-            if debug:
-                print('->1')
-            if H2_days.value > 1 and L1_days.value > H2_days.value:
-                if debug:
-                    print('->2')
-                loop = 1
-                cond_4 = True
-                #H2 -> C 之间， C > MA(C, 10)
-                while loop < H2_days.value and cond_3:
-                    if REF(C, loop) > REF(MA(C, 10), loop):
-                        pass
-                    else:
-                        cond_4 = False
-                        break
-                    loop += 1
-                
-                #第二次最低价：第二次最高价以来的最低价
-                L2 = LLV(REF(L, 1), H2_days.value-1)   
-                L2_days = BARSLAST(REF(L, 1) == L2.value)          
-                L2_date = detail_info.record_date[df_len-1-L2_days.value-1]
-                
-                if debug:
-                    print(L2, L2_days, L2_date)
-                
-        #突破: 收盘价 > 杯柄的最高价
-        cond_5 = C > H2
-
-        if (cond_1 and cond_2 and cond_3 and cond_4 and cond_5):
-        #if 1:
-            is_cup_tea = 1
-            print('H1=%s, H1_days=%s, H1_date=%s, L1=%s , L1_days=%s, L1_date=%s, delta_H1_L1=[%s,%s]' % \
-                    (H1, H1_days, H1_date, L1, L1_days, L1_date, H1_days - L1_days, (L1 - H1)/H))
-            print('H2=%s, H2_days=%s, H2_date=%s, L2=%s , L2_days=%s, L2_date=%s, delta_L1_H2=[%s,%s]' % \
-                    (H2, H2_days, H2_date, L2, L2_days, L2_date, L1_days - H2_days, (H2 - L1)/ L1))
-            print('max_botton_days=%s' % max_botton_days) 
-            print(cond_1, cond_2, cond_3, cond_4, cond_5)
-            print('### %s, %s, %s, is_cup_tea=%d' %(str(nowdate), nowcode, nowname, is_cup_tea))
-        #print(cond_1, cond_2, cond_3, cond_4, cond_5)
-        #print('### %s, %s, %s, is_cup_tea=%d' %(str(nowdate), nowcode, nowname, is_cup_tea))
 
            
         ##############################################################################
@@ -642,6 +452,207 @@ def calculate_peach_zig_quad(nowdate):
             is_up_days = 1
             print('### %s, %s, %s, is_up_days=%d' %(str(nowdate), nowcode, nowname, is_up_days))
      
+        ##############################################################################
+        # old duck 
+
+        '''
+        def moving_average(a, n=3):
+            out = talib.MA(a, n)
+            return out    
+            
+        def duck_head(df, min_period=8, mid_period=18, max_period=55):
+            """
+            上涨中继， 老鸭头
+            :return:
+            """
+            E1 = moving_average(df.close, n=mid_period)
+            E2 = moving_average(df.close, n=max_period)
+            # 1、前8日中满足“E1<1日前的E1”的天数>=6
+            is_min_5_growth = np.sum(np.diff(E1[-min_period-1:-1], 1) > 0) >= 6
+            # 2、 今天的E1 > 昨天的E1
+            is_mid_today_growth = list(E1)[-1] > list(E1)[-2]
+            # 3、最近18天中满足“E2>1日前的E2”的天数>=13
+            is_mid_13_growth = np.sum(np.diff(E2[-mid_period:], 1) > 0) >= 13
+            # 4、 今天的E2>昨天的E2
+            condition_4 = list(E2)[-1] > list(E2)[-2]
+            f13 = (df.low[-mid_period:] / E2[-mid_period:] - 1) < 0.1
+            # 6、最近18日都满足“E1>E2”
+            condition_6 = E1[-mid_period:] > E2[-mid_period:]
+            condition_7 = df.close[-min_period:] > E2[-min_period:]
+            condition_8 = list(df.close)[-1] > list(E1)[-1]
+            condition_9 = list(E1)[-1] / list(E2)[-1] < 1.10
+            return is_min_5_growth & is_mid_today_growth & \
+            is_mid_13_growth & condition_4 & f13.all(axis=0) & condition_6.all(axis=0) & \
+            condition_7.all(axis=0) & condition_8 & condition_9
+        '''
+
+        #is_duck_head = duck_head(detail_info)
+        #print('### %s, %s, %s, is_duck_head=%d' %(str(nowdate), nowcode, nowname, is_duck_head))
+        A1=A2=PDAY1=PDAY2=PDAY3=PDAY4=PDAY5=0
+        MA5 = MA(CLOSE,5);
+        MA10 = MA(CLOSE,10);
+        MA60 = MA(CLOSE,60);
+        PDAY1 = BARSLAST(CROSS(MA5,MA60));#{5日均线上穿60日均线}
+        PDAY2 = BARSLAST(CROSS(MA10,MA60));#{10日均线上穿60日均线，至此形成鸭颈部}
+        if PDAY1 > 100000 or PDAY2 > 100000:
+            pass
+        else:
+            if PDAY2.value:
+                PDAY3 = BARSLAST(HIGH==HHV(HIGH,PDAY2.value));#{形成头部，要下跌}
+            PDAY4 = BARSLAST(CROSS(MA10,MA5));#{下跌后，5日均线和10日均线死叉}
+            PDAY5 = BARSLAST(CROSS(MA5,MA10));#{回落不久，5日均线和10日均线形成金叉，形成嘴部}
+            A1= PDAY1>PDAY2 and PDAY2>PDAY3 and PDAY3>PDAY4 and PDAY4>PDAY5 and PDAY5<5;
+            if PDAY2.value:
+                A2= COUNT(CROSS(MA10,MA5),PDAY2.value)==1;
+
+        if debug:
+            print('PDAY1:%s' % PDAY1) 
+            print('PDAY2:%s' % PDAY2) 
+            print('PDAY3:%s' % PDAY3) 
+            print('PDAY4:%s' % PDAY4) 
+            print('PDAY5:%s' % PDAY5) 
+
+        if A1 and A2:
+            is_duck_head = 1
+            print('### %s, %s, %s, is_duck_head=%d' %(str(nowdate), nowcode, nowname, is_duck_head))
+
+        ##############################################################################
+        #is_cup_tea 
+        # *H1               * 
+        #   *        H2    C
+        #    *      *  *L2* 
+        #     **L1** 
+
+        #BOLL UP 变大
+
+        cond_1 = cond_2 = cond_3 = cond_4 =cond_5 = False
+        H2 = L2 = H2_days= H2_date= L2_days= L2_date = 0
+        max_botton_days = 0
+        
+        in_day = 30
+        #第一次最高价： 30个交易日的最高价
+        try :
+            H1 = HHV(REF(H, 1), in_day)    
+        except:
+            print('### error %s, %s, %s' %(str(nowdate), nowcode, nowname))
+            update_list.append([nowdate.strftime("%Y-%m-%d"), nowcode_new, is_peach, is_zig, is_quad, \
+                    is_macd, is_2d3pct, is_up_days, is_cup_tea, is_duck_head])
+            continue
+        else:
+            pass
+
+        #第一次最低收盘价： 30个交易日的最低价
+        L1 = LLV(REF(C, 1), in_day)    
+
+        #跌幅不能大于40%
+        cond_1 =  L1 >= 0.4 * H1  
+
+        #出现第一次最高价 距离当前的天数
+        H1_days = BARSLAST(REF(H, 1) == H1.value )        
+        H1_date = detail_info.record_date[df_len-1-H1_days.value -1 ]
+
+        #出现第一次最低收盘价 距离当前的天数
+        L1_days = BARSLAST(REF(C, 1) == L1.value)          
+        L1_date = detail_info.record_date[df_len-1-L1_days.value-1]
+
+        #print(H1, L1 , H1_days, L1_days)
+        if L1_days.value > 1 and H1_days.value > L1_days.value:
+            #第二次最高价：第一次最低价以来的最高价(当天除外)
+            H2 = HHV(REF(H, 1), L1_days.value -1)     
+            cond_2 = H2 > 0.8 * H1  
+           
+            #第二次最高价距离昨天的天数
+            H2_days = BARSLAST(REF(H, 1)== H2.value )      
+            H2_date = detail_info.record_date[df_len-1-H2_days.value-1]
+
+            #计算底部横盘天数，涨跌幅不能超过2%
+            def get_max_days_by_pct():
+                N = 1
+                target = 0
+                while 1:
+                    #N天内，涨跌幅不能超过2%
+                    if debug:
+                        print('%s: delta_p=%s in %s' % (DATETIME, (HHV(C,N)-LLV(C,N))/LLV(C,N), N))
+                    #if (HHV(C,N)-LLV(C,N))/LLV(C,N) < 0.2 and N < 30:
+                    if EXIST(((C-REF(C,1))/C) < -0.02 , N) or  \
+                            EXIST(((C-REF(C,1))/C) >  0.02 , N) or \
+                            N > 3:
+                        break
+                    else:
+                        target = max(target, N)
+                    N += 1
+                if debug:
+                    print('target=%s, N=%s' % (target, N))
+                return target
+
+            K = 0
+            max_botton_days = 1
+            while (cond_1 and cond_2):
+                #locate to L1_date
+                L1_cur_date=datetime.datetime.strptime(L1_date,'%Y-%m-%d')
+                H2_cur_date=datetime.datetime.strptime(H2_date,'%Y-%m-%d')
+                cur_date_new=L1_cur_date+datetime.timedelta(int(K))
+                if debug:
+                    print('L1_cur_date=%s, H2_cur_date=%s, cur_date_new=%s, K=%s' %\
+                            (L1_cur_date.strftime('%Y%m%d'), \
+                            H2_cur_date.strftime('%Y%m%d'), \
+                            cur_date_new.strftime('%Y%m%d'), \
+                            K))
+                if H2_cur_date <= cur_date_new or K > 3:
+                    #funcat call, reset to original date
+                    T(str(nowdate))
+                    break
+
+                T((cur_date_new.strftime('%Y%m%d')))
+
+                max_botton_days = max(max_botton_days , get_max_days_by_pct())
+                if debug:
+                    print(max_botton_days, K) 
+                K +=1
+
+            #底部至少2天
+            cond_3 = max_botton_days >= 2 
+
+            if debug:
+                print('->1')
+            if H2_days.value > 1 and L1_days.value > H2_days.value:
+                if debug:
+                    print('->2')
+                loop = 1
+                cond_4 = True
+                #H2 -> C 之间， C > MA(C, 10)
+                while loop < H2_days.value and cond_3:
+                    if REF(C, loop) > REF(MA(C, 10), loop):
+                        pass
+                    else:
+                        cond_4 = False
+                        break
+                    loop += 1
+                
+                #第二次最低价：第二次最高价以来的最低价
+                L2 = LLV(REF(L, 1), H2_days.value-1)   
+                L2_days = BARSLAST(REF(L, 1) == L2.value)          
+                L2_date = detail_info.record_date[df_len-1-L2_days.value-1]
+                
+                if debug:
+                    print(L2, L2_days, L2_date)
+                
+        #突破: 收盘价 > 杯柄的最高价
+        cond_5 = C > H2
+
+        if (cond_1 and cond_2 and cond_3 and cond_4 and cond_5):
+        #if 1:
+            is_cup_tea = 1
+            print('H1=%s, H1_days=%s, H1_date=%s, L1=%s , L1_days=%s, L1_date=%s, delta_H1_L1=[%s,%s]' % \
+                    (H1, H1_days, H1_date, L1, L1_days, L1_date, H1_days - L1_days, (L1 - H1)/H))
+            print('H2=%s, H2_days=%s, H2_date=%s, L2=%s , L2_days=%s, L2_date=%s, delta_L1_H2=[%s,%s]' % \
+                    (H2, H2_days, H2_date, L2, L2_days, L2_date, L1_days - H2_days, (H2 - L1)/ L1))
+            print('max_botton_days=%s' % max_botton_days) 
+            print(cond_1, cond_2, cond_3, cond_4, cond_5)
+            print('### %s, %s, %s, is_cup_tea=%d' %(str(nowdate), nowcode, nowname, is_cup_tea))
+        #print(cond_1, cond_2, cond_3, cond_4, cond_5)
+        #print('### %s, %s, %s, is_cup_tea=%d' %(str(nowdate), nowcode, nowname, is_cup_tea))
+
         ###############################################################################################
         
         update_list.append([nowdate.strftime("%Y-%m-%d"), nowcode_new, is_peach, is_zig, is_quad, \
@@ -649,6 +660,8 @@ def calculate_peach_zig_quad(nowdate):
 
         if debug:
             print('#############################################################################')
+            print([nowdate.strftime("%Y-%m-%d"), nowcode_new, is_peach, is_zig, is_quad, \
+                is_macd, is_2d3pct, is_up_days, is_cup_tea, is_duck_head])
 
     if debug:
         print('update_list:%s'% update_list)
@@ -669,9 +682,11 @@ def update_peach_zig_quad(nowdate, df, df1):
 
     tmp_df = df.sort_values('stock_code', ascending=0)
     tmp_df = tmp_df.reset_index(drop=True)
+    tmp_df.to_csv('./cross_condition_1.csv', encoding='gbk')
 
     tmp_df1 = df1.sort_values('stock_code', ascending=0)
     tmp_df1 = tmp_df1.reset_index(drop=True)
+    tmp_df1.to_csv('./cross_condition_2.csv', encoding='gbk')
 
     tmp_df['is_peach'] = tmp_df1['is_peach']
     tmp_df['is_zig']   = tmp_df1['is_zig']
@@ -706,13 +721,14 @@ if __name__ == '__main__':
     nowdate=nowdate-datetime.timedelta(int(para1))
     print("nowdate is %s"%(nowdate.strftime("%Y-%m-%d"))) 
 
-    handle_df = calculate_peach_zig_quad(nowdate)
+    nowdate_df = hdata.get_data_from_hdata(\
+            start_date=nowdate.strftime("%Y-%m-%d"), \
+            end_date=nowdate.strftime("%Y-%m-%d")\
+            )
+
+    handle_df = calculate_peach_zig_quad(nowdate, nowdate_df)
 
     if len(handle_df) > 3000:
-        nowdate_df = hdata.get_data_from_hdata(\
-                start_date=nowdate.strftime("%Y-%m-%d"), \
-                end_date=nowdate.strftime("%Y-%m-%d")\
-                )
         update_peach_zig_quad(nowdate, nowdate_df, handle_df) 
 
 
