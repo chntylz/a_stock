@@ -90,11 +90,13 @@ if __name__ == '__main__':
     df3 = get_season_fund('2020-06-30')
     df4 = get_season_fund('2020-09-30')
     df5 = get_season_fund('2020-12-31')
+    df6 = get_season_fund('2021-03-31')
 
     df = pd.concat([df, df2])
     df = pd.concat([df, df3])
     df = pd.concat([df, df4])
     df = pd.concat([df, df5])
+    df = pd.concat([df, df6])
     
     df.to_csv('test_fund.csv', encoding='gbk')
     if len(df):

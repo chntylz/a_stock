@@ -519,6 +519,9 @@ def comm_handle_html_body(filename, all_df, select='topy10'):
                 #select condition
                 conti_df = conti_df[conti_df.money_total < -2000] 
                 comm_write_to_file(f, -1, conti_df, filename)
+            
+
+
         else:
             comm_write_to_file(f, -1, all_df, filename)
     pass
