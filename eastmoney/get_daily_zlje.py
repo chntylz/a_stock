@@ -328,8 +328,8 @@ if __name__ == '__main__':
         print(list(df_10))
 
     df.to_csv('zlje_1.csv', encoding='gbk')
-    df.to_csv('zlje_3.csv', encoding='gbk')
-    df.to_csv('zlje_5.csv', encoding='gbk')
-    df.to_csv('zlje_10.csv', encoding='gbk')
+    df_3.to_csv('zlje_3.csv', encoding='gbk')
+    df_5.to_csv('zlje_5.csv', encoding='gbk')
+    df_10.to_csv('zlje_10.csv', encoding='gbk')
 
 
