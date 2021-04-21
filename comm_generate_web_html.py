@@ -320,7 +320,7 @@ def comm_write_to_file(f, k, df, filename):
                             (xueqiu_url, element_value))
                 elif(j == 3):
                     f.write('           <a> %.2f</a>\n'%(element_value))
-                elif list(df)[j] == 'holder_change':
+                elif (list(df)[j] == 'holder_change') or (list(df)[j] == 'holder_pct'):
                     f.write('           <a href="%s" target="_blank"> %s</a>\n'%\
                             (holder_url, element_value))
                 elif list(df)[j] == 'fu_delta':
