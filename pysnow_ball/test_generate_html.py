@@ -24,15 +24,24 @@ from funcat import *
 from funcat.data.aaron_backend import AaronDataBackend
 set_data_backend(AaronDataBackend())
 
+
+from HData_eastmoney_zlje import *
+from HData_eastmoney_zlje_3 import *
+from HData_eastmoney_zlje_5 import *
+from HData_eastmoney_zlje_10 import *
+
 hdata=HData_xq_day("usr","usr")
 hsgtdata=HData_hsgt("usr","usr")
+
+zlje_table=HData_eastmoney_zlje("usr","usr")
+
 
 dict_industry={}
 df=None
 
 
 debug=0
-debug=1
+#debug=1
 
 today_date=datetime.datetime.now().date()
 #test
@@ -123,7 +132,7 @@ def generate_html(df):
 
    
 
-def get_current_data(date):
+def get_current_k_data(date):
     print(date)
     df = hdata.get_data_from_hdata(start_date=date, \
             end_date=date)
@@ -145,6 +154,24 @@ def convert_to_html_df(df):
         html_df = df
         print('#error, html_df data len < 1, return None')
     return html_df
+
+def combine_zlje_data(db_table, k_df):
+    zlje_df = db_table.get_data_from_hdata(start_date=curr_day, end_date=curr_day)
+    zlje_df = zlje_df.sort_values('stock_code')
+    zlje_df = zlje_df.reset_index(drop=True)
+
+    k_df['stock_code_new'] = k_df['stock_code']
+    k_df['stock_code'] = k_df['stock_code'].apply(lambda x: x[2:])
+    k_df = k_df.sort_values('stock_code')
+    k_df = k_df.reset_index(drop=True)
+
+    ret_df = pd.merge(k_df, zlje_df, how='inner', on=['stock_code', 'record_date'])
+    ret_df['stock_code'] = ret_df['stock_code_new']
+    ret_df = ret_df.sort_values('zlje', ascending=0)
+    ret_df = ret_df.reset_index(drop=True)
+
+    return ret_df
+
  
 if __name__ == '__main__':
 
@@ -162,13 +189,14 @@ if __name__ == '__main__':
     last_day=lastdate.strftime("%Y-%m-%d")
     print("curr_day:%s, last_day:%s"%(curr_day, last_day))
 
-    df = get_current_data(curr_day)
+    df = get_current_k_data(curr_day)
 
     #zig
     print('start zig')
     curr_dir=curr_day_w+'-zig'
     zig_df = df[(df.is_zig == 1) | (df.is_zig == 2) ]
     html_zig_df = convert_to_html_df(zig_df)
+    html_zig_df = html_zig_df.sort_values('zig', ascending=0)
     if len(html_zig_df):
         generate_html(html_zig_df)
     else:
@@ -179,6 +207,7 @@ if __name__ == '__main__':
     curr_dir=curr_day_w+'-quad'
     quad_df = df[(df.is_quad == 1) & (df.is_zig > 0)]
     html_quad_df =  convert_to_html_df(quad_df)
+    html_quad_df = html_quad_df.sort_values('zig', ascending=0)
     if len(html_quad_df):
         generate_html(html_quad_df)
     else:
@@ -190,6 +219,7 @@ if __name__ == '__main__':
     curr_dir=curr_day_w+'-peach'
     peach_df = df[(df.is_peach == 1) & (df.is_zig > 0)]
     html_peach_df = convert_to_html_df(peach_df)
+    html_peach_df = html_peach_df.sort_values('zig', ascending=0)
     if len(html_peach_df):
         generate_html(html_peach_df)
     else:
@@ -200,6 +230,7 @@ if __name__ == '__main__':
     curr_dir=curr_day_w+'-5days'
     up_days_df = df[(df.is_up_days == 1) & (df.is_zig > 0)]
     html_up_days_df = convert_to_html_df(up_days_df)
+    html_up_days_df = html_up_days_df.sort_values('zig', ascending=0)
     if len(html_up_days_df):
         generate_html(html_up_days_df)
     else:
@@ -210,6 +241,7 @@ if __name__ == '__main__':
     curr_dir=curr_day_w+'-macd'
     macd_df = df[(df.is_macd == 1) & (df.is_zig > 0)]
     html_macd_df = convert_to_html_df(macd_df)
+    html_macd_df = html_macd_df.sort_values('zig', ascending=0)
     if len(html_macd_df):
         generate_html(html_macd_df)
     else:
@@ -221,6 +253,7 @@ if __name__ == '__main__':
     curr_dir=curr_day_w+'-cuptea'
     cuptea_df = df[(df.is_cup_tea == 1) & (df.is_zig > 0)]
     html_cuptea_df = convert_to_html_df(cuptea_df)
+    html_cuptea_df = html_cuptea_df.sort_values('zig', ascending=0)
     if len(html_cuptea_df):
         generate_html(html_cuptea_df)
     else:
@@ -231,6 +264,7 @@ if __name__ == '__main__':
     curr_dir=curr_day_w+'-duckhead'
     duckhead_df = df[(df.is_duck_head == 1) & (df.is_zig > 0)]
     html_duckhead_df = convert_to_html_df(duckhead_df)
+    html_duckhead_df = html_duckhead_df.sort_values('zig', ascending=0)
     if len(html_duckhead_df):
         generate_html(html_duckhead_df)
     else:
@@ -241,11 +275,25 @@ if __name__ == '__main__':
     curr_dir=curr_day_w
     basic_df = df[(df.is_2d3pct > 1) & (df.is_zig > 0)]
     html_basic_df = convert_to_html_df(basic_df)
+    html_basic_df = html_basic_df.sort_values('zig', ascending=0)
     if len(html_basic_df):
         generate_html(html_basic_df)
     else:
         print('#error, html_basic_df len < 1')
 
+
+
+    #zlje
+    print('start zlje')
+    curr_dir=curr_day_w+'-zlje'
+    zlje_df = combine_zlje_data(zlje_table, df)
+    if debug:
+        print(zlje_df)
+    html_zlje_df = convert_to_html_df(zlje_df)
+    if len(html_zlje_df):
+        generate_html(html_zlje_df)
+    else:
+        print('#error, html_zlje_df len < 1')
 
     os.system('cp -rf ' + stock_data_dir +'/' + curr_dir + '*  /var/www/html/stock_data/' )
 

@@ -863,6 +863,7 @@ def comm_generate_web_dataframe_new(input_df, curr_dir, curr_day, dict_industry)
         with open(txt_file,'a') as f:
             f.write('%s \n' % stock_code)
 
+        '''
         #funcat call
         T(curr_day)
         S(stock_code)
@@ -875,11 +876,14 @@ def comm_generate_web_dataframe_new(input_df, curr_dir, curr_day, dict_industry)
 
         close_p = (C - pre_close)/pre_close
         close_p = round (close_p.value, 4) * 100
+        '''
 
         hsgt_df = hsgtdata.get_data_from_hdata(stock_code=stock_code, end_date=curr_day, limit=60)
         hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, money_total, \
             is_zig, is_quad, is_peach = comm_handle_hsgt_data(hsgt_df)
         
+        close = daily_df.close[i]
+        close_p = daily_df.percent[i]
         is_zig  =daily_df.is_zig[i]
         is_quad =daily_df.is_quad[i]
         is_peach=daily_df.is_peach[i]
@@ -889,7 +893,11 @@ def comm_generate_web_dataframe_new(input_df, curr_dir, curr_day, dict_industry)
         total_mv=daily_df.market_capital[i]
 
 
-        industry_name = basic_df.loc[stock_code]['industry']
+        try:
+            industry_name = basic_df.loc[stock_code]['industry']
+        except:
+            industry_name = 'Null'
+            print('except industry_name %s%s' % (stock_code, stock_name))
         insert_industry(dict_industry, industry_name)
 
         zlje = get_zlje(zlje_df, stock_code, curr_date=curr_day)
@@ -933,7 +941,7 @@ def comm_generate_web_dataframe_new(input_df, curr_dir, curr_day, dict_industry)
 
         #### holder start ####
 
-        data_list.append([new_date, stock_code, stock_name, close_p, C.value, \
+        data_list.append([new_date, stock_code, stock_name, close_p, close, \
                 hsgt_date, hsgt_share, hsgt_percent, hsgt_delta1, hsgt_deltam, conti_day, \
                 money_total, total_mv, industry_name, \
                 is_peach, is_zig, is_quad, is_2d3pct, is_cup_tea,\
@@ -961,7 +969,6 @@ def comm_generate_web_dataframe_new(input_df, curr_dir, curr_day, dict_industry)
 
     ret_df=ret_df.loc[:,data_column]
 
-    ret_df = ret_df.sort_values('zig', ascending=0)
  
     return ret_df
 
