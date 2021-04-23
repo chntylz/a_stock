@@ -283,6 +283,7 @@ def comm_write_to_file(f, k, df, filename):
         tmp_stock_code=a_array[0][1] 
         xueqiu_url, hsgt_url, fina_url, holder_url = comm_handle_link(tmp_stock_code)
         fund_url = 'https://data.eastmoney.com/zlsj/detail/2020-12-31-0-' + tmp_stock_code +'.html'
+        fund_url = 'https://data.eastmoney.com/zlsj/detail/2021-03-31-0-' + tmp_stock_code +'.html'
 
         col_name = list(df)
         col_len=len(col_name)

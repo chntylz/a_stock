@@ -177,7 +177,7 @@ if __name__ == '__main__':
     #quad
     print('start quad')
     curr_dir=curr_day_w+'-quad'
-    quad_df = df[(df.is_quad == 1)]
+    quad_df = df[(df.is_quad == 1) & (df.is_zig > 0)]
     html_quad_df =  convert_to_html_df(quad_df)
     if len(html_quad_df):
         generate_html(html_quad_df)
@@ -188,7 +188,7 @@ if __name__ == '__main__':
     #peach
     print('start peach')
     curr_dir=curr_day_w+'-peach'
-    peach_df = df[(df.is_peach == 1)]
+    peach_df = df[(df.is_peach == 1) & (df.is_zig > 0)]
     html_peach_df = convert_to_html_df(peach_df)
     if len(html_peach_df):
         generate_html(html_peach_df)
@@ -198,7 +198,7 @@ if __name__ == '__main__':
     #5days
     print('start 5days')
     curr_dir=curr_day_w+'-5days'
-    up_days_df = df[(df.is_up_days == 1)]
+    up_days_df = df[(df.is_up_days == 1) & (df.is_zig > 0)]
     html_up_days_df = convert_to_html_df(up_days_df)
     if len(html_up_days_df):
         generate_html(html_up_days_df)
@@ -208,7 +208,7 @@ if __name__ == '__main__':
     #macd
     print('start macd')
     curr_dir=curr_day_w+'-macd'
-    macd_df = df[(df.is_macd == 1)]
+    macd_df = df[(df.is_macd == 1) & (df.is_zig > 0)]
     html_macd_df = convert_to_html_df(macd_df)
     if len(html_macd_df):
         generate_html(html_macd_df)
@@ -219,7 +219,7 @@ if __name__ == '__main__':
     #cup_tea
     print('start cup_tea')
     curr_dir=curr_day_w+'-cuptea'
-    cuptea_df = df[(df.is_cup_tea == 1)]
+    cuptea_df = df[(df.is_cup_tea == 1) & (df.is_zig > 0)]
     html_cuptea_df = convert_to_html_df(cuptea_df)
     if len(html_cuptea_df):
         generate_html(html_cuptea_df)
@@ -229,7 +229,7 @@ if __name__ == '__main__':
     #cup_tea
     print('start duck_head')
     curr_dir=curr_day_w+'-duckhead'
-    duckhead_df = df[(df.is_duck_head == 1)]
+    duckhead_df = df[(df.is_duck_head == 1) & (df.is_zig > 0)]
     html_duckhead_df = convert_to_html_df(duckhead_df)
     if len(html_duckhead_df):
         generate_html(html_duckhead_df)
@@ -239,7 +239,7 @@ if __name__ == '__main__':
     #basic
     print('start basic')
     curr_dir=curr_day_w
-    basic_df = df[(df.is_2d3pct > 1)]
+    basic_df = df[(df.is_2d3pct > 1) & (df.is_zig > 0)]
     html_basic_df = convert_to_html_df(basic_df)
     if len(html_basic_df):
         generate_html(html_basic_df)

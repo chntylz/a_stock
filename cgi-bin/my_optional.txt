@@ -5,13 +5,15 @@ SZ399006 chuangyeban
 SZ159994 5GETF
 
 SZ000977 langchaoxinxi
+SZ000401 jidongshuini
+SH603317 weitianshipin
+SZ300813 tailinshengwu
 SZ000513 lizhujituan
 SZ300638 guanghetong
 SH601318 zhongguopingan
 SH600529 shandongyaobo
 SZ300035 zhongkedianqi
 SZ002230 kedaxunfei
-SZ000401 jidongshuini
 SZ000651 gelidianqi
 SH603799 huayouguye
 
