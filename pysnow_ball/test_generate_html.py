@@ -271,6 +271,17 @@ if __name__ == '__main__':
         print('#error, html_duckhead_df len < 1')
 
 
+    #basic
+    print('start basic')
+    curr_dir=curr_day_w
+    basic_df = df[(df.is_2d3pct > 1) & (df.is_zig > 0)]
+    html_basic_df = convert_to_html_df(basic_df)
+    html_basic_df = html_basic_df.sort_values('zig', ascending=1)
+    if len(html_basic_df):
+        generate_html(html_basic_df)
+    else:
+        print('#error, html_basic_df len < 1')
+
     #zlje
     print('start zlje')
     curr_dir=curr_day_w+'-zlje'
@@ -283,18 +294,6 @@ if __name__ == '__main__':
     else:
         print('#error, html_zlje_df len < 1')
 
-
-
-    #basic
-    print('start basic')
     curr_dir=curr_day_w
-    basic_df = df[(df.is_2d3pct > 1) & (df.is_zig > 0)]
-    html_basic_df = convert_to_html_df(basic_df)
-    html_basic_df = html_basic_df.sort_values('zig', ascending=1)
-    if len(html_basic_df):
-        generate_html(html_basic_df)
-    else:
-        print('#error, html_basic_df len < 1')
-
     os.system('cp -rf ' + stock_data_dir +'/' + curr_dir + '*  /var/www/html/stock_data/' )
 
