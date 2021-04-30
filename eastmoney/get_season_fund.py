@@ -1,6 +1,8 @@
 #!/#!/usr/bin/env python  
 # -*- coding: utf-8 -*-
 
+#https://data.eastmoney.com/zlsj/
+#https://data.eastmoney.com/zlsj/2021-03-31-1-2.html
 
 import pandas as pd
 import json
@@ -84,7 +86,6 @@ if __name__ == '__main__':
     nowdate=datetime.datetime.now().date()
     date_string = nowdate.strftime('%Y-%m-%d')
 
-    check_table()
     df  = get_season_fund('2019-12-31')
     df2 = get_season_fund('2020-03-31')
     df3 = get_season_fund('2020-06-30')
@@ -100,6 +101,7 @@ if __name__ == '__main__':
     
     df.to_csv('test_fund.csv', encoding='gbk')
     if len(df):
+        check_table()
         df = handle_raw_data(df)
         hdata_fund.copy_from_stringio(df)
 
