@@ -183,7 +183,7 @@ def fina_get_continuous_info(df, curr_day, select='operating_income_yoy', net_pe
     ret_df = ret_df.fillna(0)
     ret_df=ret_df.round(2)
 
-    data_column=['record_date', 'stock_code', 'stock_name', 'operating_income_yoy', 'net_profit_atsopc_yoy', 'conti_day', \
+    data_column=['record_date', 'stock_code', 'stock_name', 'op_yoy', 'net_yoy', 'conti_day', \
             'a_pct', 'close', \
             'peach', 'zig', 'quad',\
             'hk_share', 'hk_date', 'hk_pct', 'hk_delta1', 'hk_deltam', \
