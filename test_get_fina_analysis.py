@@ -231,6 +231,8 @@ def get_example_data(curr_day):
     df = get_fina_data()
     df_fina =  fina_get_continuous_info(df, curr_day, select='operating_income_yoy')
 
+    df.to_csv('./test_fina.csv', encoding='gbk')
+    df_fina.to_csv('./test_fina_conti.csv', encoding='gbk')
     return df, df_fina
 
 

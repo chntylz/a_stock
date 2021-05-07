@@ -219,9 +219,20 @@ if __name__ == '__main__':
                 )
         hdata_day.copy_from_stringio(today_df)
         #hdata_day.insert_all_stock_data_3(today_df)
+        
+        #add tomorrow
+        tomorrow_df = today_df
+        tomorrow_date=nowdate+datetime.timedelta(1)
+        tomorrow_date=tomorrow_date.strftime("%Y-%m-%d")
+        tomorrow_df['timestamp'] = tomorrow_date
+        tomorrow_df.to_csv('./test_tomorrow.csv', encoding='gbk')
+        hdata_day.delete_data_from_hdata(
+                start_date=tomorrow_date,
+                end_date=tomorrow_date
+                )
+        hdata_day.copy_from_stringio(tomorrow_df)
 
-    #delete closed stock data according amount=0
-    #hdata_day.delete_amount_is_zero()
+
 
     last_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     print("start_time: %s, last_time: %s" % (start_time, last_time))
