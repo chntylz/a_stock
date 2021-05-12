@@ -55,13 +55,14 @@ debug = 0
 debug = 0
 
 def yitoujing(df, k):
+    cond_1 = cond_2 = cond_3 = cond_4 = True
     df_len=len(df)
     today_p = df.percent[df_len-k-1]
     yes_p   = df.percent[df_len-k-1-1]
     cond_1 = today_p > 3 and yes_p > 3
-    cond_2 = REF(C,k) > REF(MA(C, 21), k)
-    cond_3 = REF(MA(C, 21),k) > REF(MA(C, 21),k+1)
-    cond_4 = today_p > 9.5 and yes_p > 9.5
+    #cond_2 = REF(C,k) > REF(MA(C, 21), k)
+    #cond_3 = REF(MA(C, 21),k) > REF(MA(C, 21),k+1)
+    #cond_4 = today_p > 9.5 and yes_p > 9.5
     if cond_1 and cond_2 and cond_3 :
         return True
     else:
