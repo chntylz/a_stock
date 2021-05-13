@@ -423,7 +423,7 @@ def calculate_peach_zig_quad(nowdate, nowdata_df):
         df_len = len(detail_info)
 
         i = 0
-        while df_len > i:
+        while df_len > i + 1:
             if yitoujing(detail_info, i):
                 pass
             else:
@@ -704,13 +704,12 @@ def update_peach_zig_quad(nowdate, df, df1):
         print(tmp_df)
 
     #delete first, then insert
-    hdata.delete_data_from_hdata(\
+    if len(tmp_df) > 3000:
+        hdata.delete_data_from_hdata(\
             start_date=nowdate.strftime("%Y-%m-%d"), \
             end_date=nowdate.strftime("%Y-%m-%d")\
             )
-    hdata.copy_from_stringio(tmp_df)
-
-
+        hdata.copy_from_stringio(tmp_df)
 
 if __name__ == '__main__':
 
@@ -731,7 +730,6 @@ if __name__ == '__main__':
 
     if len(handle_df) > 3000:
         update_peach_zig_quad(nowdate, nowdate_df, handle_df) 
-
 
     t2 = time.time()
 

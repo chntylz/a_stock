@@ -140,7 +140,7 @@ def get_all_his_data():
 
     if int(para1):
         nowdate=datetime.datetime.now().date()
-        nowdate=nowdate-datetime.timedelta(int(para1))
+        #nowdate=nowdate-datetime.timedelta(int(para1))
 
     for i in range(0,length):
         nowcode=codestock_local[i][0]
@@ -155,9 +155,11 @@ def get_all_his_data():
          
         df = handle_raw_df(df)
         
+        
         if int(para1):
             #print("nowdate is %s"%(nowdate.strftime("%Y-%m-%d")))
-            df=df[df.timestamp == nowdate.strftime("%Y-%m-%d")]
+            #df=df[df.timestamp == nowdate.strftime("%Y-%m-%d")]
+            pass
 
         #insert database
         #todo
@@ -222,7 +224,7 @@ if __name__ == '__main__':
         
         #add tomorrow
         tomorrow_df = today_df
-        tomorrow_date=nowdate+datetime.timedelta(1)
+        tomorrow_date=nowdate + datetime.timedelta(1)
         tomorrow_date=tomorrow_date.strftime("%Y-%m-%d")
         tomorrow_df['timestamp'] = tomorrow_date
         tomorrow_df.to_csv('./test_tomorrow.csv', encoding='gbk')

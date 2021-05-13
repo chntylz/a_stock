@@ -554,8 +554,7 @@ class HData_xq_day(object):
 
         sql_temp += ";"
 
-        if debug:
-            print("delete_data_from_hdata, sql_temp:%s" % sql_temp)
+        print("delete_data_from_hdata, sql_temp:%s" % sql_temp)
 
         self.cur.execute(sql_temp)
         self.conn.commit()
