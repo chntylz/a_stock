@@ -64,10 +64,17 @@ if __name__ == '__main__':
     t1 = time.time()
     start_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
-    hdata_basicinfo.db_hdata_xq_create()
+    nowdate=datetime.datetime.now().date()
+
+    table_exist = hdata_basicinfo.table_is_exist() 
+    if not table_exist:
+        hdata_basicinfo.db_hdata_xq_create()
+
     basicinfo_df = get_basicinfo_data()
+    basicinfo_df.insert(1, 'record_date' , nowdate.strftime("%Y-%m-%d"), allow_duplicates=False)
 
     basicinfo_df.to_csv('./test_basicinfo.csv', encoding='gbk')
+
     hdata_basicinfo.copy_from_stringio(basicinfo_df)
     
     

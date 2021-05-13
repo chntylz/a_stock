@@ -18,7 +18,7 @@ debug = 0
 
 
 
-xq_cols = " symbol, net_profit_cagr, ps, type, percent, has_follow, \
+xq_cols = " stock_code, record_date, net_profit_cagr, ps, type, percent, has_follow, \
        tick_size, pb_ttm, float_shares, current, amplitude, pcf, \
        current_year_percent, float_market_capital, market_capital, \
        dividend_yield, lot_size, roe_ttm, total_percent, percent5m, \
@@ -71,6 +71,7 @@ class HData_xq_basicinfo(object):
             drop table if exists xq_basicinfo_table;
             create table xq_basicinfo_table(
 		stock_code             varchar,
+                record_date            date,
 		net_profit_cagr        float,
 		ps                     float,
 		type                   float,
@@ -105,7 +106,7 @@ class HData_xq_basicinfo(object):
 		pe_ttm                 float,
 		total_shares           float
                );
-            alter table xq_basicinfo_table add primary key(stock_code);
+            alter table xq_basicinfo_table add primary key(stock_code, record_date);
             ''')
         self.conn.commit()
         self.db_disconnect()
