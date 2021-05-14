@@ -120,7 +120,7 @@ def fina_get_continuous_info(df, curr_day, select='operating_income_yoy', net_pe
         open_p = close_p = 0
 
         pre_close = REF(C, 1)
-        if pre_close != 0:
+        if pre_close.value != 0:
             open_p = (O - pre_close)/pre_close
             open_p = round (open_p.value, 4)
             open_jump=open_p - 0.02
@@ -169,8 +169,11 @@ def fina_get_continuous_info(df, curr_day, select='operating_income_yoy', net_pe
                 is_peach, is_zig, is_quad])  #i  is conti_day
         #break
 
-    data_column=['record_date', 'stock_code', 'stock_name', 'operating_income_yoy', 'net_profit_atsopc_yoy', 'conti_day', \
-            'a_pct', 'close', 'hk_share', 'hk_date', 'hk_pct', 'hk_delta1', 'hk_deltam', \
+    '''
+    data_column=['record_date', 'stock_code', 'stock_name', 'operating_income_yoy', 'net_profit_atsopc_yoy', \
+            'conti_day', \
+            'a_pct', 'close', \
+            'hk_share', 'hk_date', 'hk_pct', 'hk_delta1', 'hk_deltam', \
             'conti_day', 'hk_m_total',\
             'peach', 'zig', 'quad']
 
@@ -180,6 +183,21 @@ def fina_get_continuous_info(df, curr_day, select='operating_income_yoy', net_pe
     elif select is 'net_profit_atsopc_yoy':
         ret_df = ret_df.sort_values('net_profit_atsopc_yoy', ascending=0)
 
+    '''
+
+    data_column=['record_date', 'stock_code', 'stock_name', 'op_yoy', 'net_yoy',\
+            'conti_day', \
+            'a_pct', 'close', \
+            'hk_share', 'hk_date', 'hk_pct', 'hk_delta1', 'hk_deltam', \
+            'conti_day', 'hk_m_total',\
+            'peach', 'zig', 'quad']
+
+    ret_df = pd.DataFrame(data_list, columns=data_column)
+    if select is 'operating_income_yoy':
+        ret_df = ret_df.sort_values('op_yoy', ascending=0)
+    elif select is 'net_profit_atsopc_yoy':
+        ret_df = ret_df.sort_values('net_yoy', ascending=0)
+
     ret_df = ret_df.fillna(0)
     ret_df=ret_df.round(2)
 
@@ -188,6 +206,8 @@ def fina_get_continuous_info(df, curr_day, select='operating_income_yoy', net_pe
             'peach', 'zig', 'quad',\
             'hk_share', 'hk_date', 'hk_pct', 'hk_delta1', 'hk_deltam', \
             'conti_day', 'hk_m_total']
+
+    print(ret_df.columns)
 
     ret_df=ret_df.loc[:,data_column]
 

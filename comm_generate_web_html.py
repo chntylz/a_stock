@@ -313,6 +313,9 @@ def comm_write_to_file(f, k, df, filename):
                 if(j == 0): 
                     f.write('           <a href="%s" target="_blank"> %s</a>\n'%\
                             (fina_url, element_value))
+                elif (list(df)[j] == 'op_yoy'):
+                    f.write('           <a href="%s" target="_blank"> %s</a>\n'%\
+                            (fina_url, element_value))
                 elif(j == 1): 
                     f.write('           <a href="%s" target="_blank"> %s[hsgt]</a>\n'%\
                             (hsgt_url, element_value))
@@ -321,7 +324,9 @@ def comm_write_to_file(f, k, df, filename):
                             (xueqiu_url, element_value))
                 elif(j == 3):
                     f.write('           <a> %.2f</a>\n'%(element_value))
-                elif (list(df)[j] == 'holder_change') or (list(df)[j] == 'holder_pct'):
+                elif (list(df)[j] == 'holder_change') \
+                        or (list(df)[j] == 'holder_pct') \
+                        or (list(df)[j] == 'h0'):
                     f.write('           <a href="%s" target="_blank"> %s</a>\n'%\
                             (holder_url, element_value))
                 elif list(df)[j] == 'fu_delta':
