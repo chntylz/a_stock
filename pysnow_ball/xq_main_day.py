@@ -31,7 +31,7 @@ hdata_day=HData_xq_day("usr","usr")
 stocks=Stocks("usr","usr")
 
 
-#stocks.db_stocks_create()#如果还没有表则需要创建
+stocks.db_stocks_create()#如果还没有表则需要创建
 stocks.db_stocks_update()#根据todayall的情况更新stocks表
 
 #sys.exit()
@@ -91,7 +91,7 @@ def handle_raw_df(df):
     return df
     
 
-def get_today_data():
+def get_today_data(stock_list=None):
     
     #get A open date
     a_code = 'SH000001'
