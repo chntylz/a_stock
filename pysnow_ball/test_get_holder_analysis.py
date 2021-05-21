@@ -19,7 +19,6 @@ from HData_xq_day import *
 from comm_generate_web_html import *
 import  datetime
 
-from time import clock
 import pandas as pd
 
 #funcat

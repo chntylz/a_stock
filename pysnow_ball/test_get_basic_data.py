@@ -3,7 +3,6 @@
 
 import pysnowball as ball
 import datetime
-from time import clock
 import time
 
 import sys 

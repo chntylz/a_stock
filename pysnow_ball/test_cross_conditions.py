@@ -290,7 +290,7 @@ def calculate_peach_zig_quad(nowdate, nowdata_df):
         #calculate buy or sell
         if z_len >= 3:  # it should have one valid zig data at least
             delta_day =  z_peers[-1] - z_peers[-2]
-            if z_buy_state[-2] is 1:  #valid zig must 1, that means valley
+            if z_buy_state[-2] == 1:  #valid zig must 1, that means valley
                 is_zig = delta_day
             else:
                 is_zig = delta_day * (-1)
