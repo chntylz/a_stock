@@ -177,12 +177,12 @@ def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name
         text1=str(z_d[x1]) + '-' + str(z_k[x1])
         ax05.annotate(text1, xy=(x1, y1 ), xytext=(x1+2 , y1), color="b",arrowprops=dict(facecolor='red', shrink=0.05))
 
-        if i is 0 or i is (z_len - 1):
+        if i == 0 or i == (z_len - 1):
             #skip plot.vlines for first and last
             continue
 
         print("y1:%s" % y1)
-        if z_buy_state[i] is 1:
+        if z_buy_state[i] == 1:
             ax05.vlines(x1, 0, y1, colors='red')
         else:
             ax05.vlines(x1, 0, y1, colors='green')
@@ -191,7 +191,7 @@ def plot_picture(nowdate, nowcode, nowname, detail_info, save_dir, fig, sub_name
     buy_flag = ''
     if z_len >= 3:  # it should have one valid zig data at least
         if z_peers[-1] - z_peers[-2] < 10: #delta days  < 10 from today
-            if z_buy_state[-2] is 1:  #valid zig must 1, that means valley
+            if z_buy_state[-2] == 1:  #valid zig must 1, that means valley
                 print('%s gold node, buy it!!' % nowcode )
                 buy_flag = '-buy'
 

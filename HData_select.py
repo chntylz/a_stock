@@ -4,7 +4,6 @@
 import  psycopg2
 import tushare as ts
 import pandas as pd
-from time import clock
 import sys
 import os
 
@@ -65,7 +64,6 @@ class HData_select(object):
         pass
 
     def insert_perstock_hdatadate(self,stock_code,data):#插入一支股票的所有历史数据到数据库#如果有code和index相同的不重复插入
-        t1=clock()
 
         #print(stock_code+" insert_perstock_hdatadate begin")
         if data is None:
@@ -89,7 +87,6 @@ class HData_select(object):
                 self.cur.execute("insert into hdata_s_table "+sql_temp+";")
             self.conn.commit()
 
-        #print(clock()-t1)
 
         #print(stock_code+" insert_perstock_hdatadate finish")
 

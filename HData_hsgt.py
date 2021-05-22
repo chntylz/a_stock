@@ -4,7 +4,6 @@
 import  psycopg2
 import tushare as ts
 import pandas as pd
-from time import clock
 
 pd.set_option('display.float_format',lambda x : '%.2f' % x)
 
@@ -96,7 +95,6 @@ class HData_hsgt(object):
         pass
 
     def insert_perstock_hdatadate(self,  data):#插入一支股票的所有历史数据到数据库#如果有code和index相同的不重复插入
-        t1=clock()
 
         #print(" insert_perstock_hdatadate begin")
         if data is None:
@@ -118,7 +116,6 @@ class HData_hsgt(object):
                 self.cur.execute("insert into hdata_hsgt_table "+sql_temp+";")
             self.conn.commit()
 
-        #print(clock()-t1)
 
         #print(" insert_perstock_hdatadate finish")
 
@@ -126,7 +123,6 @@ class HData_hsgt(object):
     def insert_optimize_stock_hdatadate(self, data):#插入一支股票的所有历史数据到数据库#如果有code和index相同的不重复插入
 
         #data format: record_date , stock_code, share_holding, percent
-        t1=clock()
 
         #print(" insert_perstock_hdatadate begin")
         if data is None:
@@ -163,7 +159,6 @@ class HData_hsgt(object):
                 self.cur.execute("insert into hdata_hsgt_table ( " + cur_culumn + ") values "+sql_cmd+";")
                 self.conn.commit()
 
-        #print(clock()-t1)
 
         #print(stock_code+" insert_perstock_hdatadate finish")
 

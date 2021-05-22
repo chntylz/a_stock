@@ -29,7 +29,6 @@ circ_mv float   流通市值（万元）
 import  psycopg2
 import tushare as ts
 import pandas as pd
-from time import clock
 
 debug = 0
 
@@ -101,7 +100,6 @@ class HData_dailybasic(object):
         pass
 
     def insert_perstock_hdatadate(self,stock_code,data):#插入一支股票的所有历史数据到数据库#如果有code和index相同的不重复插入
-        t1=clock()
 
         #print(stock_code+" insert_perstock_hdatadate begin")
         if data is None:
@@ -125,7 +123,6 @@ class HData_dailybasic(object):
                 self.cur.execute("insert into hdata_dailybasic "+sql_temp+";")
             self.conn.commit()
 
-        #print(clock()-t1)
 
         #print(stock_code+" insert_perstock_hdatadate finish")
 
@@ -134,7 +131,6 @@ class HData_dailybasic(object):
 
         data_format = " record_date, stock_code,  close, turnover_rate, turnover_rate_f, volume_ratio, pe, pe_ttm, pb,  ps, ps_ttm, dv_ratio, dv_ttm, total_share, float_share, free_share, total_mv, circ_mv"
 
-        t1=clock()
 
         #print(stock_code+" insert_perstock_hdatadate begin")
         if data is None:
@@ -172,7 +168,6 @@ class HData_dailybasic(object):
                 self.cur.execute("insert into hdata_dailybasic (" + data_format + " ) values " + sql_cmd + ";")
                 self.conn.commit()
 
-        #print(clock()-t1)
 
         #print(stock_code+" insert_perstock_hdatadate finish")
 

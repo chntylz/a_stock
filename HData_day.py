@@ -4,7 +4,6 @@
 import  psycopg2
 import tushare as ts
 import pandas as pd
-from time import clock
 
 debug = 0
 #debug = 1
@@ -62,7 +61,6 @@ class HData_day(object):
         pass
 
     def insert_perstock_hdatadate(self,stock_code,data):#插入一支股票的所有历史数据到数据库#如果有code和index相同的不重复插入
-        t1=clock()
 
         #print(stock_code+" insert_perstock_hdatadate begin")
         if data is None:
@@ -86,14 +84,12 @@ class HData_day(object):
                 self.cur.execute("insert into hdata_d_table "+sql_temp+";")
             self.conn.commit()
 
-        #print(clock()-t1)
 
         #print(stock_code+" insert_perstock_hdatadate finish")
 
     def insert_allstock_hdatadate(self, data):#插入一支股票的所有历史数据到数据库#如果有code和index相同的不重复插入
 
         #data format: record_date , stock_code , open , close , high , low  , volume ,  amount  , p_change 
-        t1=clock()
 
         #print(stock_code+" insert_perstock_hdatadate begin")
         if data is None:
@@ -134,7 +130,6 @@ class HData_day(object):
                 self.cur.execute("insert into hdata_d_table (record_date , stock_code , open , close , high , low  , volume ,  amount  , p_change ) values "+sql_cmd+";")
                 self.conn.commit()
 
-        #print(clock()-t1)
 
         #print(stock_code+" insert_perstock_hdatadate finish")
 
@@ -143,7 +138,6 @@ class HData_day(object):
 
     def update_allstock_hdatadate(self, data):
 
-        t1=clock()
 
         if debug:
             print(" update_perstock_hdatadate begin")
@@ -207,7 +201,6 @@ class HData_day(object):
                 pass
 
         if debug:
-            print(clock()-t1)
             print(" insert_perstock_hdatadate finish")
 
 
