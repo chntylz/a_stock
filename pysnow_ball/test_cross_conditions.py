@@ -135,7 +135,7 @@ def calculate_peach_zig_quad(nowdate, nowdata_df):
 
 
         if 0:
-            if '5058' not in  nowcode:
+            if '8468' not in  nowcode:
                 continue
             print("code:%s, name:%s" % (nowcode, nowname ))
 
@@ -290,7 +290,7 @@ def calculate_peach_zig_quad(nowdate, nowdata_df):
         #calculate buy or sell
         if z_len >= 3:  # it should have one valid zig data at least
             delta_day =  z_peers[-1] - z_peers[-2]
-            if z_buy_state[-2] == 1:  #valid zig must 1, that means valley
+            if z_buy_state[-2] is 1:  #valid zig must 1, that means valley
                 is_zig = delta_day
             else:
                 is_zig = delta_day * (-1)
@@ -571,13 +571,25 @@ def calculate_peach_zig_quad(nowdate, nowdata_df):
                 N = 1
                 target = 0
                 while 1:
+                    cond_11 = cond_22 = False
                     #N天内，涨跌幅不能超过2%
                     if debug:
+                        print('### N=%d %s, %s, %s' %(N, str(nowdate), nowcode, nowname))
                         print('%s: delta_p=%s in %s' % (DATETIME, (HHV(C,N)-LLV(C,N))/LLV(C,N), N))
+                        print(HHV(C,N))
+                        print(LLV(C,N))
+                        print(REF(C,1))
+
+                    try :
+                        cond_11 = EXIST(((C-REF(C,1))/C) < -0.02 , N) 
+                        cond_22 = EXIST(((C-REF(C,1))/C) > 0.02 , N) 
+                    except:
+                        return N-1
+                    else:
+                        pass
+                    
                     #if (HHV(C,N)-LLV(C,N))/LLV(C,N) < 0.2 and N < 30:
-                    if EXIST(((C-REF(C,1))/C) < -0.02 , N) or  \
-                            EXIST(((C-REF(C,1))/C) >  0.02 , N) or \
-                            N > 3:
+                    if cond_11 or cond_22 or N > 3:
                         break
                     else:
                         target = max(target, N)
