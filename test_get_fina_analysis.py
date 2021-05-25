@@ -158,12 +158,14 @@ def fina_get_continuous_info(df, curr_day, select='operating_income_yoy', net_pe
 
 
         if debug:
-            print(curr_day, max_date, stock_code, stock_name, operating_income_yoy,  net_profit_atsopc_yoy, i, \
+            print(curr_day, max_date, stock_code, stock_name, \
+                    operating_income_yoy,  net_profit_atsopc_yoy, i, \
                     close_p, C.value, hsgt_share, hsgt_date, hsgt_percent, hsgt_delta1, hsgt_deltam,\
                     conti_day, money_total,\
                     is_peach, is_zig, is_quad )
 
-        data_list.append([ max_date, stock_code, stock_name, operating_income_yoy, net_profit_atsopc_yoy,  i, \
+        data_list.append([ max_date, stock_code, stock_name, \
+                operating_income_yoy, net_profit_atsopc_yoy,  i, \
                 close_p, C.value, hsgt_share, hsgt_date, hsgt_percent, hsgt_delta1, hsgt_deltam,\
                 conti_day, money_total,\
                 is_peach, is_zig, is_quad])  #i  is conti_day
@@ -186,10 +188,10 @@ def fina_get_continuous_info(df, curr_day, select='operating_income_yoy', net_pe
     '''
 
     data_column=['record_date', 'stock_code', 'stock_name', 'op_yoy', 'net_yoy',\
-            'conti_day', \
+            'fina_days', \
             'a_pct', 'close', \
             'hk_share', 'hk_date', 'hk_pct', 'hk_delta1', 'hk_deltam', \
-            'conti_day', 'hk_m_total',\
+            'hk_days', 'hk_m_total',\
             'peach', 'zig', 'quad']
 
     ret_df = pd.DataFrame(data_list, columns=data_column)
@@ -201,11 +203,11 @@ def fina_get_continuous_info(df, curr_day, select='operating_income_yoy', net_pe
     ret_df = ret_df.fillna(0)
     ret_df=ret_df.round(2)
 
-    data_column=['record_date', 'stock_code', 'stock_name', 'op_yoy', 'net_yoy', 'conti_day', \
+    data_column=['record_date', 'stock_code', 'stock_name', 'op_yoy', 'net_yoy', 'fina_days', \
             'a_pct', 'close', \
             'peach', 'zig', 'quad',\
             'hk_share', 'hk_date', 'hk_pct', 'hk_delta1', 'hk_deltam', \
-            'conti_day', 'hk_m_total']
+            'hk_days', 'hk_m_total']
 
     print(ret_df.columns)
 
