@@ -59,10 +59,13 @@ def handle_raw_df(df):
 
     df=df.fillna(0)
     
-    df['market_capital'] = round(df['market_capital']/10000/10000, 2) # unit:y
-    df['amount'] = round(df['amount']/10000/10000, 2) # unit:y
-    df['hold_volume_cn'] = round(df['hold_volume_cn']/10000, 2) # unit:w
-    df['volume'] = round(df['volume']/10000, 2) # unit:w
+    try :
+        df['market_capital'] = round(df['market_capital']/10000/10000, 2) # unit:y
+        df['amount'] = round(df['amount']/10000/10000, 2) # unit:y
+        df['hold_volume_cn'] = round(df['hold_volume_cn']/10000, 2) # unit:w
+        df['volume'] = round(df['volume']/10000, 2) # unit:w
+    except:
+        print('catch except for stock_code=%s' % df['symbol'][0])
 
 
    
@@ -148,6 +151,8 @@ def get_all_his_data():
             stock_code_new= 'SH' + nowcode
         else:
             stock_code_new= 'SZ' + nowcode
+        
+        #print(stock_code_new)
 
         df = get_his_data(stock_code_new, 10000)
         #add stock_code

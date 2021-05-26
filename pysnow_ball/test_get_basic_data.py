@@ -141,11 +141,19 @@ def get_holder_data(stock_code, def_cnt=10):
 def get_his_data(stock_code, def_cnt=1):
 
     data_list = []
+    df = pd.DataFrame()
     his_data = ball.his_data(stock_code, def_cnt)
 
     #dict -> dict
-    his_data = his_data['data']
-    symbol = his_data['symbol']             
+    if 'data' in his_data:
+        his_data = his_data['data']
+    else:
+        return df
+
+    if 'symbol' in his_data:
+        symbol = his_data['symbol']             
+    else:
+        return df
 
     #dict -> list
     column = his_data['column']
