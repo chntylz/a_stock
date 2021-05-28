@@ -37,6 +37,9 @@ stocks.db_stocks_update()#根据todayall的情况更新stocks表
 #sys.exit()
 
 def handle_raw_df(df):
+    
+    if len(df) == 0:
+        return
     '''
     del df['volume_post']
     del df['amount_post']
