@@ -6,6 +6,7 @@ SZ159994 5GETF
 
 SZ000977 langchaoxinxi
 SZ000401 jidongshuini
+SH603160 huidingkeji
 SH603317 weitianshipin
 SZ300813 tailinshengwu
 SZ000513 lizhujituan
@@ -46,7 +47,6 @@ SZ300664 pengyaohuanbao
 SZ300761 lihuagufen
 SH603236 yiyuantongxin
 SZ300603 li'angjishu
-SH603160 huidingkeji
 
 SZ300256 xingxingkeji
 SZ300556 silushijue

@@ -74,16 +74,15 @@ def get_fund_info(stock_code, fund_df):
             ret_fund_info += str(int(fu_delta))
 
         
-        ret_fund_info += '+' 
+        ret_fund_info += ':' 
         ret_fund_info += str(fu_value)
 
+        ret_fund_info += '_' 
+        ret_fund_info += str(fu_ratio)
 
         ret_fund_info += '<br>' 
 
-        ret_fund_info += str(fu_ratio)
-
         if fu_chg_share > 0:
-            ret_fund_info += '+' 
             ret_fund_info += str(fu_chg_share)
         else:
             ret_fund_info += str(fu_chg_share)
@@ -298,7 +297,8 @@ def show_realdata():
 
 
         data_list.append([new_date, new_code, new_name, new_pre_price, new_price, new_percent, \
-                is_peach, is_zig, is_quad, zlje, zlje_3, zlje_5, zlje_10, h_chg, fund_info, \
+                is_peach, is_zig, is_quad, zlje, zlje_3, zlje_5, zlje_10, \
+                h_chg, fund_info, \
                 new_hsgt_date, new_hsgt_share_holding, new_hsgt_percent, \
                 new_hsgt_delta1, new_hsgt_deltam, conti_day, money_total])
 
