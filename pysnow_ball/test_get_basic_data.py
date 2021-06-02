@@ -138,11 +138,18 @@ def get_holder_data(stock_code, def_cnt=10):
 
 
 
-def get_his_data(stock_code, def_cnt=1):
+def get_his_data(stock_code, period=None, def_cnt=None):
 
     data_list = []
     df = pd.DataFrame()
-    his_data = ball.his_data(stock_code, def_cnt)
+
+    if period is None:
+        period = 'day'
+
+    if def_cnt is None:
+        def_cnt = 1
+
+    his_data = ball.his_data(stock_code, period, def_cnt)
 
     #dict -> dict
     if 'data' in his_data:
