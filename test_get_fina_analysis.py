@@ -120,7 +120,7 @@ def fina_get_continuous_info(df, curr_day, select='operating_income_yoy', net_pe
         open_p = close_p = 0
 
         pre_close = REF(C, 1)
-        if pre_close.value != 0:
+        if pre_close.value > 0:
             open_p = (O - pre_close)/pre_close
             open_p = round (open_p.value, 4)
             open_jump=open_p - 0.02

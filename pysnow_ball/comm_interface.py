@@ -33,7 +33,7 @@ def get_cookie():
     }
     #urllib或requests在打开https站点是会验证证书。 
     #简单的处理办法是在get方法中加入verify参数，并设为False
-    html = requests.get(url, headers=Hostreferer,verify=False)
+    html = requests.get(url, headers=Hostreferer,verify=False, timeout=3)
     #获取cookie:DZSW_WSYYT_SESSIONID
     if html.status_code == 200:
         #print(html.cookies)

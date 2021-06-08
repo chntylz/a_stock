@@ -27,6 +27,8 @@ debug=0
 #debug=1
 para1 = 0
 
+lastday=1
+
 hdata_day=HData_xq_day("usr","usr")
 stocks=Stocks("usr","usr")
 
@@ -101,7 +103,7 @@ def get_today_data(stock_list=None):
     
     #get A open date
     a_code = 'SH000001'
-    a_df = get_his_data(a_code, 1)
+    a_df = get_his_data(a_code, def_cnt=1)
     a_df['symbol'] = a_code
     a_df = handle_raw_df(a_df)
     cur_date = a_df['timestamp'][0]
@@ -116,7 +118,7 @@ def get_today_data(stock_list=None):
             stock_code_new= 'SH' + nowcode
         else:
             stock_code_new= 'SZ' + nowcode
-        tmp_df = get_his_data(stock_code_new, 1)
+        tmp_df = get_his_data(stock_code_new, def_cnt=1)
         #add stock_code
         tmp_df['symbol'] = stock_code_new
         df = pd.concat([df, tmp_df])
@@ -146,7 +148,8 @@ def get_all_his_data():
 
     if int(para1):
         nowdate=datetime.datetime.now().date()
-        #nowdate=nowdate-datetime.timedelta(int(para1))
+        if lastday:
+            nowdate=nowdate-datetime.timedelta(int(para1))
 
     for i in range(0,length):
         nowcode=codestock_local[i][0]
@@ -157,7 +160,7 @@ def get_all_his_data():
         
         #print(stock_code_new)
 
-        df = get_his_data(stock_code_new, 10000)
+        df = get_his_data(stock_code_new, def_cnt=710)  # >700
         #add stock_code
         df['symbol'] = stock_code_new
          
@@ -166,7 +169,8 @@ def get_all_his_data():
         
         if int(para1):
             #print("nowdate is %s"%(nowdate.strftime("%Y-%m-%d")))
-            #df=df[df.timestamp == nowdate.strftime("%Y-%m-%d")]
+            if lastday:
+                df=df[df.timestamp == nowdate.strftime("%Y-%m-%d")]
             pass
 
         #insert database

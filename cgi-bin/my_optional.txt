@@ -8,6 +8,8 @@ SZ000977 langchaoxinxi
 SZ000401 jidongshuini
 SH603160 huidingkeji
 SH603317 weitianshipin
+SH600031 sanyizhonggong
+SZ300465 gaoweida
 SZ300813 tailinshengwu
 SZ000513 lizhujituan
 SZ300638 guanghetong
