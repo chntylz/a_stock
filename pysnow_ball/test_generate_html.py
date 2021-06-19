@@ -25,6 +25,7 @@ from funcat.data.aaron_backend import AaronDataBackend
 set_data_backend(AaronDataBackend())
 
 
+
 from HData_eastmoney_zlje import *
 from HData_eastmoney_zlje_3 import *
 from HData_eastmoney_zlje_5 import *
@@ -35,6 +36,8 @@ hsgtdata=HData_hsgt("usr","usr")
 
 zlje_table=HData_eastmoney_zlje("usr","usr")
 
+from HData_eastmoney_dragon import *
+dragon_table=HData_eastmoney_dragon("usr","usr")
 
 dict_industry={}
 df=None
@@ -155,7 +158,10 @@ def convert_to_html_df(df):
         print('#error, html_df data len < 1, return None')
     return html_df
 
-def combine_zlje_data(db_table, k_df):
+def combine_zlje_data(db_table, df):
+
+    k_df = df.copy(deep=True)
+
     zlje_df = db_table.get_data_from_hdata(start_date=curr_day, end_date=curr_day)
     zlje_df = zlje_df.sort_values('stock_code')
     zlje_df = zlje_df.reset_index(drop=True)
@@ -167,7 +173,12 @@ def combine_zlje_data(db_table, k_df):
 
     ret_df = pd.merge(k_df, zlje_df, how='inner', on=['stock_code', 'record_date'])
     ret_df['stock_code'] = ret_df['stock_code_new']
-    ret_df = ret_df.sort_values('zlje', ascending=0)
+
+    if 'zlje' in ret_df.columns:
+        ret_df = ret_df.sort_values('zlje', ascending=0)
+    if 'pbuy' in ret_df.columns:
+        ret_df = ret_df.sort_values('pbuy', ascending=0)
+
     ret_df = ret_df.reset_index(drop=True)
 
     return ret_df
@@ -294,6 +305,19 @@ if __name__ == '__main__':
     else:
         print('#error, html_zlje_df len < 1')
 
+    #dragon
+    print('start dragon')
+    curr_dir=curr_day_w+'-dragon'
+    dragon_df = combine_zlje_data(dragon_table, df)
+    if debug:
+        print(dragon_df)
+    html_dragon_df = convert_to_html_df(dragon_df)
+    if len(html_dragon_df):
+        generate_html(html_dragon_df)
+    else:
+        print('#error, html_dragon_df len < 1')
+
+ 
     curr_dir=curr_day_w
     os.system('cp -rf ' + stock_data_dir +'/' + curr_dir + '*  /var/www/html/stock_data/' )
 

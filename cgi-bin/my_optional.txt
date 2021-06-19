@@ -10,6 +10,8 @@ SH603160 huidingkeji
 SH603317 weitianshipin
 SH600031 sanyizhonggong
 SZ300465 gaoweida
+SH600626 shendagufen
+SZ300328 yi'ankeji
 SZ300813 tailinshengwu
 SZ000513 lizhujituan
 SZ300638 guanghetong

@@ -284,6 +284,8 @@ def comm_write_to_file(f, k, df, filename):
         xueqiu_url, hsgt_url, fina_url, holder_url = comm_handle_link(tmp_stock_code)
         fund_url = 'https://data.eastmoney.com/zlsj/detail/2020-12-31-0-' + tmp_stock_code +'.html'
         fund_url = 'https://data.eastmoney.com/zlsj/detail/2021-03-31-0-' + tmp_stock_code +'.html'
+        #print(filename[11:21])
+        dragon_url = 'https://data.eastmoney.com/stock/lhb,' + filename[11:21] + ',' + tmp_stock_code + '.html'
 
         col_name = list(df)
         col_len=len(col_name)
@@ -336,6 +338,9 @@ def comm_write_to_file(f, k, df, filename):
                 #fix bug:  must be real number, not datetime.date for holder function
                 elif list(df)[j] == 'hk_date':
                     f.write('           <a> %s</a>\n'%(element_value))
+                elif list(df)[j] == 'dragon':
+                    f.write('           <a href="%s" target="_blank"> %s</a>\n'%\
+                            (dragon_url, element_value))
                 else:
                     #element_value=2019-09-23-1-002436-兴森科技-814-878-891-796-840.png
                     if 'png' in str(element_value):
@@ -974,6 +979,8 @@ def comm_generate_web_dataframe_new(input_df, curr_dir, curr_day, dict_industry)
 
     ret_df=ret_df.loc[:,data_column]
 
+    if 'pbuy' in input_df.columns:
+        ret_df.insert(12, 'dragon', round(input_df['pbuy'] / 10000/10000, 2))
  
     return ret_df
 
