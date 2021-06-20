@@ -72,6 +72,8 @@ def showImageInHTML(imageTypes,savedir):
         
 
         f.write('<h2  align="left" style="color:blue ; font-size:34px">\n')
+        f.write('    <tr>\n')
+
         f.write('<td>\n')
         f.write('     <a href="basic-index.html"  target="_blank"> basic </a>\n')
         f.write('</td>\n')
@@ -87,6 +89,10 @@ def showImageInHTML(imageTypes,savedir):
         f.write('<td>\n')
         f.write('     <a href="../cgi-bin/hsgt-search.cgi"  target="_blank">hsgt-search </a>\n')
         f.write('</td>\n')
+
+        f.write('    </tr>\n')
+        f.write('    <tr>\n')
+
         f.write('<td>\n')
         f.write('     <a href="macd-index.html"  target="_blank">macd </a>\n')
         f.write('</td>\n')
@@ -102,6 +108,9 @@ def showImageInHTML(imageTypes,savedir):
         f.write('<td>\n')
         f.write('     <a href="5days-index.html"  target="_blank"> 5days </a>\n')
         f.write('</td>\n')
+
+        f.write('    </tr>\n')
+        f.write('    <tr>\n')
 
         f.write('<td>\n')
         f.write('     <a href="cuptea-index.html"  target="_blank"> cuptea </a>\n')
@@ -120,12 +129,18 @@ def showImageInHTML(imageTypes,savedir):
         f.write('<td>\n')
         f.write('     <a href="./stock_data/fund.html"  target="_blank"> fund </a>\n')
         f.write('</td>\n')
+
+        f.write('    </tr>\n')
+        f.write('    <tr>\n')
+        
         f.write('<td>\n')
         f.write('     <a href="./stock_data/repurchase.html"  target="_blank"> repurchase </a>\n')
         f.write('</td>\n')
         f.write('<td>\n')
         f.write('     <a href="../cgi-bin/comm_update.cgi"  target="_blank">comm_update </a>\n')
         f.write('</td>\n')
+        f.write('    </tr>\n')
+
         f.write('</h2>\n')
 
 
