@@ -4,6 +4,7 @@ cp -rf ../HData_hsgt.py     .
 cp -rf ../zig.py            .
 cp -rf ../comm_generate_html.py .
 cp ../eastmoney/get_daily_zlje.py .
+cp ~/eastmoney/get_realtime_data.py .
 cp ../eastmoney/HData_eastmoney_zlje*.py .
 cp ../eastmoney/HData_eastmoney_fund.py .
 cp ../pysnow_ball/HData_xq_fina.py .
