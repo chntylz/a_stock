@@ -26,6 +26,7 @@ from get_daily_zlje import *
 #from test_get_basic_data import *
 
 from get_realtime_data import *
+from get_index_data import *
 
 debug=0
 
@@ -162,6 +163,7 @@ def show_realdata():
 
     fund_df = get_fund_data()
     realtime_df, api_param = get_realtime_data()
+    index_df, index_api_param = get_index_data()
 
     file_name = 'my_optional.txt'
     my_list = get_stock_info(file_name)
@@ -206,9 +208,9 @@ def show_realdata():
                 new_pre_price   = round(new_price/(1+(new_percent/100)), 2)
         else:
             if debug: 
-                print('use snowball data')
+                print('use eastmoney data')
 
-            real_df = realtime_df[realtime_df['stock_code'] == stock_code_new]
+            real_df = index_df[index_df['code'] == new_code]
             real_df = real_df.reset_index(drop=True)
             if len(real_df):
                 new_pre_price   = real_df['pre_close'][0]
