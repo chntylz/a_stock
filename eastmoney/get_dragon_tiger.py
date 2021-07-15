@@ -1,6 +1,10 @@
 #!/#!/usr/bin/env python  
 # -*- coding: utf-8 -*-
 
+#龙虎榜机构统计
+#LHBJGTJ
+#https://data.eastmoney.com/stock/jgmmtj.html
+#https://datainterface3.eastmoney.com/EM_DataCenter_V3/api/LHBJGTJ/GetHBJGTJ?js=jQuery1123042907327005290474_1624455435981&sortfield=PBuy&sortdirec=1&pageSize=50&pageNum=1&tkn=eastmoney&code=&mkt=0&dateNum=&cfg=lhbjgtj&startDateTime=2021-06-23&endDateTime=2021-06-23
 
 
 
@@ -83,5 +87,7 @@ if __name__ == '__main__':
         df = df.replace('',0)
 
         cur_time = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
-        df.to_csv(cur_time+'-dragon.csv', encoding='gbk')
+        df.to_csv('./csv_data/' + cur_time + '-dragon.csv', encoding='gbk')
         hdata_dragon.copy_from_stringio(df)
+    else:
+        print('dragon not found!!!')
