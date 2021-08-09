@@ -108,7 +108,7 @@ def get_headers():
 
 
 
-def get_dragon_tiger(date=None):
+def get_dragon_tiger(date=None, url_type=None):
 
     timestamp=str(round(time.time() * 1000))
 
@@ -116,14 +116,31 @@ def get_dragon_tiger(date=None):
         nowdate=datetime.datetime.now().date()
         date = nowdate.strftime("%Y-%m-%d")
 
-    #https://www.zhihu.com/question/31600760
-    url='https://datainterface3.eastmoney.com/EM_DataCenter_V3/api/LHBJGTJ/GetHBJGTJ?js=jQuery1123029660230486644434_'\
+    url = url_lhb = 'https://datainterface3.eastmoney.com/EM_DataCenter_V3/api/LHBGGDRTJ/GetLHBGGDRTJ?'\
+            + 'js=jQuery112307979656966674489_'\
             + timestamp \
-            + '&sortfield=PBuy&sortdirec=1&pageSize=5000&pageNum=1&tkn=eastmoney&code=&mkt=0&dateNum=&cfg=lhbjgtj&startDateTime='\
+            + '&sortColumn=&sortRule=1&pageSize=5000&pageNum=1&tkn=eastmoney&'\
+            + 'dateNum=&cfg=lhbggdrtj&mkt=0&startDateTime='\
             + date \
             + '&endDateTime='\
             + date
 
+
+    #https://www.zhihu.com/question/31600760
+    url_jg='https://datainterface3.eastmoney.com/EM_DataCenter_V3/api/LHBJGTJ/GetHBJGTJ?'\
+            + 'js=jQuery1123029660230486644434_'\
+            + timestamp \
+            + '&sortfield=PBuy&sortdirec=1&pageSize=5000&pageNum=1&tkn=eastmoney&code=&'\
+            + 'mkt=0&dateNum=&cfg=lhbjgtj&startDateTime='\
+            + date \
+            + '&endDateTime='\
+            + date
+
+    if url_type == None:
+        url = url_lhb
+    else:
+        url = url_jg
+   
     print(url)
     tmp_header = get_headers()
     print(tmp_header)
@@ -153,18 +170,33 @@ if __name__ == '__main__':
     
     check_table()
 
-    df = get_dragon_tiger(nowdate.strftime("%Y-%m-%d"))
-    if len(df):
-        df = df.drop_duplicates('SCode')
-        df = df.reset_index(drop=True)
-        df = df.fillna(0)
-        df = df.replace('',0)
+    jg_df = get_dragon_tiger(nowdate.strftime("%Y-%m-%d"), url_type='all_jg')
+    time.sleep(15)
+    all_df = get_dragon_tiger(nowdate.strftime("%Y-%m-%d"))
+    
+    if len(jg_df) or len(all_df):
+
+        jg_df.columns = jg_df.columns.map(lambda x:x.lower())
+        all_df.columns = all_df.columns.map(lambda x:x.lower())
+
+        all_df = all_df.drop_duplicates(subset=['scode', 'tdate'], keep='first')
+        jg_df  = jg_df.drop_duplicates(subset=['scode', 'tdate'], keep='first')
+
+        conj_df = pd.merge(all_df, jg_df, how='outer', on=['scode', 'tdate'])
+        conj_df = conj_df.fillna(0)
+        conj_df = conj_df.replace('',0)
+        conj_df = conj_df.reset_index(drop=True)
+        
+        conj_df['dp'] = conj_df['dp'].apply(lambda x: str(x).replace(',', '_') )
+        conj_df['ctypedes_x'] = conj_df['ctypedes_x'].apply(lambda x: str(x).replace(',', '_') )
+        conj_df['ctypedes_y'] = conj_df['ctypedes_y'].apply(lambda x: str(x).replace(',', '_') )
+
 
         cur_time = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
-        df.to_csv('./csv_data/' + cur_time + '-dragon.csv', encoding='gbk')
+        conj_df.to_csv('./csv_data/' + 'dragon-' + cur_time + '.csv', encoding='gbk')
         hdata_dragon.delete_data_from_hdata(\
             start_date=nowdate.strftime("%Y-%m-%d"), \
             end_date=nowdate.strftime("%Y-%m-%d"))
-        hdata_dragon.copy_from_stringio(df)
+        hdata_dragon.copy_from_stringio(conj_df)
     else:
         print('dragon not found!!!')
