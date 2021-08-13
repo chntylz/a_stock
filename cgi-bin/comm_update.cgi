@@ -11,9 +11,12 @@ import pandas as pd
 from HData_hsgt import *
 from HData_xq_fina import *
 from HData_xq_holder import *
+from HData_xq_simple_day import * 
+
 hdata_hsgt=HData_hsgt("usr","usr")
 hdata_fina=HData_xq_fina("usr","usr")
 hdata_holder=HData_xq_holder("usr","usr")
+hdata_xq_simple = HData_xq_simple_day('usr', 'usr')
 
 from comm_generate_html import *
 
@@ -25,7 +28,7 @@ from HData_eastmoney_zlje_10 import *
 from get_daily_zlje import *
 #from test_get_basic_data import *
 
-from get_realtime_data import *
+#from get_realtime_data import *
 from get_index_data import *
 
 debug=0
@@ -162,8 +165,6 @@ def show_realdata():
     data_list = []
 
     fund_df = get_fund_data()
-    realtime_df, api_param = get_realtime_data()
-    index_df, index_api_param = get_index_data()
 
     file_name = 'my_optional.txt'
     my_list = get_stock_info(file_name)
@@ -171,8 +172,6 @@ def show_realdata():
         print(my_list)
     length=len(my_list)
    
-    real_zlje_df = get_daily_zlje()
-    real_zlje_df = handle_raw_data(real_zlje_df)
     
     ####get zlje start####
     zlje_df   = get_zlje_data_from_db(url='url',     curr_date=str_date)
@@ -180,6 +179,9 @@ def show_realdata():
     zlje_5_df = get_zlje_data_from_db(url='url_5',   curr_date=str_date)
     zlje_10_df = get_zlje_data_from_db(url='url_10', curr_date=str_date)
     ####get zlje end####
+
+    xq_simple_df = hdata_xq_simple.get_data_from_hdata( start_date=nowdate.strftime("%Y-%m-%d"), \
+            end_date=nowdate.strftime("%Y-%m-%d"))
     i = 0
     eastmoney_begin = 10
     for i in range(length):
@@ -200,22 +202,16 @@ def show_realdata():
             if debug: 
                 print('use eastmoney data')
 
-            real_df = real_zlje_df[real_zlje_df['code'] == new_code]
+            real_df = xq_simple_df[xq_simple_df['stock_code'] == stock_code_new]
+            real_df = real_df.reset_index(drop=True)
             if len(real_df):
-                real_df = real_df.reset_index(drop=True)
-                new_price       = real_df['zxj'][0]
-                new_percent     = real_df['zdf'][0]
-                new_pre_price   = round(new_price/(1+(new_percent/100)), 2)
+                new_pre_price   = real_df['current'][0] - real_df['chg'][0]
+                new_price       = real_df['current'][0]
+                new_percent     = real_df['percent'][0]
+
         else:
             if debug: 
                 print('use eastmoney data')
-
-            real_df = index_df[index_df['code'] == new_code]
-            real_df = real_df.reset_index(drop=True)
-            if len(real_df):
-                new_pre_price   = real_df['pre_close'][0]
-                new_price       = real_df['close'][0]
-                new_percent     = real_df['percent'][0]
 
         '''
         real_df  =  get_his_data(stock_code_new, def_cnt=2)

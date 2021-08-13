@@ -4,6 +4,7 @@ SZ399001 shenzheng
 SZ399006 chuangyeban
 SZ159994 5GETF
 
+SH603520 sitaili
 SZ000977 langchaoxinxi
 SZ000401 jidongshuini
 SH603160 huidingkeji
