@@ -138,10 +138,12 @@ def cgi_write_headline_column(df):
         print('        <a> %s</a>\n'%(list(df)[j]))
         print('        </th>\n')
 
+    '''
     #add total_mv
     print('        <td>\n')
     print('           <a> total_mv </a>\n')
     print('        </td>\n')
+    '''
 
     print('    </tr>\n')
 
@@ -211,10 +213,12 @@ def cgi_write_to_file( df):
                                 
             print('        </td>\n')
 
+        '''
         #add total_mv
         print('        <td align="right">\n')
         print('           <a> %s </a>\n' %  (comm_get_total_mv(tmp_stock_code)))
         print('        </td>\n')
+        '''
 
 
         print('    </tr>\n')

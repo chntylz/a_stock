@@ -193,14 +193,14 @@ def show_realdata():
         if debug:
             print("i=%d,  new_code:%s" %(i, new_code))
 
-        new_pre_price = new_price = new_percent = 0
+        new_pre_price = new_price = new_percent = total_mv = 0
         
         if new_name == '5GETF':
             eastmoney_begin = i
 
         if i > eastmoney_begin:
             if debug: 
-                print('use eastmoney data')
+                print('use xq realtime data')
 
             real_df = xq_simple_df[xq_simple_df['stock_code'] == stock_code_new]
             real_df = real_df.reset_index(drop=True)
@@ -208,6 +208,7 @@ def show_realdata():
                 new_pre_price   = real_df['current'][0] - real_df['chg'][0]
                 new_price       = real_df['current'][0]
                 new_percent     = real_df['percent'][0]
+                total_mv        = round(real_df['market_capital'][0]/10000/10000, 2)
 
         else:
             if debug: 
@@ -296,7 +297,7 @@ def show_realdata():
         
 
 
-        data_list.append([new_date, new_code, new_name, new_pre_price, new_price, new_percent, \
+        data_list.append([new_date, new_code, new_name, total_mv, new_pre_price, new_price, new_percent, \
                 is_peach, is_zig, is_quad, zlje, zlje_3, zlje_5, zlje_10, \
                 h_chg, fund_info, \
                 new_hsgt_date, new_hsgt_share_holding, new_hsgt_percent, \
@@ -305,7 +306,7 @@ def show_realdata():
 
         #data_list.append([str_date, my_list[i], my_list_cn[i], df['pre_close'][0], df['price'][0] ])
 
-    data_column = ['curr_date', 'code', 'name', 'pre_price', 'price', 'a_pct', \
+    data_column = ['curr_date', 'code', 'name', 'total_mv', 'pre_price', 'price', 'a_pct', \
             'peach', 'zig', 'quad', 'zlje', 'zlje_3', 'zlje_5', 'zlje_10', \
             'holder_change', 'num_d_v_r_c_cr', \
             'hk_date', 'hk_share', 'hk_pct', 'hk_delta1', 'hk_deltam', 'days', 'hk_m_total']
