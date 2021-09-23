@@ -121,18 +121,23 @@ def showImageInHTML(imageTypes,savedir):
         f.write('</td>\n')
  
         f.write('<td>\n')
+        f.write('     <a href="cross3line-index.html"  target="_blank"> cross3line </a>\n')
+        f.write('</td>\n')
+ 
+        f.write('<td>\n')
         f.write('     <a href="./stock_data/finance/finance.html"  target="_blank"> finance </a>\n')
         f.write('</td>\n')
         f.write('<td>\n')
-        f.write('     <a href="./stock_data/holder.html"  target="_blank"> holder </a>\n')
-        f.write('</td>\n')
-        f.write('<td>\n')
-        f.write('     <a href="./stock_data/fund.html"  target="_blank"> fund </a>\n')
+        #f.write('     <a href="./stock_data/holder.html"  target="_blank"> holder </a>\n')
+        f.write('     <a href="holder-index.html"  target="_blank"> holder </a>\n')
         f.write('</td>\n')
 
         f.write('    </tr>\n')
         f.write('    <tr>\n')
-        
+
+        f.write('<td>\n')
+        f.write('     <a href="./stock_data/fund.html"  target="_blank"> fund </a>\n')
+        f.write('</td>\n')
         f.write('<td>\n')
         f.write('     <a href="./stock_data/repurchase.html"  target="_blank"> repurchase </a>\n')
         f.write('</td>\n')
