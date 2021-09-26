@@ -64,12 +64,12 @@ def get_fund_info(stock_code, fund_df):
     tmp_df = df[df['stock_code'] == stock_code]
     if len(tmp_df):
         tmp_df = tmp_df.reset_index(drop=True)
-        fu_num = tmp_df.loc[0]['quantity'] 
-        fu_delta = tmp_df.loc[0]['delta_quantity'] 
-        fu_value = tmp_df.loc[0]['total_value'] 
-        fu_ratio = tmp_df.loc[0]['float_ratio'] 
-        fu_chg_share = tmp_df.loc[0]['chg_share']
-        fu_chg_ratio = tmp_df.loc[0]['chg_ratio'] 
+        fu_num = tmp_df.loc[0]['hold_num'] 
+        fu_delta = tmp_df.loc[0]['delta_hold'] 
+        fu_value = round(tmp_df.loc[0]['hold_value']/10000/10000,2 )
+        fu_ratio =  round(tmp_df.loc[0]['freeshares_ratio'], 2)
+        fu_chg_share =  round(tmp_df.loc[0]['holdcha_num']/10000/10000, 2)
+        fu_chg_ratio =  round(tmp_df.loc[0]['holdcha_ratio'] , 2)
         
         ret_fund_info = str(int(fu_num))
         if fu_delta > 0:
@@ -124,17 +124,15 @@ def get_fund_data(date=None):
     df = df.sort_values('record_date', ascending=0)
     df = df.reset_index(drop=True)
 
-    df['quantity_last']=df.groupby('stock_code')['quantity'].shift((-1))
+    df['hold_last']=df.groupby('stock_code')['hold_num'].shift((-1))
     #insert the fourth column
-    df.insert(6, 'delta_quantity', df['quantity'] - df['quantity_last'])
+    df.insert(6, 'delta_hold', df['hold_num'] - df['hold_last'])
     df = df.fillna(0)
 
-    del df['quantity_last']
-    del df['type']
-    del df['value']
+    del df['hold_last']
 
     #df = df.sort_values('delta_quantity', ascending=0)
-    df = df.sort_values('quantity', ascending=0)
+    df = df.sort_values('hold_num', ascending=0)
     df = df.reset_index(drop=True)
     df = df[df['record_date'] == maxdate.strftime("%Y-%m-%d")]
     df = df.reset_index(drop=True)
