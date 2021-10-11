@@ -4,18 +4,17 @@ import os,sys,time, datetime
 import cgi
 
 import psycopg2 
-import tushare as ts
 import numpy as np
 import pandas as pd
 
 from HData_hsgt import *
 from HData_xq_fina import *
-from HData_xq_holder import *
+from HData_eastmoney_holder import *
 from HData_xq_simple_day import * 
 
 hdata_hsgt=HData_hsgt("usr","usr")
 hdata_fina=HData_xq_fina("usr","usr")
-hdata_holder=HData_xq_holder("usr","usr")
+hdata_holder=HData_eastmoney_holder("usr","usr")
 hdata_xq_simple = HData_xq_simple_day('usr', 'usr')
 
 from comm_generate_html import *
@@ -271,21 +270,21 @@ def show_realdata():
         #### fina end ####
         
         #### holder start ####
-
-        holder_df = hdata_holder.get_data_from_hdata(stock_code = stock_code_new)
-        holder_df = holder_df.sort_values('record_date', ascending=0)
-        holder_df = holder_df.reset_index(drop=True)
-        h0 = h1 = h2 = 0
+        holder_df = hdata_holder.get_data_from_hdata(stock_code = new_code)
+        holder_df = holder_df .sort_values('record_date', ascending=0)
+        holder_df = holder_df .reset_index(drop=True)
+        h0 = h1 = h2 = avg_hold_num = interval_chrate = 0
         if len(holder_df) > 0:
-            h0 = holder_df['chg'][0]
+            h0 = round(holder_df['holder_num_ratio'][0], 2)
+            avg_hold_num = round(holder_df['avg_hold_num'][0]/10000,2)
+            interval_chrate = round(holder_df['interval_chrate'][0],2)
         if len(holder_df) > 1:
-            h1 = holder_df['chg'][1]
+            h1 = round(holder_df['holder_num_ratio'][1], 2)
         if len(holder_df) > 2:
-            h2 = holder_df['chg'][2]
-        h_chg = str(h0) + ' ' + str(h1) + ' ' + str(h2)
-        #new_code = new_code + '<br>'+ h_chg + '</br>'
+            h2 = round(holder_df['holder_num_ratio'][2], 2)
+        h_chg = str(h0) + ' ' + str(h1) + ' ' + str(h2) +' ' + str(avg_hold_num) + ' '+ str(interval_chrate)
+        #stock_code = stock_code + '<br>'+ h_chg + '</br>'
 
-        #### holder end ####
 
         #### fund start ####
         fund_info = get_fund_info(new_code, fund_df)

@@ -4,8 +4,16 @@ SZ399001 shenzheng
 SZ399006 chuangyeban
 SZ159994 5GETF
 
-SH603520 sitaili
+
+SH600566 jichuanyaoye
+SZ002475 lixunjingmi
+SZ000860 shunxinnongye
 SH600741 huayuqiche
+SZ300633 kailiyiliao
+SZ300573 xingqiyanyao
+SZ300458 quanzhikeji
+SZ002230 kedaxunfei
+SH603520 sitaili
 SZ000977 langchaoxinxi
 SZ000401 jidongshuini
 SH603160 huidingkeji
@@ -17,14 +25,12 @@ SZ000513 lizhujituan
 SZ300638 guanghetong
 SH601318 zhongguopingan
 SH600529 shandongyaobo
-SZ002230 kedaxunfei
 SZ000651 gelidianqi
 SH603799 huayouguye
 
 
 SZ002241 ge'ergufen
 SZ300676 huadajiyin
-SZ002475 lixunjingmi
 SZ000922 jiadiangufen
 SH600460 shilanwei
 SZ002352 shunfengkonggu
@@ -42,7 +48,7 @@ SH600352 zhejianglongsheng
 
 SZ002572 suofeiya
 
-SH002050 sanhuazhikong
+SZ002050 sanhuazhikong
 
 
 SZ002463 hudiankeji
@@ -53,7 +59,6 @@ SZ002304 yanghegufen
 SZ002332 xianjuzhiyao
 SH603229 ao'xiangyaoye
 
-SZ300458 quanzhikeji
 SZ300014 yiweilineng
 
 SH601117 zhongguohuaxue

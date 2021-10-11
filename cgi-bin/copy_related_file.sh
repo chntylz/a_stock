@@ -7,10 +7,10 @@ cp ../eastmoney/get_daily_zlje.py .
 cp ~/eastmoney/get_realtime_data.py .
 cp ~/eastmoney/get_index_data.py .
 cp ~/eastmoney/HData_xq_simple_day.py .
-cp ../eastmoney/HData_eastmoney_zlje*.py .
-cp ../eastmoney/HData_eastmoney_fund.py .
+cp ~/eastmoney/HData_eastmoney_zlje*.py .
+cp ~/eastmoney/HData_eastmoney_fund.py .
+cp ~/eastmoney/HData_eastmoney_holder.py .
 cp ../pysnow_ball/HData_xq_fina.py .
-cp ../pysnow_ball/HData_xq_holder.py .
 cp ../pysnow_ball/test_get_basic_data.py .
 cp ../pysnow_ball/comm_interface.py .
 
