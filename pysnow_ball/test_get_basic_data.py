@@ -17,6 +17,7 @@ import numpy as np
 import pandas as pd
 
 from comm_interface import *
+from get_xq_data import *
 
 debug = 0
 #debug = 1
@@ -47,7 +48,8 @@ def get_raw_data(stock_code, datatype=None, is_annuals=0, def_cnt=10):
 
 def get_fina_data(stock_code, datatype=None, is_annuals=0, def_cnt=10):
 
-    fina_data = get_raw_data(stock_code, datatype, is_annuals, def_cnt)
+    #fina_data = get_raw_data(stock_code, datatype, is_annuals, def_cnt)
+    fina_data = get_raw_data2(stock_code, datatype, is_annuals, def_cnt)
     fina_data = fina_data['data']['list']
 
     df = pd.DataFrame() 

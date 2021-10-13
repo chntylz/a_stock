@@ -7,6 +7,7 @@ import pandas as pd
 
 import sys
 sys.path.append("eastmoney")
+sys.path.append("../eastmoney")
 
 
 #keep 0.01 accrucy
@@ -23,6 +24,7 @@ set_data_backend(AaronDataBackend())
 import psycopg2
 from Stocks import *
 from HData_hsgt import *
+from HData_eastmoney_day import *
 from HData_dailybasic import *
 from HData_select import *
 from pysnow_ball.HData_xq_day import *
@@ -35,7 +37,8 @@ hsgtdata=HData_hsgt("usr","usr")
 stocks=Stocks("usr","usr")
 db_daily=HData_dailybasic("usr", "usr")
 sdata=HData_select("usr","usr")
-hdata_day=HData_xq_day("usr","usr")
+#hdata_day=HData_xq_day("usr","usr")
+hdata_day=HData_eastmoney_day("usr","usr")
 hdata_holder=HData_xq_holder("usr","usr")
 hdata_fina=HData_xq_fina("usr","usr")
 
@@ -864,6 +867,7 @@ def comm_generate_web_dataframe_new(input_df, curr_dir, curr_day, dict_industry)
     for i in range(len_df):
         stock_code_new=daily_df.stock_code[i]
         stock_code=stock_code_new[2:]
+        stock_code=stock_code_new[:]  #fix bug: sh000001 -> 000001
         stock_name = symbol(stock_code)
         pos_s=stock_name.rfind('[')
         pos_e=stock_name.rfind(']')
@@ -900,7 +904,7 @@ def comm_generate_web_dataframe_new(input_df, curr_dir, curr_day, dict_industry)
 
         is_2d3pct=daily_df.is_2d3pct[i]
         is_cup_tea=daily_df.is_cup_tea[i]
-        total_mv=daily_df.market_capital[i]
+        total_mv=daily_df.mkt_cap[i]
 
 
         try:

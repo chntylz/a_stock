@@ -60,6 +60,7 @@ def handle_raw_df(df):
     df['is_up_days'] = 0
     df['is_cup_tea'] = 0
     df['is_duck_head'] = 0
+    df['is_cross3line'] = 0
 
 
     df=df.fillna(0)
@@ -88,7 +89,7 @@ def handle_raw_df(df):
             'turnoverrate', 'pe', 'pb', 'ps', 'pcf', 'market_capital', \
             'hk_volume', 'hk_pct', 'hk_net', \
             'is_peach', 'is_zig', 'is_quad', \
-            'is_macd', 'is_2d3pct', 'is_up_days', 'is_cup_tea', 'is_duck_head']
+            'is_macd', 'is_2d3pct', 'is_up_days', 'is_cup_tea', 'is_duck_head', 'is_cross3line']
 
     #resort conlums
     df = df[new_cols]
@@ -122,6 +123,9 @@ def get_today_data(stock_list=None):
         #add stock_code
         tmp_df['symbol'] = stock_code_new
         df = pd.concat([df, tmp_df])
+        #print(df)
+        if i % 1000 == 0:
+            print('i=%d' % (i))
 
         if( 0 ):
             if i > 5:

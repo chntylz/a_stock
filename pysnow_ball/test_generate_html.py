@@ -3,9 +3,11 @@
 import os,sys
 sys.path.append('..')
 sys.path.append('../eastmoney')
+sys.path.append('../../eastmoney')
 
 import psycopg2 #使用的是PostgreSQL数据库
-from HData_xq_day import *
+#from HData_xq_day import *
+from HData_eastmoney_day import *
 from HData_hsgt import *
 import  datetime
 import time
@@ -31,7 +33,8 @@ from HData_eastmoney_zlje_3 import *
 from HData_eastmoney_zlje_5 import *
 from HData_eastmoney_zlje_10 import *
 
-hdata=HData_xq_day("usr","usr")
+#hdata=HData_xq_day("usr","usr")
+hdata=HData_eastmoney_day("usr","usr")
 hsgtdata=HData_hsgt("usr","usr")
 
 zlje_table=HData_eastmoney_zlje("usr","usr")
@@ -166,13 +169,15 @@ def combine_zlje_data(db_table, df):
     zlje_df = zlje_df.sort_values('stock_code')
     zlje_df = zlje_df.reset_index(drop=True)
 
+    '''
     k_df['stock_code_new'] = k_df['stock_code']
     k_df['stock_code'] = k_df['stock_code'].apply(lambda x: x[2:])
     k_df = k_df.sort_values('stock_code')
     k_df = k_df.reset_index(drop=True)
+    '''
 
     ret_df = pd.merge(k_df, zlje_df, how='inner', on=['stock_code', 'record_date'])
-    ret_df['stock_code'] = ret_df['stock_code_new']
+    #ret_df['stock_code'] = ret_df['stock_code_new']
 
     if 'zlje' in ret_df.columns:
         ret_df = ret_df.sort_values('zlje', ascending=0)

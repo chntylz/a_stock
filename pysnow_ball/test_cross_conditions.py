@@ -8,10 +8,12 @@ import sys
 import os
 sys.path.append("..")
 
+sys.path.append("../../eastmoney")
 
 import psycopg2 #使用的是PostgreSQL数据库
 from Stocks import *
-from HData_xq_day import *
+#from HData_xq_day import *
+from HData_eastmoney_day import *
 import  datetime
 
 from zig import *
@@ -37,16 +39,17 @@ from funcat import *
 from funcat.data.aaron_backend import AaronDataBackend
 set_data_backend(AaronDataBackend())
 
-from test_get_basic_data import *
+#from test_get_basic_data import *
 from file_interface import *
 from comm_interface import *
 
 
 stocks=Stocks("usr","usr")
-hdata=HData_xq_day("usr","usr")
+#hdata=HData_xq_day("usr","usr")
+hdata=HData_eastmoney_day("usr","usr")
 
-# stocks.db_stocks_create()#如果还没有表则需要创建
-#print(stocks.db_stocks_update())#根据todayall的情况更新stocks表
+#stocks.db_stocks_create()#如果还没有表则需要创建
+print(stocks.db_stocks_update())#根据todayall的情况更新stocks表
 
 
 
@@ -85,6 +88,7 @@ def calculate_peach_zig_quad(nowdate, nowdata_df):
         #    continue
 
         draw_flag = False
+        is_cross3line = 0
         is_peach = 0
         is_zig = 0
         is_quad = 0
@@ -95,7 +99,7 @@ def calculate_peach_zig_quad(nowdate, nowdata_df):
         is_up_days = 0
         is_cup_tea = 0 
         is_duck_head = 0
-
+        
         
 
 
@@ -109,6 +113,7 @@ def calculate_peach_zig_quad(nowdate, nowdata_df):
         '''
         nowcode_new=codestock_local.stock_code[i]
         nowcode = nowcode_new[2:]
+        nowcode = nowcode_new[:]
 
         #funcat call
         T(str(nowdate))
@@ -135,7 +140,7 @@ def calculate_peach_zig_quad(nowdate, nowdata_df):
 
 
         if 0:
-            if '8468' not in  nowcode:
+            if '0831' not in  nowcode:
                 continue
             print("code:%s, name:%s" % (nowcode, nowname ))
 
@@ -157,7 +162,7 @@ def calculate_peach_zig_quad(nowdate, nowdata_df):
         if len(detail_info) <= 6  or (detail_info is None):
             # print('NaN: code:%s, name:%s' % (nowcode, nowname ))
             update_list.append([nowdate.strftime("%Y-%m-%d"), nowcode_new, is_peach, is_zig, is_quad, \
-                is_macd, is_2d3pct, is_up_days, is_cup_tea, is_duck_head])
+                is_macd, is_2d3pct, is_up_days, is_cup_tea, is_duck_head, is_cross3line])
             continue
          
         db_max_date = detail_info['record_date'][len(detail_info)-1]
@@ -177,8 +182,6 @@ def calculate_peach_zig_quad(nowdate, nowdata_df):
             
             continue
 
-           
-
         ##############################################################################
         # dif: 12， 与26日的差别
         # dea:dif的9日以移动平均线
@@ -189,7 +192,56 @@ def calculate_peach_zig_quad(nowdate, nowdata_df):
         upperband, middleband, lowerband = talib.BBANDS(np.array(detail_info['close']),\
                 timeperiod=20, nbdevdn=2, nbdevup=2)
 
-           
+ 
+        ##############################################################################
+        #cross 3 line   
+        '''
+	    一阳穿三线形态特征：
+
+	    1、一阳穿多线是由一根阳K线和多条均线组成。该阳线可以是大阳线，也可以为中阳线或者小阳线。
+
+	    2、在该形态出现过程中，是阳线上穿均线，且均线呈上涨走势，投资者可以依据均线的周期来判断股价上涨的周期。
+
+	    3、该形态经常出现在上涨行情的初期或者震荡行情中。
+
+	    4、该形态的形成表示多方力量强势，股价涨势强劲，预示着股价整理结束，即将开始新的行情。
+
+	    一阳穿三线形态操作要点
+
+	    1、三条均线的间距越小，“一阳穿三线”的成功率越高
+
+	    2、成交量必须放大，最好是近期的两倍量以上
+
+	    3、出现位置要越低越好
+
+	    4、出现“一阳穿三线”后的回调，空间越小越好
+        '''
+
+        MA5=MA(C,5)
+        MA10=MA(C,10)
+        MA20=MA(C,20)
+        MA30=MA(C,30)
+        MA60=MA(C,60)
+        cond_1 = CROSS(C,MA5)
+        cond_2 = CROSS(C,MA10)
+        cond_3 = CROSS(C,MA20)
+        cond_4 = CROSS(C,MA30)
+        cond_5 = C > O
+        cond_6 = True
+
+
+        if debug:
+            print(cond_1, cond_2, cond_3, cond_4, cond_5 , cond_6)
+
+        if cond_1 and cond_2 and cond_3 and cond_4 and cond_5 and cond_6:
+            is_cross3line = 1 
+
+            print("[yi yang chuan san xian] cross: code:%s, name:%s" % \
+                (nowcode, nowname ))
+            if debug:
+                print('is_cross3line %s' % is_cross3line)
+
+          
         ##############################################################################
         '''
         桃园三结义的技术要点：
@@ -537,7 +589,7 @@ def calculate_peach_zig_quad(nowdate, nowdata_df):
         except:
             print('### error %s, %s, %s' %(str(nowdate), nowcode, nowname))
             update_list.append([nowdate.strftime("%Y-%m-%d"), nowcode_new, is_peach, is_zig, is_quad, \
-                    is_macd, is_2d3pct, is_up_days, is_cup_tea, is_duck_head])
+                    is_macd, is_2d3pct, is_up_days, is_cup_tea, is_duck_head, is_cross3line])
             continue
         else:
             pass
@@ -669,18 +721,18 @@ def calculate_peach_zig_quad(nowdate, nowdata_df):
         ###############################################################################################
         
         update_list.append([nowdate.strftime("%Y-%m-%d"), nowcode_new, is_peach, is_zig, is_quad, \
-                is_macd, is_2d3pct, is_up_days, is_cup_tea, is_duck_head])
+                is_macd, is_2d3pct, is_up_days, is_cup_tea, is_duck_head, is_cross3line])
 
         if debug:
             print('#############################################################################')
             print([nowdate.strftime("%Y-%m-%d"), nowcode_new, is_peach, is_zig, is_quad, \
-                is_macd, is_2d3pct, is_up_days, is_cup_tea, is_duck_head])
+                is_macd, is_2d3pct, is_up_days, is_cup_tea, is_duck_head, is_cross3line])
 
     if debug:
         print('update_list:%s'% update_list)
 
     data_column=['record_date', 'stock_code', 'is_peach', 'is_zig', 'is_quad', \
-            'is_macd', 'is_2d3pct' ,'is_up_days', 'is_cup_tea', 'is_duck_head' ]
+            'is_macd', 'is_2d3pct' ,'is_up_days', 'is_cup_tea', 'is_duck_head', 'is_cross3line' ]
     update_df=pd.DataFrame(update_list, columns=data_column)
     if debug:
         print(update_df)
@@ -709,6 +761,7 @@ def update_peach_zig_quad(nowdate, df, df1):
     tmp_df['is_up_days']  = tmp_df1['is_up_days']
     tmp_df['is_cup_tea']  = tmp_df1['is_cup_tea']
     tmp_df['is_duck_head']  = tmp_df1['is_duck_head']
+    tmp_df['is_cross3line']  = tmp_df1['is_cross3line']
 
     tmp_df.to_csv('./cross_condition.csv', encoding='gbk')
 

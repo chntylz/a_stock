@@ -21,13 +21,13 @@ from test_get_basic_data import *
 from file_interface import * 
 from comm_interface import * 
 
-import pysnowball as ball
+#import pysnowball as ball
 
 debug=0
 #debug=1
 
-token=get_cookie()
-ball.set_token(token)
+#token=get_cookie()
+#ball.set_token(token)
 
 hdata_fina=HData_xq_fina("usr","usr")
 hdata_income=HData_xq_income("usr","usr")
@@ -209,9 +209,11 @@ if __name__ == '__main__':
     nowdate=nowdate-datetime.timedelta(int(para1))
     print("nowdate is %s"%(nowdate.strftime("%Y-%m-%d")))
 
+    '''
     update_database_indicator()
     update_database_income()
     update_database_balance()
+    '''
     update_database_cashflow()
 
     last_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())

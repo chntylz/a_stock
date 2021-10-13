@@ -33,9 +33,18 @@ def get_season_fund(date=None):
         date = nowdate.strftime('%Y-%m-%d')
 
     if date[5:] in date_list:
+
+        #https://data.eastmoney.com/dataapi/zlsj/list?date=2021-06-30&type=1&zjc=0&sortField=HOULD_NUM&sortDirec=1&pageNum=1&pageSize=10000
+
+        '''
         url ='https://data.eastmoney.com/dataapi/zlsj/list?tkn=eastmoney&ReportDate='
         url += date
         url += '&code=&type=1&zjc=0&sortField=Count&sortDirec=1&pageNum=1&pageSize=5000&cfg=jjsjtj'
+        '''
+
+        url = 'https://data.eastmoney.com/dataapi/zlsj/list?date='\
+              + date \
+              + '&type=1&zjc=0&sortField=HOULD_NUM&sortDirec=1&pageNum=1&pageSize=10000'
 
         if debug:
             print(url)

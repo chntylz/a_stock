@@ -6,6 +6,7 @@ import json
 import sys
 sys.path.append("pysnow_ball")
 sys.path.append("eastmoney")
+sys.path.append("../eastmoney")
 
 from file_interface import *
 
@@ -14,7 +15,8 @@ import psycopg2 #使用的是PostgreSQL数据库
 import tushare as ts
 
 from HData_hsgt import *
-from HData_xq_day import *
+#from HData_xq_day import *
+from HData_eastmoney_day import *
 
 from HData_xq_fina import *
 from HData_xq_holder import *
@@ -34,7 +36,8 @@ debug=0
 #debug=1
 
 #file_path='/home/ubuntu/tmp/a_stock/hkexnews_scrapy/hkexnews_scrapy/json/20190823.json.gz'
-hdata_day=HData_xq_day("usr","usr")
+#hdata_day=HData_xq_day("usr","usr")
+hdata_day=HData_eastmoney_day("usr","usr")
 
 hdata_hsgt=HData_hsgt("usr","usr")
 hdata_fina=HData_xq_fina("usr","usr")
@@ -117,7 +120,7 @@ def hsgt_get_day_item_from_json(file_path):
             shgt_code_new= 'SH' + shgt_code 
         else:
             shgt_code_new= 'SZ' + shgt_code 
-
+        shgt_code_new= shgt_code 
 
         
         #### fina start ####
@@ -170,6 +173,7 @@ def hsgt_get_day_item_from_json(file_path):
             stock_code_new= 'SH' + shgt_code
         else:
             stock_code_new= 'SZ' + shgt_code
+        stock_code_new= shgt_code
 
         #get open, close, high, low, and volume
         day_df=hdata_day.get_data_from_hdata(stock_code=stock_code_new, 

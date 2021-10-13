@@ -37,7 +37,8 @@ def get_holder_data():
     lastdate = nowdate - datetime.timedelta(365 * 3) #3 years ago
 
     print('nowdate:%s, lastdate:%s' % (nowdate, lastdate))
-    holder_data  =  hdata_holder.get_data_from_hdata( start_date=lastdate.strftime("%Y%m%d"), end_date=nowdate.strftime("%Y%m%d"))
+    holder_data  =  hdata_holder.get_data_from_hdata( start_date=lastdate.strftime("%Y%m%d"), \
+            end_date=nowdate.strftime("%Y%m%d"))
     
     return holder_data
 
